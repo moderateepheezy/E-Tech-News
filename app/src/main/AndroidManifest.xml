@@ -15,6 +15,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".NewsMainActivity"
+            android:theme="@style/ActionBarTheme"/>
+
+        <activity android:name=".ProcessUserActivity"
+            android:theme="@style/AppThemeFullScreen" />
+
+        <activity android:name=".RegisterActivity"
+            android:theme="@style/AppThemeFullScreen" />
+
+
     </application>
 
 </manifest>

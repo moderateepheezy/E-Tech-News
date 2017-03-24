@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">E-Tech-News</string>
+
+
+    <string name="first_title">E-Tech News</string>
+    <string name="first_description">Read news From different vendors</string>
+    <string name="second_description">Add Vendors to library</string>
+    <string name="third_description">Simless subscription</string>
+    <string name="library">Library</string>
+    <string name="settings">Settings</string>
+    <string name="subscriptions">Subscriptions</string>
+    <string name="search">Search</string>
+    <string name="vendor">Vendors</string>
+
+    <string name="title_list_to_grid">List to grid</string>
+
+
+    <string name="login_success">login success</string>
+    <string name="login">LOGIN</string>
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
+    <string name="forgot_your_password">Forgot your password ?</string>
+    <string name="go">GO</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="next">NEXT</string>
+    <string name="register">REGISTER</string>
 </resources>

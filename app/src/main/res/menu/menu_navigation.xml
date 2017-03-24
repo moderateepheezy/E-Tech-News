@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_add_circle_outline"
+        android:title="@string/vendor"
+        />
+
+
+    <item
+        android:id="@+id/library"
+        android:title="@string/library"
+        android:icon="@drawable/ic_library_add_black_24dp"/>
+
+
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings"
+        android:icon="@drawable/ic_settings"/>
+
+</menu>

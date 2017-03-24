@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.simpumind.e_tech_news"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -36,6 +36,9 @@ dependencies {
     compile 'com.vstechlab.easyfonts:easyfonts:1.0.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:25.3.0'
+    compile 'com.jakewharton:butterknife:5.1.1'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+    compile 'com.github.dexafree:materiallist:3.2.1'
+    compile 'jp.wasabeef:recyclerview-animators:2.0.0'
     testCompile 'junit:junit:4.12'
 }
