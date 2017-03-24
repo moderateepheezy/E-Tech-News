@@ -70,6 +70,7 @@
                         android:text="Cartoon Network"
                         android:textStyle="bold"
                         android:textSize="10dp"
+                        android:layout_marginBottom="5dp"
                         android:textColor="#f75a5a"/>
 
                 </LinearLayout>

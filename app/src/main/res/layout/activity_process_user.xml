@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pgg"
+    android:background="@drawable/img"
     tools:context=".ProcessUserActivity">
 
     <android.support.v7.widget.CardView
@@ -28,7 +28,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_width="8dp"
                 android:layout_height="match_parent"
-                android:background="#ff0073"
+                android:background="#f75a5a"
                 />
             <TextView
                 android:layout_centerVertical="true"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:text="@string/login"
-                android:textColor="#ff0073"
+                android:textColor="#f75a5a"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 />
@@ -55,11 +55,11 @@
                 <EditText
                     android:textSize="13sp"
                     android:hint="@string/Username"
-                    android:textColor="#ff0073"
+                    android:textColor="#f75a5a"
                     android:id="@+id/et_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
+                    android:inputType="phone"
                     android:background="@drawable/selector_bg_edit"
                     android:textCursorDrawable="@drawable/bg_input_cursor"
                     android:paddingBottom="2dp"
@@ -79,7 +79,7 @@
                     <EditText
                         android:textSize="13sp"
                         android:hint="@string/Password"
-                        android:textColor="#ff0073"
+                        android:textColor="#f75a5a"
                         android:id="@+id/et_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
                     android:stateListAnimator="@drawable/state_list_animator_z"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
-                    android:backgroundTint="#ff0073"
+                    android:backgroundTint="#f75a5a"
                     android:text="@string/go"
                     android:textColor="#d3d3d3"
                     >
@@ -124,7 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:fabSize="normal"
-        app:backgroundTint="#ff0073"
+        app:backgroundTint="#f75a5a"
         android:src="@drawable/plus"
         android:transitionName="loginFab"
         android:layout_alignTop="@id/cv"

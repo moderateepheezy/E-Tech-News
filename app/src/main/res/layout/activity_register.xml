@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pgg"
+    android:background="@drawable/img"
     tools:context=".ProcessUserActivity">
 
     <FrameLayout
@@ -14,7 +14,7 @@
         android:layout_height="400dp">
         <android.support.v7.widget.CardView
             android:id="@+id/cv_add"
-            app:cardBackgroundColor="#ff0073"
+            app:cardBackgroundColor="#f75a5a"
             android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
             android:layout_width="match_parent"
@@ -124,7 +124,7 @@
                    android:layout_width="150dp"
                    android:layout_height="50dp"
                    android:text="@string/next"
-                   android:textColor="#ff0073"
+                   android:textColor="#f75a5a"
                    >
                </Button>
 

@@ -39,9 +39,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
     RecyclerView recyclerView;
 
-    boolean isViewWithList = true;
-
-    boolean isColorsInverted = false;
+    boolean isViewWithList = false;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -58,7 +56,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.vendor_fragment, container, false);
 
         setHasOptionsMenu(true);
@@ -69,21 +67,6 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
         recyclerView.setAdapter(simpleAdapter);
         gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
-        final ViewGroup transitionsContainer = (ViewGroup) view.findViewById(R.id.transitions_container);
-
-        final Button sub = (Button) transitionsContainer.findViewById(R.id.subscribe);
-        sub.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
-
-                sub.setTextColor(getResources().getColor(!isColorsInverted ? R.color.colorIcons :R.color.colorAccent));
-                sub.setText(!isColorsInverted ? "Subscribe" : "Subscribed");
-                sub.setBackgroundDrawable(
-                        new ColorDrawable(getResources().getColor(!isColorsInverted ? R.color.colorAccent :
-                                R.color.colorIcons)));
-            }
-        });
 
         return view;
     }
@@ -103,8 +86,8 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        isViewWithList = !isViewWithList;
         if (id == R.id.action_list_to_grid) {
+            isViewWithList = !isViewWithList;
             if (!((Animatable) item.getIcon()).isRunning()) {
                 if (isViewWithList) {
                     item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_list_to_grid));
