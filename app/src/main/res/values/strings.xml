@@ -26,4 +26,5 @@
     <string name="register">REGISTER</string>
     <string name="dummy">Of course, some code must have been written to govern the behaviors of the widgets and Views in our samples above. The CoordinatorLayout automatically does all this already. However, you might want to define your own reactions and behaviors, rather than use the default and standard behaviors. It is remarkably easy to do. The complexity lies in how unique a behavior you want, and not in implementing a behavior. Our custom behavior is really simple. From the FabFollowsWidget sample above, we want the CircleImageView to grow larger as the user scrolls to the end of the Cards.</string>
     <string name="blue_name">share name</string>
+    <string name="profile">My Profile</string>
 </resources>

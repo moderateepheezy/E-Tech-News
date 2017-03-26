@@ -10,7 +10,7 @@ import android.view.MenuItem;
 
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.fragments.LibraryFragment;
-import com.simpumind.e_tech_news.fragments.SettingsFragment;
+import com.simpumind.e_tech_news.fragments.MyProfileFragment;
 import com.simpumind.e_tech_news.fragments.SubscriptionFragment;
 
 public class NewsMainActivity extends AppCompatActivity {
@@ -43,8 +43,8 @@ public class NewsMainActivity extends AppCompatActivity {
                                 selectedFragment = new LibraryFragment();
                                 setTitle("Library");
                                 break;
-                            case R.id.settings:
-                                selectedFragment = new SettingsFragment();
+                            case R.id.profile:
+                                selectedFragment = new MyProfileFragment();
                                 setTitle("Settings");
                                 break;
                         }

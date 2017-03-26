@@ -13,9 +13,9 @@ import com.simpumind.e_tech_news.R;
  * Created by simpumind on 3/23/17.
  */
 
-public class SettingsFragment extends Fragment implements View.OnClickListener{
+public class MyProfileFragment extends Fragment implements View.OnClickListener{
 
-    private static final String TAG = SettingsFragment.class.getSimpleName();
+    private static final String TAG = MyProfileFragment.class.getSimpleName();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

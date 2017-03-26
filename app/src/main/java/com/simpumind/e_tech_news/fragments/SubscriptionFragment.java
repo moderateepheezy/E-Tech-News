@@ -40,7 +40,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
     RecyclerView recyclerView;
 
-    boolean isViewWithList = false;
+    boolean isViewWithList = true;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -64,9 +64,9 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.getItemAnimator().setChangeDuration(700);
-        simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), false);
+        simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), true);
         recyclerView.setAdapter(simpleAdapter);
-        gridLayoutManager = new GridLayoutManager(getActivity(), 1);
+        gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
 
         return view;
@@ -91,7 +91,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
             isViewWithList = !isViewWithList;
             if (!((Animatable) item.getIcon()).isRunning()) {
                 if (isViewWithList) {
-                    item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_list_to_grid));
+                    item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_grid_to_list));
                     recyclerView.getItemAnimator().setChangeDuration(700);
                     simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), true);
                     recyclerView.setAdapter(simpleAdapter);
@@ -99,7 +99,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
                     recyclerView.setLayoutManager(gridLayoutManager);
 
                 } else {
-                    item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_grid_to_list));
+                    item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_list_to_grid));
                     recyclerView.getItemAnimator().setChangeDuration(700);
                     simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), false);
                     recyclerView.setAdapter(simpleAdapter);
