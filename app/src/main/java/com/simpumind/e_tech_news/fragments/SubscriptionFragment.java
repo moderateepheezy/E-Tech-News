@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,7 +64,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.getItemAnimator().setChangeDuration(700);
-        simpleAdapter = new SimpleAdapter(false);
+        simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), false);
         recyclerView.setAdapter(simpleAdapter);
         gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -92,7 +93,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
                 if (isViewWithList) {
                     item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_list_to_grid));
                     recyclerView.getItemAnimator().setChangeDuration(700);
-                    simpleAdapter = new SimpleAdapter(true);
+                    simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), true);
                     recyclerView.setAdapter(simpleAdapter);
                     gridLayoutManager = new GridLayoutManager(getActivity(), 2);
                     recyclerView.setLayoutManager(gridLayoutManager);
@@ -100,7 +101,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
                 } else {
                     item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_grid_to_list));
                     recyclerView.getItemAnimator().setChangeDuration(700);
-                    simpleAdapter = new SimpleAdapter(false);
+                    simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), false);
                     recyclerView.setAdapter(simpleAdapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 }

@@ -12,7 +12,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/empty_street">
+        android:id="@+id/newImageBackground">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/empty_street"
+            android:id="@+id/vendorIcon"
+            android:scaleType="center"/>
 
         <Button
             android:layout_alignParentRight="true"

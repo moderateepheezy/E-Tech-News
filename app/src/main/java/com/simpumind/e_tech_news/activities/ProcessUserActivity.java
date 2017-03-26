@@ -1,4 +1,4 @@
-package com.simpumind.e_tech_news;
+package com.simpumind.e_tech_news.activities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.transition.Explode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.simpumind.e_tech_news.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

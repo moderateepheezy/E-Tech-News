@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.simpumind.e_tech_news">
 
     <application
@@ -7,25 +8,53 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".IntroActivity">
+        android:theme="@style/AppTheme"
+        tools:replace="icon">
+        <activity android:name=".activities.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".NewsMainActivity"
-            android:theme="@style/ActionBarTheme"/>
-
-        <activity android:name=".ProcessUserActivity"
+        <activity android:name=".activities.MainActivity" />
+        <activity
+            android:name=".activities.NewsMainActivity"
+            android:theme="@style/ActionBarTheme" />
+        <activity
+            android:name=".activities.ProcessUserActivity"
             android:theme="@style/AppThemeFullScreen" />
-
-        <activity android:name=".RegisterActivity"
+        <activity
+            android:name=".activities.RegisterActivity"
             android:theme="@style/AppThemeFullScreen" />
-
-
+        <activity
+            android:name=".activities.LoginActivity"
+            android:theme="@style/AppThemeFullScreen" />
+        <activity
+            android:name=".activities.OTPActivity"
+            android:theme="@style/AppThemeFullScreen" />
+        <activity android:name=".activities.SignupActivity" />
+        <activity
+            android:name=".activities.VendorNewsListActivity"
+            android:theme="@style/ActionBarTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.NewsMainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.NewsDetailActivity"
+            android:logo="@drawable/ic_close_white_24dp"
+            android:theme="@style/AppTime">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.VendorNewsListActivity" />
+        </activity>
+        <activity android:name=".activities.VendorSettingsActivity"
+            android:theme="@style/ActionBarTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.VendorNewsListActivity" />
+        </activity>
     </application>
 
 </manifest>

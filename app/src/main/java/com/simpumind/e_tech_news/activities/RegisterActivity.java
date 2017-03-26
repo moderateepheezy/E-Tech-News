@@ -1,8 +1,7 @@
-package com.simpumind.e_tech_news;
+package com.simpumind.e_tech_news.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +12,8 @@ import android.transition.TransitionInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
+
+import com.simpumind.e_tech_news.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

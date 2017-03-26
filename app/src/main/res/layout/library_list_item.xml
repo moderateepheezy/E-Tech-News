@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/transitions_container"
+    android:background="#f2f0f0"
+    android:padding="5dp"
+    android:clipToPadding="false">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:background="@color/white"
+        android:elevation="1dp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:scaleType="centerInside"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/vendorIcon"
+                android:src="@drawable/news_lo"
+                android:layout_margin="10dp"/>
+
+
+                <TextView
+                    android:id="@+id/textViewOptions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="&#8942;"
+                    android:layout_marginBottom="15dp"
+                     android:textAppearance="?android:textAppearanceLarge" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cartoon Network"
+                    android:textStyle="normal"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    android:id="@+id/vendorName"
+                    android:textSize="14dp"
+                    android:maxLines="2"
+                    android:layout_below="@+id/vendorIcon"
+                    android:layout_marginStart="11dp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+</RelativeLayout>

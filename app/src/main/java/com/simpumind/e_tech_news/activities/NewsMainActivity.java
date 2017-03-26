@@ -1,4 +1,4 @@
-package com.simpumind.e_tech_news;
+package com.simpumind.e_tech_news.activities;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.fragments.LibraryFragment;
 import com.simpumind.e_tech_news.fragments.SettingsFragment;
 import com.simpumind.e_tech_news.fragments.SubscriptionFragment;

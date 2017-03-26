@@ -40,5 +40,9 @@ dependencies {
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile 'com.github.dexafree:materiallist:3.2.1'
     compile 'jp.wasabeef:recyclerview-animators:2.0.0'
+    compile 'com.github.GoodieBag:Pinview:v1.3'
+    compile 'com.github.KingsMentor:PhoneNumberValidator:-SNAPSHOT'
+    compile 'com.github.kanytu:android-parallax-recyclerview:v1.7'
+    compile 'at.blogc:expandabletextview:1.0.3'
     testCompile 'junit:junit:4.12'
 }

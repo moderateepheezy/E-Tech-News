@@ -1,13 +1,13 @@
-package com.simpumind.e_tech_news;
+package com.simpumind.e_tech_news.activities;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.codemybrainsout.onboarder.AhoyOnboarderActivity;
 import com.codemybrainsout.onboarder.AhoyOnboarderCard;
+import com.simpumind.e_tech_news.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class IntroActivity extends AhoyOnboarderActivity {
 
     @Override
     public void onFinishButtonPressed() {
-        Intent showSignUpIntent = new Intent(IntroActivity.this, ProcessUserActivity.class);
+        Intent showSignUpIntent = new Intent(IntroActivity.this, LoginActivity.class);
         startActivity(showSignUpIntent);
     }
 }

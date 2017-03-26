@@ -1,4 +1,4 @@
-package com.simpumind.e_tech_news;
+package com.simpumind.e_tech_news.activities;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import com.dexafree.materialList.card.Card;
 import com.dexafree.materialList.card.provider.ListCardProvider;
 import com.dexafree.materialList.listeners.RecyclerItemClickListener;
 import com.dexafree.materialList.view.MaterialListView;
+import com.simpumind.e_tech_news.R;
 
 import java.util.ArrayList;
 import java.util.List;
