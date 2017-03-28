@@ -21,8 +21,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.simpumind.e_tech_news.R;
+import com.simpumind.e_tech_news.activities.NewsMainActivity;
+import com.simpumind.e_tech_news.adapter.NewsPaperHolder;
 import com.simpumind.e_tech_news.adapter.SimpleAdapter;
+import com.simpumind.e_tech_news.adapter.VendorNewAdapter;
+import com.simpumind.e_tech_news.models.NewsPaper;
 
 import static android.R.attr.button;
 
@@ -32,13 +39,17 @@ import static android.R.attr.button;
 
 public class SubscriptionFragment extends Fragment implements View.OnClickListener{
 
+    private DatabaseReference mDatabaseRef;
+    private DatabaseReference childRef;
+
     private static final String TAG = SubscriptionFragment.class.getSimpleName();
 
     GridLayoutManager gridLayoutManager;
-    LinearLayoutManager linearLayoutManager;
-    SimpleAdapter simpleAdapter;
+    //SimpleAdapter simpleAdapter;
 
     RecyclerView recyclerView;
+
+    VendorNewAdapter vendorNewAdapter;
 
     boolean isViewWithList = true;
 
@@ -50,7 +61,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ((NewsMainActivity) getActivity()).getSupportActionBar().show();
         getActivity().setTitle("Vendors");
 
     }
@@ -62,10 +73,19 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
         setHasOptionsMenu(true);
 
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.getItemAnimator().setChangeDuration(700);
-        simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), true);
-        recyclerView.setAdapter(simpleAdapter);
+        //simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), true);
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        childRef = mDatabaseRef.child("newspapers");
+
+
+        vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_item_card,
+                NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), true, getActivity());
+
+        recyclerView.setAdapter(vendorNewAdapter);
         gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
 
@@ -93,20 +113,23 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
                 if (isViewWithList) {
                     item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_grid_to_list));
                     recyclerView.getItemAnimator().setChangeDuration(700);
-                    simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), true);
-                    recyclerView.setAdapter(simpleAdapter);
+                    vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_item_card,
+                            NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), true, getActivity());
+                    recyclerView.setAdapter(vendorNewAdapter);
                     gridLayoutManager = new GridLayoutManager(getActivity(), 2);
                     recyclerView.setLayoutManager(gridLayoutManager);
 
                 } else {
                     item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_list_to_grid));
                     recyclerView.getItemAnimator().setChangeDuration(700);
-                    simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), false);
-                    recyclerView.setAdapter(simpleAdapter);
+                    vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_item_card,
+                            NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), false, getActivity());
+
+                    recyclerView.setAdapter(vendorNewAdapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 }
                 ((Animatable) item.getIcon()).start();
-                simpleAdapter.notifyItemRangeChanged(0, simpleAdapter.getItemCount());
+                vendorNewAdapter.notifyItemRangeChanged(0, vendorNewAdapter.getItemCount());
             }
             return true;
         }

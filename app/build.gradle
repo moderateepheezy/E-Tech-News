@@ -44,5 +44,8 @@ dependencies {
     compile 'com.github.KingsMentor:PhoneNumberValidator:-SNAPSHOT'
     compile 'com.github.kanytu:android-parallax-recyclerview:v1.7'
     compile 'at.blogc:expandabletextview:1.0.3'
+    compile 'com.firebaseui:firebase-ui:1.2.0'
     testCompile 'junit:junit:4.12'
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -5,15 +5,14 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 
 /**
- * Created by simpumind on 3/25/17.
+ * Created by simpumind on 3/27/17.
  */
 
-public class SubscribeChoiceFragment extends DialogFragment{
+public class SubMethodFragment extends DialogFragment {
 
-    final CharSequence  items [] = {"Daily","Weekly","Monthly"};
+    final CharSequence  items [] = {"Direct Billing","Mobile Money"};
 
     String select = "Daily";
 
@@ -30,8 +29,6 @@ public class SubscribeChoiceFragment extends DialogFragment{
                     case 0:  select= (String) items[args];
                         break;
                     case 1:  select= (String) items[args];
-                        break;
-                    case 2:  select= (String) items[args];
                         break;
                 }
             }

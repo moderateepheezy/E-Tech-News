@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
+import com.simpumind.e_tech_news.fragments.SubMethodFragment;
 import com.simpumind.e_tech_news.fragments.SubscribeChoiceFragment;
 
 
@@ -70,6 +71,12 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.SimpleItem
                     TransitionManager.beginDelayedTransition(holder.transitionsContainer, new AutoTransition());
                     holder.sub.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.pressedColor));
                     holder.sub.setText(isColorsInverted ? "Subscribed" : "Subscribe");
+
+
+
+
+                    SubMethodFragment subMethodFragment = new SubMethodFragment();
+                    subMethodFragment.show(activity.getFragmentManager(), "show_dialog");
 
                     SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
 

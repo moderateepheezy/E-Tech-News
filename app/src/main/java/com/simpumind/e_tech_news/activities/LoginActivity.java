@@ -89,35 +89,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.go){
-           // Intent intent = new Intent(LoginActivity.this, OTPActivity.class);
-            //startActivity(intent);
-            String number = phoneNumber.getText().toString();
-
-            if(phoneNumber.getText().toString().isEmpty()){
-                phoneNumber.setError("Cannot be empty");
-            }
-            try {
-                PhoneModel phoneModel = country.isNumberValid(country, number);
-                if (phoneModel.isValidPhoneNumber()) {
-                    number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
-                    //outputTextView.setText(number);
-                    Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
-
-                    Explode explode = new Explode();
-                    explode.setDuration(800);
-
-                    getWindow().setExitTransition(explode);
-                    getWindow().setEnterTransition(explode);
-                    ActivityOptionsCompat oc2 = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
-                    Intent intent = new Intent(LoginActivity.this, OTPActivity.class);
-                    startActivity(intent, oc2.toBundle());
-                } else {
-                    //outputTextView.setText("Not a valid phone number");
-                    phoneNumber.setError("Not a valid number");
-                }
-            } catch (PhoneFormatException e) {
-                //outputTextView.setText(e.getMessage());
-            }
+            Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+            startActivity(intent);
+//            String number = phoneNumber.getText().toString();
+//
+//            if(phoneNumber.getText().toString().isEmpty()){
+//                phoneNumber.setError("Cannot be empty");
+//            }
+//            try {
+//                PhoneModel phoneModel = country.isNumberValid(country, number);
+//                if (phoneModel.isValidPhoneNumber()) {
+//                    number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
+//                    //outputTextView.setText(number);
+//                    Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
+//
+//                    Explode explode = new Explode();
+//                    explode.setDuration(800);
+//
+//                    getWindow().setExitTransition(explode);
+//                    getWindow().setEnterTransition(explode);
+//                    ActivityOptionsCompat oc2 = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
+//                    Intent intent = new Intent(LoginActivity.this, OTPActivity.class);
+//                    startActivity(intent, oc2.toBundle());
+//                } else {
+//                    //outputTextView.setText("Not a valid phone number");
+//                    phoneNumber.setError("Not a valid number");
+//                }
+//            } catch (PhoneFormatException e) {
+//                //outputTextView.setText(e.getMessage());
+//            }
         }
     }
 

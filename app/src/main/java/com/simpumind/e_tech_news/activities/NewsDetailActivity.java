@@ -1,5 +1,6 @@
 package com.simpumind.e_tech_news.activities;
 
+import android.graphics.Color;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,8 @@ public class NewsDetailActivity extends AppCompatActivity {
         CollapsingToolbarLayout coll = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
         coll.setTitle("Trump News");
 
+
+        coll.setExpandedTitleColor(Color.TRANSPARENT);
         coll.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         coll.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
 

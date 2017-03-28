@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.simpumind.e_tech_news.R;
+import com.simpumind.e_tech_news.activities.NewsMainActivity;
 import com.simpumind.e_tech_news.adapter.CustomAdapter;
 import com.simpumind.e_tech_news.models.MyList;
 
@@ -43,7 +44,7 @@ public class LibraryFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ((NewsMainActivity) getActivity()).getSupportActionBar().show();
         getActivity().setTitle("Library");
 
     }

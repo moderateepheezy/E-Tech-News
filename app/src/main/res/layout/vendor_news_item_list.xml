@@ -56,6 +56,7 @@
                     android:textSize="14sp"
                     android:textColor="#2d2c2c"
                     android:textStyle="bold"
+                    android:id="@+id/newsTitle"
                     android:text="WWE Legend Jim Ross' Wife, Jan dies At 55 - Wrestling World Offers Their Condolences"
                     android:maxLines="4"/>
 

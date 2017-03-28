@@ -1,6 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
 
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/reading"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:id="@+id/main"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/logo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/pp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thomas Schneider"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="22dp"
+
+            android:layout_marginTop="10dp"/>
+        <TextView
+            android:id="@+id/photographer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+234 6056 34 70"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="13dp"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/main"
+        android:id="@+id/tab"
+        android:layout_marginTop="16dp">
+
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/no1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="26"
+                android:textSize="16dp"
+                android:textColor="#ae2018"
+                android:gravity="center"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Comment"
+                android:textColor="#000"
+                android:gravity="center"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/no2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="7"
+                android:textSize="16dp"
+                android:textColor="#ae2018"
+                android:gravity="center"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/channel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Channel"
+                android:textColor="#000"
+                android:gravity="center"/>
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/no3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="48"
+                android:textSize="16dp"
+                android:textColor="#ae2018"
+                android:gravity="center"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/bookmark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bookmarks"
+                android:textColor="#000"
+                android:gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#44050000"/>
+
+    <ListView
+        android:layout_below="@+id/tab"
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:divider="#00000000"
+        >
+    </ListView>
+
+</RelativeLayout>

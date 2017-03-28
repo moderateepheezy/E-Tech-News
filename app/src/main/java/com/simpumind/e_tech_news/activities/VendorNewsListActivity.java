@@ -18,9 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.poliveira.parallaxrecyclerview.ParallaxRecyclerAdapter;
 import com.simpumind.e_tech_news.R;
-import com.simpumind.e_tech_news.adapter.VendorNewAdapter;
+import com.simpumind.e_tech_news.adapter.NewsListAdapter;
+import com.simpumind.e_tech_news.models.News;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,11 @@ import java.util.List;
 public class VendorNewsListActivity extends AppCompatActivity {
 
     private static final String TAG = VendorNewsListActivity.class.getSimpleName();
+
+    private DatabaseReference mDatabaseRef;
+    private DatabaseReference childRef;
+
+    private NewsListAdapter newsListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,45 +60,54 @@ public class VendorNewsListActivity extends AppCompatActivity {
 //            }
 //        });
 
-        final List<String> content = new ArrayList<>();
-        for (int i = 0; i < 12; i++)
-            content.add(getListString(i));
+//        final List<String> content = new ArrayList<>();
+//        for (int i = 0; i < 12; i++)
+//            content.add(getListString(i));
+//
+//
+//        ParallaxRecyclerAdapter<String> stringAdapter = new ParallaxRecyclerAdapter<String>(content) {
+//            @Override
+//            public void onBindViewHolderImpl(RecyclerView.ViewHolder viewHolder, ParallaxRecyclerAdapter parallaxRecyclerAdapter, int i) {
+//               // ((TextView) viewHolder.itemView).setText(content.get(i));
+//                final ImageView image = ((SimpleViewHolder) viewHolder).newsImage;
+//
+//                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        goToNewsDetails(image);
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public RecyclerView.ViewHolder onCreateViewHolderImpl(ViewGroup viewGroup, ParallaxRecyclerAdapter parallaxRecyclerAdapter, int i) {
+//                return new SimpleViewHolder(getLayoutInflater().inflate(R.layout.vendor_news_item_list, viewGroup, false));
+//            }
+//
+//            @Override
+//            public int getItemCountImpl(ParallaxRecyclerAdapter parallaxRecyclerAdapter) {
+//                return content.size();
+//            }
+//        };
+//
+//
+//        stringAdapter.setParallaxHeader(getLayoutInflater().inflate(R.layout.my_header, myRecycler, false), myRecycler);
+//        stringAdapter.setOnParallaxScroll(new ParallaxRecyclerAdapter.OnParallaxScroll() {
+//            @Override
+//            public void onParallaxScroll(float percentage, float offset, View parallax) {
+//                //TODO: implement toolbar alpha. See README for details
+//            }
+//        });
+//        myRecycler.setAdapter(stringAdapter);
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        childRef = mDatabaseRef.child("news");
 
 
-        ParallaxRecyclerAdapter<String> stringAdapter = new ParallaxRecyclerAdapter<String>(content) {
-            @Override
-            public void onBindViewHolderImpl(RecyclerView.ViewHolder viewHolder, ParallaxRecyclerAdapter parallaxRecyclerAdapter, int i) {
-               // ((TextView) viewHolder.itemView).setText(content.get(i));
-                final ImageView image = ((SimpleViewHolder) viewHolder).newsImage;
+        newsListAdapter = new NewsListAdapter(News.class,  R.layout.vendor_news_item_list,
+                RecyclerView.ViewHolder.class, childRef, getApplicationContext());
 
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        goToNewsDetails(image);
-                    }
-                });
-            }
-
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolderImpl(ViewGroup viewGroup, ParallaxRecyclerAdapter parallaxRecyclerAdapter, int i) {
-                return new SimpleViewHolder(getLayoutInflater().inflate(R.layout.vendor_news_item_list, viewGroup, false));
-            }
-
-            @Override
-            public int getItemCountImpl(ParallaxRecyclerAdapter parallaxRecyclerAdapter) {
-                return content.size();
-            }
-        };
-
-
-        stringAdapter.setParallaxHeader(getLayoutInflater().inflate(R.layout.my_header, myRecycler, false), myRecycler);
-        stringAdapter.setOnParallaxScroll(new ParallaxRecyclerAdapter.OnParallaxScroll() {
-            @Override
-            public void onParallaxScroll(float percentage, float offset, View parallax) {
-                //TODO: implement toolbar alpha. See README for details
-            }
-        });
-        myRecycler.setAdapter(stringAdapter);
+        myRecycler.setAdapter(newsListAdapter);
     }
 
     static class SimpleViewHolder extends RecyclerView.ViewHolder {

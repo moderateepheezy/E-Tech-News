@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "850485727960",
+    "firebase_url": "https://pipein-4a706.firebaseio.com",
+    "project_id": "pipein-4a706",
+    "storage_bucket": "pipein-4a706.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850485727960:android:96134ebbae78b61b",
+        "android_client_info": {
+          "package_name": "com.simpumind.e_tech_news"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "850485727960-h15a1s1iojc6rsqs92fln4hp4100vlu1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJlppmEqXeo38Q5MqM82PJCH-glCSoCYM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

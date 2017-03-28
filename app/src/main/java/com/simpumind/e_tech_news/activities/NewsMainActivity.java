@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.fragments.LibraryFragment;
 import com.simpumind.e_tech_news.fragments.MyProfileFragment;
@@ -25,6 +27,12 @@ public class NewsMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_main);
 
+
+        DatabaseReference newsPaperRef = FirebaseDatabase.getInstance().getReference("newspapers");
+        newsPaperRef.keepSynced(true);
+
+        DatabaseReference newsRef = FirebaseDatabase.getInstance().getReference("news");
+        newsRef.keepSynced(true);
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
 

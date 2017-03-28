@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/empty_street"
-            android:id="@+id/vendorIcon"
+            android:id="@+id/firstNewsImage"
             android:scaleType="center"/>
 
         <Button
@@ -46,6 +46,7 @@
                 android:textSize="16sp"
                 android:textColor="#fff"
                 android:textStyle="bold"
+                android:id="@+id/firstNewsTitle"
                 android:text="WWE Legend Jim Ross' Wife, Jan dies At 55 - Wrestling World Offers Their Condolences"
                 android:maxLines="5"/>
 
@@ -58,6 +59,7 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:id="@+id/vendorIcon"
                     android:src="@drawable/news_lo"
                     android:layout_gravity="bottom"/>
 
@@ -67,6 +69,7 @@
                     android:text="Cartoon Network"
                     android:textStyle="bold"
                     android:textSize="8dp"
+                    android:id="@+id/vendorName"
                     android:layout_marginBottom="5dp"
                     android:textColor="#fff"/>
 
