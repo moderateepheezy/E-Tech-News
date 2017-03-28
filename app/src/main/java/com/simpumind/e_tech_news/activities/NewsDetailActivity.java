@@ -1,5 +1,6 @@
 package com.simpumind.e_tech_news.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -10,6 +11,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.simpumind.e_tech_news.R;
 
 import at.blogc.android.views.ExpandableTextView;
@@ -17,6 +24,10 @@ import at.blogc.android.views.ExpandableTextView;
 public class NewsDetailActivity extends AppCompatActivity {
 
     private static final String TAG = NewsDetailActivity.class.getSimpleName();
+    public static final String SINGLE_NEWS = "Single_news";
+
+    private DatabaseReference mDatabaseRef;
+    private DatabaseReference childRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +36,53 @@ public class NewsDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+
+        Intent intent = getIntent();
+        String news_id  = intent.getStringExtra(SINGLE_NEWS);
+
+        Log.d("fdmfmdmdfdc", news_id);
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        mDatabaseRef.child("news").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+//        mDatabaseRef.child("news").child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
+
 
         CollapsingToolbarLayout coll = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
         coll.setTitle("Trump News");

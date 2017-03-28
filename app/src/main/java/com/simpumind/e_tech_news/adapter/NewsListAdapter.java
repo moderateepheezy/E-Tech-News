@@ -1,6 +1,7 @@
 package com.simpumind.e_tech_news.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.simpumind.e_tech_news.R;
+import com.simpumind.e_tech_news.activities.NewsDetailActivity;
+import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
 import com.simpumind.e_tech_news.models.News;
 import com.squareup.picasso.Picasso;
 
@@ -43,9 +46,10 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
      * @param ref             The Firebase location to watch for data changes. Can also be a slice of a location,
      *                        using some combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public NewsListAdapter(Class<News> modelClass, int modelLayout, Class<RecyclerView.ViewHolder> viewHolderClass, Query ref, Context context) {
+    public NewsListAdapter(Class<News> modelClass, int modelLayout, Class<RecyclerView.ViewHolder> viewHolderClass, Query ref, Context context, AppCompatActivity activity) {
         super(modelClass, modelLayout, viewHolderClass, ref);
         this.context = context;
+        this.activity = activity;
     }
 
     @Override
@@ -62,7 +66,7 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
     }
 
     @Override
-    protected void populateViewHolder(RecyclerView.ViewHolder viewHolder, News model, int position) {
+    protected void populateViewHolder(RecyclerView.ViewHolder viewHolder, final News model, final int position) {
 
 
         if(viewHolder instanceof HeaderViewHolder){
@@ -73,6 +77,15 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
 
             ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption());
             Picasso.with(context).load(model.getThumbnail()).into(((NewsListHolder) viewHolder).newsImage);
+
+            ((NewsListHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, NewsDetailActivity.class);
+                    intent.putExtra(NewsDetailActivity.SINGLE_NEWS, getRef(position).getKey());
+                    activity.startActivity(intent);
+                }
+            });
         }
 
     }

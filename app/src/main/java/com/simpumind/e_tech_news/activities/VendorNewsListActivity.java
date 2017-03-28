@@ -105,7 +105,7 @@ public class VendorNewsListActivity extends AppCompatActivity {
 
 
         newsListAdapter = new NewsListAdapter(News.class,  R.layout.vendor_news_item_list,
-                RecyclerView.ViewHolder.class, childRef, getApplicationContext());
+                RecyclerView.ViewHolder.class, childRef, getApplicationContext(), this);
 
         myRecycler.setAdapter(newsListAdapter);
     }
@@ -126,8 +126,6 @@ public class VendorNewsListActivity extends AppCompatActivity {
     }
 
     private void goToNewsDetails(ImageView image){
-        Intent intent = new Intent(VendorNewsListActivity.this, NewsDetailActivity.class);
-        startActivity(intent);
 
         Intent i = new Intent(VendorNewsListActivity.this, NewsDetailActivity.class);
 

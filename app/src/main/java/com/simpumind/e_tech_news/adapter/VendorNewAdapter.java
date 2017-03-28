@@ -83,17 +83,15 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
         Log.d("fgmmddfmm", getRef(position).getKey());
 
         mDatabaseRef.child("news").orderByChild("newspaper_id")
-                //.equalTo(oneChildRef)
+                .equalTo(oneChildRef)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Log.d("Datasnapshot",dataSnapshot.getValue().toString());
 
-//                for (DataSnapshot newsDataSnapshot : dataSnapshot.getChildren()) {
-////                    News news = newsDataSnapshot.getValue(News.class);
-//                    News news = newsDataSnapshot.getValue(News.class);
-//                }
+                for (DataSnapshot newsDataSnapshot : dataSnapshot.getChildren()) {
+                    Log.d("ffgmhgmvmfb", newsDataSnapshot.getValue().toString());
+                }
                   //  News news = dataSnapshot.getValue(News.class);
                // updateUI(viewHolder, news);
             }
