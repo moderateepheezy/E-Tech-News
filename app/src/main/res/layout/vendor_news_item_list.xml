@@ -2,20 +2,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="120dp"
     android:gravity="center"
     android:id="@+id/transitions_container"
     android:background="#f2f0f0"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:clipToPadding="false">
+    android:paddingLeft="1dp"
+    android:paddingRight="1dp"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    android:clipToPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="30dp"
+        android:elevation="3dp"
         >
 
         <LinearLayout
@@ -26,29 +26,27 @@
             android:background="@color/white">
 
             <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:src="@drawable/trump"
                 android:transitionName="@string/blue_name"
                 android:id="@+id/newsImage"
                 android:scaleType="centerCrop"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center_vertical"
                 android:padding="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="November 24, 2016 10:00 PM"
+                    android:text="2 days ago"
                     android:textSize="12sp"
                     android:textStyle="normal"
                     android:id="@+id/dateTime"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="left"/>
+                    android:layout_alignParentEnd="true"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -57,11 +55,30 @@
                     android:textColor="#2d2c2c"
                     android:textStyle="bold"
                     android:id="@+id/newsTitle"
+                    android:layout_below="@+id/dateTime"
+                    android:layout_alignParentStart="true"
                     android:text="WWE Legend Jim Ross' Wife, Jan dies At 55 - Wrestling World Offers Their Condolences"
                     android:maxLines="4"/>
 
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:id="@+id/sub_icon"
+                    android:layout_alignParentBottom="true"
+                    android:src="@drawable/sub_icon"/>
 
-            </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:id="@+id/vendorName"
+                    android:layout_marginLeft="5dp"
+                    android:text="fmmbmvmmbmbmmb"
+                    android:layout_toRightOf="@+id/sub_icon"
+                    android:layout_alignParentBottom="true"/>
+
+
+            </RelativeLayout>
 
         </LinearLayout>
 

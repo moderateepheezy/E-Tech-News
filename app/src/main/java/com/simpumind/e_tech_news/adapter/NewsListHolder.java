@@ -18,6 +18,7 @@ public class NewsListHolder extends RecyclerView.ViewHolder{
     TextView timeDate;
     TextView newsTitle;
     ImageView newsImage;
+    TextView vendorName;
 
     public NewsListHolder(View itemView) {
         super(itemView);
@@ -25,5 +26,6 @@ public class NewsListHolder extends RecyclerView.ViewHolder{
         timeDate = (TextView) itemView.findViewById(R.id.dateTime);
         newsTitle = (TextView) itemView.findViewById(R.id.newsTitle);
         newsImage = (ImageView) itemView.findViewById(R.id.newsImage);
+        vendorName= (TextView) itemView.findViewById(R.id.vendorName);
     }
 }

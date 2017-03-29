@@ -81,6 +81,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         childRef = mDatabaseRef.child("newspapers");
 
+        //isViewWithList ? R.layout.vendor_grid_item_card : R.l
 
         vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_item_card,
                 NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), true, getActivity());
@@ -122,7 +123,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
                 } else {
                     item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_list_to_grid));
                     recyclerView.getItemAnimator().setChangeDuration(700);
-                    vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_item_card,
+                    vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_grid_item_card,
                             NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), false, getActivity());
 
                     recyclerView.setAdapter(vendorNewAdapter);

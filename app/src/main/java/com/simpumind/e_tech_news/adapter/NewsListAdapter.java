@@ -2,8 +2,10 @@ package com.simpumind.e_tech_news.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,16 +27,13 @@ import com.squareup.picasso.Picasso;
 
 public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.ViewHolder> {
 
-    private  boolean isColorsInverted = false;
     private Context context;
     private AppCompatActivity activity;
 
-    private DatabaseReference mDatabaseRef;
-    private Query oneQuery;
-    private DatabaseReference childRef;
-
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
+
+    private String vendorName;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -46,37 +45,69 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
      * @param ref             The Firebase location to watch for data changes. Can also be a slice of a location,
      *                        using some combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public NewsListAdapter(Class<News> modelClass, int modelLayout, Class<RecyclerView.ViewHolder> viewHolderClass, Query ref, Context context, AppCompatActivity activity) {
+    public  NewsListAdapter(Class<News> modelClass, int modelLayout, Class<RecyclerView.ViewHolder> viewHolderClass,
+                            Query ref, Context context, AppCompatActivity activity, String vendorName) {
         super(modelClass, modelLayout, viewHolderClass, ref);
         this.context = context;
         this.activity = activity;
+        this.vendorName = vendorName;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //return super.onCreateViewHolder(parent, viewType);
 
+
         if (viewType == TYPE_HEADER) {
             View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_header, parent, false);
             return new HeaderViewHolder(layoutView);
-        } else{
+        } else if(viewType == TYPE_ITEM){
             View layoutView = LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
             return new NewsListHolder(layoutView);
         }
+        throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
     }
 
     @Override
-    protected void populateViewHolder(RecyclerView.ViewHolder viewHolder, final News model, final int position) {
+    public int getItemViewType(int position) {
+        if (position == 0){
+           // return TYPE_HEADER;
+        }
 
+        return TYPE_ITEM;
+
+    }
+
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+
+        final News model = getItem(position);
 
         if(viewHolder instanceof HeaderViewHolder){
             ((HeaderViewHolder) viewHolder).title.setText(model.getCaption());
             //((HeaderViewHolder) viewHolder).dateTime.setText(model.getime());
-            Picasso.with(context).load(model.getThumbnail()).into(((HeaderViewHolder) viewHolder).imageView2);
+            //Picasso.with(context).load(model.getThumbnail()).into(((HeaderViewHolder) viewHolder).imageView2);
+
+
+            String encodedDataString = model.getThumbnail();
+            encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+
+            byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+            ((HeaderViewHolder) viewHolder).imageView2.setImageBitmap(BitmapFactory.decodeByteArray(
+                    imageAsBytes, 0, imageAsBytes.length));
         }else {
 
             ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption());
-            Picasso.with(context).load(model.getThumbnail()).into(((NewsListHolder) viewHolder).newsImage);
+            //Picasso.with(context).load(model.getThumbnail()).into(((NewsListHolder) viewHolder).newsImage);
+            ((NewsListHolder) viewHolder).vendorName.setText(vendorName);
+
+            String encodedDataString = model.getThumbnail();
+            encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+
+            byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+            ((NewsListHolder) viewHolder).newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
+                    imageAsBytes, 0, imageAsBytes.length));
 
             ((NewsListHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -87,6 +118,11 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
                 }
             });
         }
+    }
+
+    @Override
+    protected void populateViewHolder(RecyclerView.ViewHolder viewHolder, final News model, final int position) {
+
 
     }
 

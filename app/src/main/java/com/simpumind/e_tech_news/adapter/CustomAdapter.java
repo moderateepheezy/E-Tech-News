@@ -100,6 +100,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mCtx, VendorNewsListActivity.class);
+                    intent.putExtra(VendorNewsListActivity.NEWS_PAPER_ID, "-Kg9UvxyiuI4G3r6fCgU");
                     mCtx.startActivity(intent);
                 }
             });

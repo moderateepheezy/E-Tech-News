@@ -2,6 +2,7 @@ package com.simpumind.e_tech_news.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +20,8 @@ public class NewsPaperHolder extends RecyclerView.ViewHolder {
     public ImageView firstNewsImage;
     public TextView vendorName;
     public TextView firstNewsTitle;
+    ViewGroup transitionsContainer;
+    Button sub;
 
 
     public NewsPaperHolder(View view) {
@@ -28,6 +31,7 @@ public class NewsPaperHolder extends RecyclerView.ViewHolder {
         vendorIcon = (ImageView) view.findViewById(R.id.vendorIcon);
         subscribe = (Button) view.findViewById(R.id.subscribe);
         firstNewsImage = (ImageView) view.findViewById(R.id.firstNewsImage);
+        transitionsContainer = (ViewGroup) itemView.findViewById(R.id.transitions_container);
 
     }
 }

@@ -1,15 +1,19 @@
 package com.simpumind.e_tech_news.activities;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +22,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.simpumind.e_tech_news.R;
+import com.simpumind.e_tech_news.models.News;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import at.blogc.android.views.ExpandableTextView;
 
@@ -28,6 +36,10 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference childRef;
+    CollapsingToolbarLayout coll;
+     ExpandableTextView expandableTextView;
+    ImageView newsImage;
+    TextView titleNews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,26 +55,13 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         Log.d("fdmfmdmdfdc", news_id);
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        mDatabaseRef.child("news").addChildEventListener(new ChildEventListener() {
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
+        mDatabaseRef.child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                News n = dataSnapshot.getValue(News.class);
+                Log.d("dmfmdmdmf", n.content);
+                updateViews(n);
             }
 
             @Override
@@ -70,29 +69,20 @@ public class NewsDetailActivity extends AppCompatActivity {
 
             }
         });
-//        mDatabaseRef.child("news").child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Log.d("dfmgfmgmfmvmmm", dataSnapshot.toString());
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
 
 
+        newsImage = (ImageView) findViewById(R.id.toolbarImage);
 
-        CollapsingToolbarLayout coll = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
-        coll.setTitle("Trump News");
+        titleNews = (TextView) findViewById(R.id.titleNews);
+
+        coll = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
 
 
         coll.setExpandedTitleColor(Color.TRANSPARENT);
         coll.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         coll.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
 
-        final ExpandableTextView expandableTextView = (ExpandableTextView) this.findViewById(R.id.description);
+        expandableTextView = (ExpandableTextView) this.findViewById(R.id.description);
         final Button buttonToggle = (Button) this.findViewById(R.id.button_toggle);
 
         expandableTextView.setAnimationDuration(1000L);
@@ -152,5 +142,22 @@ public class NewsDetailActivity extends AppCompatActivity {
         getSupportFragmentManager().popBackStack();
         super.onBackPressed();
         return true;
+    }
+
+    private void updateViews(News news){
+
+
+        coll.setTitle(news.caption);
+        expandableTextView.setText(news.content);
+
+        titleNews.setText(news.caption);
+
+        String encodedDataString = news.getThumbnail();
+        encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+
+        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+        newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
+                imageAsBytes, 0, imageAsBytes.length));
+
     }
 }

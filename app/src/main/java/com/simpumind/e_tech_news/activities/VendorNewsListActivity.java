@@ -1,6 +1,5 @@
 package com.simpumind.e_tech_news.activities;
 
-import android.app.ActionBar;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v4.app.ActivityCompat;
@@ -10,30 +9,27 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.poliveira.parallaxrecyclerview.ParallaxRecyclerAdapter;
+import com.google.firebase.database.Query;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.adapter.NewsListAdapter;
 import com.simpumind.e_tech_news.models.News;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class VendorNewsListActivity extends AppCompatActivity {
 
     private static final String TAG = VendorNewsListActivity.class.getSimpleName();
+    public static final String NEWS_PAPER_ID = "news_paper_id";
+
+    public static final String VENDOR_NAME = "vendor_name";
 
     private DatabaseReference mDatabaseRef;
-    private DatabaseReference childRef;
+    private Query childRef;
 
     private NewsListAdapter newsListAdapter;
 
@@ -44,85 +40,27 @@ public class VendorNewsListActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        setTitle("Cartoon Network");
-
         RecyclerView myRecycler = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         myRecycler.setLayoutManager(manager);
         myRecycler.setHasFixedSize(true);
 
-        //ImageView imageView = (ImageView) findViewById(R.id.imageView2);
-//        imageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                goToNewsDetails();
-//            }
-//        });
+        Intent intent = getIntent();
 
-//        final List<String> content = new ArrayList<>();
-//        for (int i = 0; i < 12; i++)
-//            content.add(getListString(i));
-//
-//
-//        ParallaxRecyclerAdapter<String> stringAdapter = new ParallaxRecyclerAdapter<String>(content) {
-//            @Override
-//            public void onBindViewHolderImpl(RecyclerView.ViewHolder viewHolder, ParallaxRecyclerAdapter parallaxRecyclerAdapter, int i) {
-//               // ((TextView) viewHolder.itemView).setText(content.get(i));
-//                final ImageView image = ((SimpleViewHolder) viewHolder).newsImage;
-//
-//                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        goToNewsDetails(image);
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public RecyclerView.ViewHolder onCreateViewHolderImpl(ViewGroup viewGroup, ParallaxRecyclerAdapter parallaxRecyclerAdapter, int i) {
-//                return new SimpleViewHolder(getLayoutInflater().inflate(R.layout.vendor_news_item_list, viewGroup, false));
-//            }
-//
-//            @Override
-//            public int getItemCountImpl(ParallaxRecyclerAdapter parallaxRecyclerAdapter) {
-//                return content.size();
-//            }
-//        };
-//
-//
-//        stringAdapter.setParallaxHeader(getLayoutInflater().inflate(R.layout.my_header, myRecycler, false), myRecycler);
-//        stringAdapter.setOnParallaxScroll(new ParallaxRecyclerAdapter.OnParallaxScroll() {
-//            @Override
-//            public void onParallaxScroll(float percentage, float offset, View parallax) {
-//                //TODO: implement toolbar alpha. See README for details
-//            }
-//        });
-//        myRecycler.setAdapter(stringAdapter);
+        String vendorName = intent.getStringExtra(VENDOR_NAME);
+
+        setTitle(vendorName);
+
+        String id = intent.getStringExtra(NEWS_PAPER_ID);
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        childRef = mDatabaseRef.child("news");
-
+        childRef = mDatabaseRef.child("news").orderByChild("newspaper_id").equalTo(id);
 
         newsListAdapter = new NewsListAdapter(News.class,  R.layout.vendor_news_item_list,
-                RecyclerView.ViewHolder.class, childRef, getApplicationContext(), this);
+                RecyclerView.ViewHolder.class, childRef, getApplicationContext(), this, vendorName);
 
         myRecycler.setAdapter(newsListAdapter);
-    }
-
-    static class SimpleViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView newsImage;
-
-        public SimpleViewHolder(View itemView) {
-            super(itemView);
-
-            newsImage = (ImageView) itemView.findViewById(R.id.newsImage);
-        }
-    }
-
-    public String getListString(int position) {
-        return position + " - android";
     }
 
     private void goToNewsDetails(ImageView image){

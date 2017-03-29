@@ -2,10 +2,12 @@ package com.simpumind.e_tech_news.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +30,7 @@ import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsDetailActivity;
 import com.simpumind.e_tech_news.activities.NewsMainActivity;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
+import com.simpumind.e_tech_news.fragments.SubMethodFragment;
 import com.simpumind.e_tech_news.fragments.SubscribeChoiceFragment;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.NewsPaper;
@@ -41,15 +46,14 @@ import java.util.List;
 public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPaperHolder>{
 
 
+    private static final java.lang.String CHOICE_DIALOG = "dialogTagChoice";
 
     private  boolean isColorsInverted = false;
     private Context context;
     private AppCompatActivity activity;
 
     private DatabaseReference mDatabaseRef;
-    private Query oneQuery;
-    private DatabaseReference childRef;
-
+    private DatabaseReference mDatabase;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -72,46 +76,134 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
 
     @Override
-    protected void populateViewHolder(final NewsPaperHolder viewHolder, NewsPaper model, int position) {
+    protected void populateViewHolder(final NewsPaperHolder viewHolder, final NewsPaper model, final int position) {
 
         viewHolder.vendorName.setText(model.getPaper_name());
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
 
-       String oneChildRef = getRef(position).getKey();
+        String oneChildRef = getRef(position).getKey();
 
-        Log.d("fgmmddfmm", getRef(position).getKey());
+        mDatabaseRef.orderByChild("newspaper_id")
+                .equalTo(oneChildRef).limitToLast(1)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        News n = dataSnapshot.getValue(News.class);
 
-        mDatabaseRef.child("news").orderByChild("newspaper_id")
-                .equalTo(oneChildRef)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                        updateUI(viewHolder, n);
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                for (DataSnapshot newsDataSnapshot : dataSnapshot.getChildren()) {
-                    Log.d("ffgmhgmvmfb", newsDataSnapshot.getValue().toString());
-                }
-                  //  News news = dataSnapshot.getValue(News.class);
-               // updateUI(viewHolder, news);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onClick(View v) {
+                Log.d("vmfmdcv", getRef(position).getKey());
+                Toast.makeText(context, "id /n" + getRef(position).getKey(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, VendorNewsListActivity.class);
+                intent.putExtra(VendorNewsListActivity.NEWS_PAPER_ID, getRef(position).getKey());
+                intent.putExtra(VendorNewsListActivity.VENDOR_NAME, model.getPaper_name());
+                context.startActivity(intent);
             }
         });
 
+        String encodedDataString = model.getLogo();
+        encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+
+        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+        viewHolder.vendorIcon.setImageBitmap(BitmapFactory.decodeByteArray(
+                imageAsBytes, 0, imageAsBytes.length));
+
+        if(!isColorsInverted) {
+
+            viewHolder.subscribe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isColorsInverted = !isColorsInverted;
+                    TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
+                    viewHolder.subscribe.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.colorAccent));
+                    viewHolder.subscribe.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
+                    viewHolder.subscribe.setText(isColorsInverted ? "Subscribed" : "Subscribe");
+
+                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
+
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("users_supscription").push();
+
+//                    User user = new User("tolu","email@gmail.com",number, "some address", "passowrd");
+//                    mDatabase.setValue(user);
+//
+//                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
+                }
+            });
+
+        }else{
+            viewHolder.subscribe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isColorsInverted = !isColorsInverted;
+                    TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
+                    viewHolder.subscribe.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.pressedColor));
+                    viewHolder.subscribe.setText(isColorsInverted ? "Subscribed" : "Subscribe");
 
 
-        Picasso.with(context).load(model.getLogo()).into(viewHolder.vendorIcon);
+
+
+                    SubMethodFragment subMethodFragment = new SubMethodFragment();
+                    subMethodFragment.show(activity.getFragmentManager(), "show_dialog");
+
+                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
+
+                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
+                }
+            });
+        }
+
+//        byte[] imageByteArray = Base64.decode(model.getLogo(), Base64.DEFAULT);
+//        Glide.with(context).
+//                load(imageByteArray)
+//                .asBitmap()
+//                .into(viewHolder.vendorIcon);
     }
 
 
     public void updateUI(NewsPaperHolder holder, News news){
 
         holder.firstNewsTitle.setText(news.getCaption());
-        Picasso.with(context).load(news.getThumbnail()).into(holder.firstNewsImage);
+
+        String encodedDataString = news.getThumbnail();
+        encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+
+        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+        holder.firstNewsImage.setImageBitmap(BitmapFactory.decodeByteArray(
+                imageAsBytes, 0, imageAsBytes.length));
+
+
+//        byte[] imageByteArray = Base64.decode(news.getThumbnail(), Base64.DEFAULT);
+//        Glide.with(context).
+//                load(imageByteArray)
+//                .asBitmap()
+//                .into(holder.firstNewsImage);
 
     }
 
