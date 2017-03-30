@@ -1,8 +1,12 @@
 package com.simpumind.e_tech_news.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,23 +26,39 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = MyProfileFragment.class.getSimpleName();
 
+
+    View view;
+
+    CollapsingToolbarLayout coll;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        ((NewsMainActivity) getActivity()).getSupportActionBar().hide();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActivity().setTitle("Profile");
-
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.settings_fragment, container, false);
+        view = inflater.inflate(R.layout.settings_fragment, container, false);
+
+      //  Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+  //      ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+
+        coll = (CollapsingToolbarLayout) view.findViewById(R.id.collapsingToolbar);
+
+
+        coll.setExpandedTitleColor(Color.TRANSPARENT);
+        coll.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        coll.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+
         setHasOptionsMenu(true);
 
         return view;
@@ -65,4 +85,5 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener{
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

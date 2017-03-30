@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,6 +56,8 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference mDatabase;
+
+    FirebaseAuth mAuth;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -146,14 +150,22 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                     viewHolder.subscribe.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
                     viewHolder.subscribe.setText(isColorsInverted ? "Subscribed" : "Subscribe");
 
-                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
+                    mAuth = FirebaseAuth.getInstance();
 
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("users_supscription").push();
+                    mDatabase = FirebaseDatabase.getInstance().getReference();
+
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if(user != null){
+                        mDatabase.child("users").child(user.getUid()).child("users_subscription");
+                        mDatabase.setValue(getRef(position).getKey());
+                    }
+
+                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
 
 //                    User user = new User("tolu","email@gmail.com",number, "some address", "passowrd");
 //                    mDatabase.setValue(user);
 //
-//                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
+                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
                 }
             });
 

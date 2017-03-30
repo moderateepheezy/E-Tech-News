@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -80,6 +81,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         childRef = mDatabaseRef.child("newspapers");
+        Log.d("chilref", childRef.getKey());
 
         //isViewWithList ? R.layout.vendor_grid_item_card : R.l
 

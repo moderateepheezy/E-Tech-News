@@ -1,147 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:id="@+id/cordinateLayout">
 
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/reading"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:id="@+id/main"
-        >
+        android:layout_height="300dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fitsSystemWindows="true">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/logo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/pp"
-            android:scaleType="centerCrop"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            />
-        <TextView
-            android:id="@+id/name"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Thomas Schneider"
-            android:gravity="center"
-            android:textColor="#fff"
-            android:textSize="22dp"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:fitsSystemWindows="true"
+            app:title=""
+            app:contentScrim="?attr/colorPrimary">
 
-            android:layout_marginTop="10dp"/>
-        <TextView
-            android:id="@+id/photographer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="+234 6056 34 70"
-            android:gravity="center"
-            android:textColor="#fff"
-            android:textSize="13dp"
-            android:layout_marginTop="4dp"/>
-    </LinearLayout>
 
-    <LinearLayout
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/reading"
+                android:orientation="vertical"
+                android:fitsSystemWindows="true"
+                android:layout_gravity="center"
+                app:layout_collapseMode="parallax"
+                android:id="@+id/main"
+                >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#a8000000"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sign in with:"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/face_icon"/>
+
+                        <Button
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/google_icon"/>
+
+                        <Button
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/email_icon"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_collapseMode="parallax" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@+id/main"
-        android:id="@+id/tab"
-        android:layout_marginTop="16dp">
-
-
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/no1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="26"
-                android:textSize="16dp"
-                android:textColor="#ae2018"
-                android:gravity="center"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/comment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Comment"
-                android:textColor="#000"
-                android:gravity="center"/>
-        </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
             <TextView
-                android:id="@+id/no2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="7"
-                android:textSize="16dp"
-                android:textColor="#ae2018"
-                android:gravity="center"
+                android:layout_height="50dp"
+                android:text="Read News"
+                android:padding="15dp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                />
-            <TextView
-                android:id="@+id/channel"
+                android:background="#e2e2e2"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Channel"
-                android:textColor="#000"
-                android:gravity="center"/>
+                android:layout_height="match_parent" />
+
+
         </LinearLayout>
 
+    </android.support.v4.widget.NestedScrollView>
 
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/no3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="48"
-                android:textSize="16dp"
-                android:textColor="#ae2018"
-                android:gravity="center"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/bookmark"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bookmarks"
-                android:textColor="#000"
-                android:gravity="center"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="#44050000"/>
-
-    <ListView
-        android:layout_below="@+id/tab"
-        android:id="@+id/listview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:divider="#00000000"
-        >
-    </ListView>
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
