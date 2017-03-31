@@ -90,12 +90,12 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
         //isViewWithList ? R.layout.vendor_grid_item_card : R.l
 
-        vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_item_card,
-                NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), true, getActivity());
+        vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_grid_item_card,
+                NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), false, getActivity());
 
         recyclerView.setAdapter(vendorNewAdapter);
-        gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(vendorNewAdapter);
 
         return view;
     }

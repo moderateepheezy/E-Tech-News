@@ -67,21 +67,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //mDatabase = FirebaseDatabase.getInstance().getReference().child("users").push();
 
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-                    startActivity(intent);
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-                // ...
-            }
-        };
+//        mAuthListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//                if (user != null) {
+//                    Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+//                    startActivity(intent);
+//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+//                } else {
+//                    // User is signed out
+//                    Log.d(TAG, "onAuthStateChanged:signed_out");
+//                }
+//                // ...
+//            }
+//        };
 
         Button go = (Button) findViewById(R.id.go);
         Spinner spinner = (Spinner) findViewById(R.id.countrySpinner);
@@ -130,83 +130,83 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.go){
-            //Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+            startActivity(intent);
 
-            progress=new ProgressDialog(this);
-            progress.setMessage("Signing in...");
-            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progress.setIndeterminate(true);
-            progress.show();
-
-
-            String number = phoneNumber.getText().toString();
-
-            if(phoneNumber.getText().toString().isEmpty()){
-                phoneNumber.setError("Cannot be empty");
-            }
-            try {
-                PhoneModel phoneModel = country.isNumberValid(country, number);
-                if (phoneModel.isValidPhoneNumber()) {
-                    number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
-                    //outputTextView.setText(number);
-                    Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
-
-                    PrefManager.saveMSSIDN(getApplicationContext(), "identify", number);
-
-                    final String finalNumber = number;
-                    mAuth.createUserWithEmailAndPassword(number +"@gmail.com", "somerandomepassword")
-                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(LoginActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-
-                                        FirebaseUser user = mAuth.getCurrentUser();
-
-                                        if (user != null) {
-                                            // User is signed in
-                                            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-
-                                            mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
-
-                                            User us = new User("tolu","email@gmail.com", finalNumber, "some address", "passowrd", "");
-                                            mDatabase.setValue(us, new DatabaseReference.CompletionListener() {
-                                                @Override
-                                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                                    if (databaseError != null) {
-                                                        Log.d("Datadd", databaseError.getMessage());
-                                                    } else {
-                                                        Log.d("Datadd","Data saved successfully.");
-                                                        progress.dismiss();
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            // User is signed out
-                                            Log.d(TAG, "onbadfgr");
-                                        }
-
-                                    }else {
-                                        Toast.makeText(LoginActivity.this, "Error " + task.getResult(), Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    // ...
-                                }
-                            });
-
-                } else {
-                    //outputTextView.setText("Not a valid phone number");
-                    phoneNumber.setError("Not a valid number");
-                }
-            } catch (PhoneFormatException e) {
-                //outputTextView.setText(e.getMessage());
-            }
+//            progress=new ProgressDialog(this);
+//            progress.setMessage("Signing in...");
+//            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            progress.setIndeterminate(true);
+//            progress.show();
+//
+//
+//            String number = phoneNumber.getText().toString();
+//
+//            if(phoneNumber.getText().toString().isEmpty()){
+//                phoneNumber.setError("Cannot be empty");
+//            }
+//            try {
+//                PhoneModel phoneModel = country.isNumberValid(country, number);
+//                if (phoneModel.isValidPhoneNumber()) {
+//                    number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
+//                    //outputTextView.setText(number);
+//                    Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
+//
+//                    PrefManager.saveMSSIDN(getApplicationContext(), "identify", number);
+//
+////                    final String finalNumber = number;
+////                    mAuth.createUserWithEmailAndPassword(number +"@gmail.com", "somerandomepassword")
+////                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+////                                @Override
+////                                public void onComplete(@NonNull Task<AuthResult> task) {
+////                                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+////
+////                                    // If sign in fails, display a message to the user. If sign in succeeds
+////                                    // the auth state listener will be notified and logic to handle the
+////                                    // signed in user can be handled in the listener.
+////                                    if (task.isSuccessful()) {
+////                                        Toast.makeText(LoginActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+////
+////                                        FirebaseUser user = mAuth.getCurrentUser();
+////
+////                                        if (user != null) {
+////                                            // User is signed in
+////                                            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+////
+////                                            mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
+////
+////                                            User us = new User("tolu","email@gmail.com", finalNumber, "some address", "passowrd", "");
+////                                            mDatabase.setValue(us, new DatabaseReference.CompletionListener() {
+////                                                @Override
+////                                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+////                                                    if (databaseError != null) {
+////                                                        Log.d("Datadd", databaseError.getMessage());
+////                                                    } else {
+////                                                        Log.d("Datadd","Data saved successfully.");
+////                                                        progress.dismiss();
+////                                                    }
+////                                                }
+////                                            });
+////                                        } else {
+////                                            // User is signed out
+////                                            Log.d(TAG, "onbadfgr");
+////                                        }
+////
+////                                    }else {
+////                                        Toast.makeText(LoginActivity.this, "Error " + task.getResult(), Toast.LENGTH_SHORT).show();
+////                                    }
+////
+////                                    // ...
+////                                }
+////                            });
+//
+//                } else {
+//                    //outputTextView.setText("Not a valid phone number");
+//                    phoneNumber.setError("Not a valid number");
+//                }
+//            } catch (PhoneFormatException e) {
+//                //outputTextView.setText(e.getMessage());
+//            }
         }
     }
 
@@ -265,17 +265,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        mAuth.addAuthStateListener(mAuthListener);
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        if (mAuthListener != null) {
+//            mAuth.removeAuthStateListener(mAuthListener);
+//        }
+//    }
 }

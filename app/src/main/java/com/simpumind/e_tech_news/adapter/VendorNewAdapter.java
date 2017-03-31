@@ -135,9 +135,9 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
         String encodedDataString = model.getLogo();
         encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
 
-        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
-        viewHolder.vendorIcon.setImageBitmap(BitmapFactory.decodeByteArray(
-                imageAsBytes, 0, imageAsBytes.length));
+//        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+//        viewHolder.vendorIcon.setImageBitmap(BitmapFactory.decodeByteArray(
+//                imageAsBytes, 0, imageAsBytes.length));
 
         if(!isColorsInverted) {
 
@@ -150,20 +150,12 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                     viewHolder.subscribe.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
                     viewHolder.subscribe.setText(isColorsInverted ? "Subscribed" : "Subscribe");
 
-                    mAuth = FirebaseAuth.getInstance();
 
-                    mDatabase = FirebaseDatabase.getInstance().getReference();
-
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    if(user != null){
-                        mDatabase.child("users").child(user.getUid()).child("users_subscription");
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("users_subscription").push();
                         mDatabase.setValue(getRef(position).getKey());
-                    }
+
 
                     SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
-
-//                    User user = new User("tolu","email@gmail.com",number, "some address", "passowrd");
-//                    mDatabase.setValue(user);
 //
                     dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
                 }
@@ -179,7 +171,17 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                     viewHolder.subscribe.setText(isColorsInverted ? "Subscribed" : "Subscribe");
 
 
+                    mAuth = FirebaseAuth.getInstance();
 
+                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("users_subscription");
+                    mDatabase.setValue(getRef(position).getKey());
+
+//                    FirebaseUser user = mAuth.getCurrentUser();
+//                    if(user != null){
+//                        mDatabase.child("users").child(user.getUid()).child("users_subscription").push();
+//                        mDatabase.setValue(getRef(position).getKey());
+//                    }
 
                     SubMethodFragment subMethodFragment = new SubMethodFragment();
                     subMethodFragment.show(activity.getFragmentManager(), "show_dialog");

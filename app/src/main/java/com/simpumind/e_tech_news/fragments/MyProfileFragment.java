@@ -41,8 +41,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsMainActivity;
+import com.simpumind.e_tech_news.adapter.NewsReadAdapter;
+import com.simpumind.e_tech_news.adapter.ReadListHolder;
 import com.simpumind.e_tech_news.adapter.SimpleAdapter;
 import com.simpumind.e_tech_news.models.MyList;
 import com.simpumind.e_tech_news.models.User;
@@ -68,11 +75,16 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
 
     private static final int RC_SIGN_IN = 9001;
 
+    private DatabaseReference mDatabaseRef;
+    private DatabaseReference childRef;
+
     View view;
 
     CollapsingToolbarLayout coll;
 
-    EmptyRecyclerView recyclerView;
+    private EmptyRecyclerView recyclerView;
+    private EmptyRecyclerView.LayoutManager layoutManager;
+    private EmptyRecyclerView.Adapter adapter;
 
     CallbackManager mFacebookCallbackManager;
 
@@ -131,6 +143,10 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
         });
 
 
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        childRef = mDatabaseRef.child("read_by_user");
+
+
 
          profileImage = (CircleImageView) view.findViewById(R.id.profilePicture);
          profileName = (TextView) view.findViewById(R.id.profileName);
@@ -145,11 +161,9 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
         coll = (CollapsingToolbarLayout) view.findViewById(R.id.collapsingToolbar);
         recyclerView = (EmptyRecyclerView) view.findViewById(R.id.recycler_view);
 
-        recyclerView.setAdapter(new SimpleAdapter((AppCompatActivity) getActivity(), true));
-        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setHasFixedSize(true);
+
+
+        loadRecyclerViewItem();
 
          main = (RelativeLayout) view.findViewById(R.id.main);
         main1 = (RelativeLayout) view.findViewById(R.id.main1);
@@ -353,12 +367,6 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    private List<MyList> getList(){
-
-        List<MyList> myLists = new ArrayList<>();
-        myLists.add(new MyList("Cartoon Network", R.drawable.unnamed));
-        return myLists;
-    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -395,5 +403,17 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
                 .into(profileImage);
 
         main1.setVisibility(View.VISIBLE);
+    }
+
+
+    private void loadRecyclerViewItem() {
+
+        adapter = new NewsReadAdapter(String.class, R.layout.read_item_card,
+                ReadListHolder.class, childRef, getActivity());
+        recyclerView.setAdapter(adapter);
+
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
     }
 }

@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/empty_street"
             android:id="@+id/firstNewsImage"
-            android:scaleType="center"/>
+            android:scaleType="centerCrop"/>
 
         <Button
             android:layout_alignParentRight="true"

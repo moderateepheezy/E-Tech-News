@@ -28,7 +28,7 @@
                 android:scaleType="centerInside"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/vendorIcon"
-                android:src="@drawable/news_lo"
+                android:src="@drawable/denews"
                 android:layout_margin="10dp"/>
 
 
@@ -39,6 +39,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
                     android:text="&#8942;"
+                    android:visibility="invisible"
                     android:layout_marginBottom="15dp"
                      android:textAppearance="?android:textAppearanceLarge" />
 

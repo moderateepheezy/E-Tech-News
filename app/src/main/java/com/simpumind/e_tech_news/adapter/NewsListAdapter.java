@@ -34,6 +34,7 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
     private static final int TYPE_ITEM = 1;
 
     private String vendorName;
+    private String vendorIcon;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -46,11 +47,12 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
      *                        using some combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
     public  NewsListAdapter(Class<News> modelClass, int modelLayout, Class<RecyclerView.ViewHolder> viewHolderClass,
-                            Query ref, Context context, AppCompatActivity activity, String vendorName) {
+                            Query ref, Context context, AppCompatActivity activity, String vendorName, String vendorIcon) {
         super(modelClass, modelLayout, viewHolderClass, ref);
         this.context = context;
         this.activity = activity;
         this.vendorName = vendorName;
+        this.vendorIcon = vendorIcon;
     }
 
     @Override
@@ -114,6 +116,8 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
                 public void onClick(View v) {
                     Intent intent = new Intent(context, NewsDetailActivity.class);
                     intent.putExtra(NewsDetailActivity.SINGLE_NEWS, getRef(position).getKey());
+                    intent.putExtra(NewsDetailActivity.VENDOR_NAME, vendorName);
+                    intent.putExtra(NewsDetailActivity.VENDOR_ICON, vendorIcon);
                     activity.startActivity(intent);
                 }
             });

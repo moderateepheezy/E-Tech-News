@@ -8,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -33,105 +34,113 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     private static final String TAG = NewsDetailActivity.class.getSimpleName();
     public static final String SINGLE_NEWS = "Single_news";
+    public static final String VENDOR_NAME = "vendor_name";
+    public static final String VENDOR_ICON = "vendor_icon";
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference childRef;
      ExpandableTextView expandableTextView;
     ImageView newsImage;
     TextView titleNews;
+    TextView vendorName;
+    ImageView vendorIcon;
+
+
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
-
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("");
 
 
-//        Intent intent = getIntent();
-//        String news_id  = intent.getStringExtra(SINGLE_NEWS);
-//
-//        Log.d("fdmfmdmdfdc", news_id);
-//
-////        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
-////        mDatabaseRef.child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
-////            @Override
-////            public void onDataChange(DataSnapshot dataSnapshot) {
-////                News n = dataSnapshot.getValue(News.class);
-////                Log.d("dmfmdmdmf", n.content);
-////                //updateViews(n);
-////            }
-////
-////            @Override
-////            public void onCancelled(DatabaseError databaseError) {
-////
-////            }
-////        });
-//
-//
-//        newsImage = (ImageView) findViewById(R.id.toolbarImage);
-//
-//        titleNews = (TextView) findViewById(R.id.titleNews);
-////
-////        coll = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
-////
-////
-////        coll.setExpandedTitleColor(Color.TRANSPARENT);
-////        coll.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-////        coll.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
-//
-//        expandableTextView = (ExpandableTextView) this.findViewById(R.id.description);
-//        final Button buttonToggle = (Button) this.findViewById(R.id.button_toggle);
-//
-//        expandableTextView.setAnimationDuration(1000L);
-//
-//
-//        // toggle the ExpandableTextView
-//        buttonToggle.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(final View v)
-//            {
-//                expandableTextView.toggle();
-//                buttonToggle.setText(expandableTextView.isExpanded() ? "Collapse" : "Expand");
-//            }
-//        });
-//
-//// but, you can also do the checks yourself
-//        buttonToggle.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(final View v)
-//            {
-//                if (expandableTextView.isExpanded())
-//                {
-//                    expandableTextView.collapse();
-//                    buttonToggle.setText("Expand");
-//                }
-//                else
-//                {
-//                    expandableTextView.expand();
-//                    buttonToggle.setText("Collapse");
-//                }
-//            }
-//        });
-//
-//// listen for expand / collapse events
-//        expandableTextView.setOnExpandListener(new ExpandableTextView.OnExpandListener()
-//        {
-//            @Override
-//            public void onExpand(final ExpandableTextView view)
-//            {
-//                Log.d(TAG, "ExpandableTextView expanded");
-//            }
-//
-//            @Override
-//            public void onCollapse(final ExpandableTextView view)
-//            {
-//                Log.d(TAG, "ExpandableTextView collapsed");
-//            }
-//        });
+        Intent intent = getIntent();
+        final String news_id  = intent.getStringExtra(SINGLE_NEWS);
+
+        Log.d("fdmfmdmdfdc", news_id);
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
+        mDatabaseRef.child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                News n = dataSnapshot.getValue(News.class);
+                Log.d("dmfmdmdmf", n.content);
+                updateViews(n);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        newsImage = (ImageView) findViewById(R.id.toolbarImage);
+
+        vendorIcon = (ImageView) findViewById(R.id.vendorIcon);
+
+        titleNews = (TextView) findViewById(R.id.titleNews);
+
+        vendorName = (TextView) findViewById(R.id.vendorName);
+
+
+
+        expandableTextView = (ExpandableTextView) this.findViewById(R.id.description);
+        final Button buttonToggle = (Button) this.findViewById(R.id.button_toggle);
+
+        expandableTextView.setAnimationDuration(1000L);
+
+
+        // toggle the ExpandableTextView
+        buttonToggle.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(final View v)
+            {
+                expandableTextView.toggle();
+                buttonToggle.setText(expandableTextView.isExpanded() ? "Collapse" : "Expand");
+            }
+        });
+
+// but, you can also do the checks yourself
+        buttonToggle.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(final View v)
+            {
+                if (expandableTextView.isExpanded())
+                {
+                    //expandableTextView.collapse();
+                   // buttonToggle.setText("UnSubscribe");
+                }
+                else
+                {
+                    expandableTextView.expand();
+                    buttonToggle.setText("Subscribe");
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("read_by_user").push();
+                    mDatabase.setValue(news_id);
+                    buttonToggle.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+// listen for expand / collapse events
+        expandableTextView.setOnExpandListener(new ExpandableTextView.OnExpandListener()
+        {
+            @Override
+            public void onExpand(final ExpandableTextView view)
+            {
+                Log.d(TAG, "ExpandableTextView expanded");
+            }
+
+            @Override
+            public void onCollapse(final ExpandableTextView view)
+            {
+                Log.d(TAG, "ExpandableTextView collapsed");
+            }
+        });
     }
 
     @Override
@@ -143,20 +152,34 @@ public class NewsDetailActivity extends AppCompatActivity {
         return true;
     }
 
-//    private void updateViews(News news){
+    private void updateViews(News news){
+
+        Intent intent = getIntent();
+
+        if(intent.getStringExtra(VENDOR_NAME) != null){
+            String vendName = intent.getStringExtra(VENDOR_NAME);
+            //String vendIcon = intent.getStringExtra(VENDOR_ICON);
+
+            vendorName.setText(vendName);
+
+//            String encodedDataString = vendIcon;
+//            encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
 //
-//
-//        coll.setTitle(news.caption);
-//        expandableTextView.setText(news.content);
-//
-//        titleNews.setText(news.caption);
-//
-//        String encodedDataString = news.getThumbnail();
-//        encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
-//
-//        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
-//        newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
-//                imageAsBytes, 0, imageAsBytes.length));
-//
-//    }
+//            byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+//            vendorIcon.setImageBitmap(BitmapFactory.decodeByteArray(
+//                    imageAsBytes, 0, imageAsBytes.length));
+        }
+
+        expandableTextView.setText(Html.fromHtml(news.content));
+
+        titleNews.setText(news.caption);
+
+        String encodedDataString = news.getThumbnail();
+        encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+
+        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+        newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
+                imageAsBytes, 0, imageAsBytes.length));
+
+    }
 }
