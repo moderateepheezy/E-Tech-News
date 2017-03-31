@@ -18,6 +18,7 @@ import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsMainActivity;
 import com.simpumind.e_tech_news.adapter.CustomAdapter;
 import com.simpumind.e_tech_news.models.MyList;
+import com.simpumind.e_tech_news.utils.EmptyRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +31,9 @@ public class LibraryFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = LibraryFragment.class.getSimpleName();
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
+    private EmptyRecyclerView recyclerView;
+    private EmptyRecyclerView.LayoutManager layoutManager;
+    private EmptyRecyclerView.Adapter adapter;
 
     private List<MyList> list;
 
@@ -56,7 +57,7 @@ public class LibraryFragment extends Fragment implements View.OnClickListener{
 
         setHasOptionsMenu(true);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = (EmptyRecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 

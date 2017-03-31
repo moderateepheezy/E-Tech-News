@@ -21,8 +21,10 @@ public class PrefManager {
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_PASSWORD = "user_password";
-    private static final String KEY_CREATED_AT = "created_at";
-    private static final String KEY_UPDATED_AT = "updated_at";
+    private static final String KEY_PROFILR_IMAGE = "profile_image";
+    private static final String KEY_MSSISDN = "key_mssisdn";
+    private static final String KEY_ADDRESS = "key_address";
+
 
     public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
         SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -48,29 +50,33 @@ public class PrefManager {
         return sharedPref.getString(constName, "");
     }
 
-//    public static void storeUser(Context ctx, User user){
-//        SharedPreferences sharedPref = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putInt(KEY_USER_ID, user.getId());
-//        editor.putString(KEY_USER_NAME, user.getFullName());
-//        editor.putString(KEY_USER_EMAIL, user.getEmail());
-//        editor.putString(KEY_USER_PASSWORD, user.getPassword());
-//        editor.apply();
-//    }
-//
-//    public  static User getStoredUser(Context ctx){
-//
-//        SharedPreferences pref = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-//
-//        String name, email, password, createdAt, updatedAt;
-//        int id = pref.getInt(KEY_USER_ID, 0);
-//        name = pref.getString(KEY_USER_NAME, "");
-//        email = pref.getString(KEY_USER_EMAIL, "");
-//        password = pref.getString(KEY_USER_PASSWORD, "");
-//        createdAt = pref.getString(KEY_CREATED_AT, "");
-//        updatedAt = pref.getString(KEY_UPDATED_AT, "");
-//
-//        User user = new User(id, name, email, password, createdAt, updatedAt);
-//        return user;
-//    }
+    public static void storeUser(Context ctx, User user){
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(KEY_USER_NAME, user.getUsername());
+        editor.putString(KEY_USER_EMAIL, user.getEmail());
+        editor.putString(KEY_USER_PASSWORD, user.getPassword());
+        editor.putString(KEY_PROFILR_IMAGE, user.getUserProfile());
+        editor.putString(KEY_MSSISDN, user.getMsisdn());
+        editor.putString(KEY_ADDRESS, user.getPhysical_address());
+        editor.apply();
+        editor.apply();
+    }
+
+    public  static User getStoredUser(Context ctx){
+
+        SharedPreferences pref = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        String name, email, password, profileImage, mssisdn, address;
+        int id = pref.getInt(KEY_USER_ID, 0);
+        name = pref.getString(KEY_USER_NAME, "");
+        email = pref.getString(KEY_USER_EMAIL, "");
+        password = pref.getString(KEY_USER_PASSWORD, "");
+        profileImage = pref.getString(KEY_PROFILR_IMAGE, "");
+        mssisdn = pref.getString(KEY_MSSISDN, "");
+        address = pref.getString(KEY_ADDRESS, "");
+
+        User user = new User(name, email,mssisdn, address, password, profileImage);
+        return user;
+    }
 }

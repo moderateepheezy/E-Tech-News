@@ -175,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                             mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
 
-                                            User us = new User("tolu","email@gmail.com", finalNumber, "some address", "passowrd");
+                                            User us = new User("tolu","email@gmail.com", finalNumber, "some address", "passowrd", "");
                                             mDatabase.setValue(us, new DatabaseReference.CompletionListener() {
                                                 @Override
                                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {

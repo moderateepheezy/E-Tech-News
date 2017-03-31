@@ -1,105 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/white"
     android:id="@+id/cordinateLayout"
+    android:orientation="vertical"
     tools:context="com.simpumind.e_tech_news.activities.NewsDetailActivity">
 
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:fitsSystemWindows="true">
+        android:background="#efeeee"
+        android:layout_height="55dp">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbar"
-            android:layout_width="match_parent"
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:fitsSystemWindows="true"
-            app:title=""
-            app:contentScrim="?attr/colorPrimary">
+            android:orientation="horizontal"
+            android:layout_margin="7dp"
+            android:layout_alignParentStart="true">
 
-        <ImageView
-            android:id="@+id/toolbarImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:fitsSystemWindows="true"
-            android:src="@drawable/trump"
-            android:transitionName="@string/blue_name"
-            app:layout_collapseMode="parallax" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/news_lo"/>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_collapseMode="parallax" />
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#181818"
+                    android:text="Cartoon Network"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_gravity="left"
+                    android:text="30/03/2017"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_margin="7dp"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/black"
+            android:background="@drawable/round_corner"
+            android:text="Subscribe"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="How great is the World War Z Movie"
+            android:textStyle="bold"
+            android:lineSpacingExtra="3dp"
+            android:id="@+id/titleNews"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline" />   
+        
+        
+        <ImageView
+            android:id="@+id/toolbarImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/trump"/>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="right"
-                android:text="November 14, 2017 11:30 PM"
-                android:padding="@dimen/activity_horizontal_margin" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="How great is the World War Z Movie"
-                android:textStyle="bold"
-                android:lineSpacingExtra="3dp"
-                android:id="@+id/titleNews"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-                android:padding="@dimen/activity_horizontal_margin" />
+                android:orientation="vertical">
 
 
-            <at.blogc.android.views.ExpandableTextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="16dp"
-                android:text="@string/dummy"
-                android:maxLines="2"
-                android:id="@+id/description"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:padding="@dimen/activity_horizontal_margin"/>
+                <at.blogc.android.views.ExpandableTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="16dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/dummy"
+                    android:id="@+id/description"
+                    android:lineSpacingExtra="@dimen/_3sdp"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
 
 
-            <Button
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:textColor="@color/colorAccent"
-                android:text="Read More"
-                android:layout_gravity="center"
-                android:id="@+id/button_toggle"
-                android:background="@drawable/border_round_corner"/>
+                <Button
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/colorAccent"
+                    android:text="Read More"
+                    android:layout_gravity="center"
+                    android:id="@+id/button_toggle"
+                    android:background="@drawable/border_round_corner"/>
 
-        </LinearLayout>
+            </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+
+
+</LinearLayout>

@@ -11,20 +11,29 @@ public class User {
     public String msisdn;
     public String physical_address;
     public String password;
+    public String userProfile;
 
 
     public User(){
 
     }
 
-    public User(String username, String email, String msisdn, String physical_address, String password) {
+    public User(String username, String email, String msisdn, String physical_address, String password, String userProfile) {
         this.username = username;
         this.email = email;
         this.msisdn = msisdn;
         this.physical_address = physical_address;
         this.password = password;
+        this.userProfile = userProfile;
     }
 
+    public String getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(String userProfile) {
+        this.userProfile = userProfile;
+    }
 
     public String getUsername() {
         return username;

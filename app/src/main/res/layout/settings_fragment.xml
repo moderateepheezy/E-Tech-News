@@ -2,7 +2,6 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/cordinateLayout">
@@ -28,6 +27,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="visible"
                 android:background="@drawable/reading"
                 android:orientation="vertical"
                 android:fitsSystemWindows="true"
@@ -36,26 +36,26 @@
                 android:id="@+id/main"
                 >
 
+
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:background="#a8000000"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     android:orientation="vertical">
 
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sign in with:"
+                        android:text="Complete Registration with:"
                         android:textColor="@color/white"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="20sp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -64,22 +64,18 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_margin="10dp"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="15dp"
+                            android:id="@+id/facebookLogin"
                             android:background="@drawable/face_icon"/>
-
+                        
                         <Button
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_margin="10dp"
-                            android:background="@drawable/google_icon"/>
-
-                        <Button
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_margin="10dp"
-                            android:background="@drawable/email_icon"/>
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="15dp"
+                            android:background="@drawable/google_icon"
+                            android:id="@+id/googleLogin"/>
 
                     </LinearLayout>
 
@@ -88,6 +84,73 @@
 
             </RelativeLayout>
 
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/white_background"
+                android:orientation="vertical"
+                android:fitsSystemWindows="true"
+                android:layout_gravity="center"
+                app:layout_collapseMode="parallax"
+                android:id="@+id/main1"
+                >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#d7ffffff"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/pp"
+                        android:id="@+id/profilePicture"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#434343"
+                        android:id="@+id/profileName"
+                        android:text="Hafeez Lawal, Olabisi"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#696868"
+                        android:id="@+id/profileEmail"
+                        android:text="Hafeez Lawal, Olabisi"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="#434343"
+                        android:id="@+id/mssisdn"
+                        android:text="Hafeez Lawal, Olabisi"/>
+
+                </LinearLayout>
+
+
+
+
+            </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -117,7 +180,7 @@
                 android:textStyle="bold"
                 android:background="#e2e2e2"/>
 
-            <android.support.v7.widget.RecyclerView
+            <com.simpumind.e_tech_news.utils.EmptyRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

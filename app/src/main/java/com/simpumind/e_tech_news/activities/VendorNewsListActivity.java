@@ -19,6 +19,7 @@ import com.google.firebase.database.Query;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.adapter.NewsListAdapter;
 import com.simpumind.e_tech_news.models.News;
+import com.simpumind.e_tech_news.utils.EmptyRecyclerView;
 
 
 public class VendorNewsListActivity extends AppCompatActivity {
@@ -40,7 +41,7 @@ public class VendorNewsListActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        RecyclerView myRecycler = (RecyclerView) findViewById(R.id.recycler_view);
+        EmptyRecyclerView myRecycler = (EmptyRecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         myRecycler.setLayoutManager(manager);

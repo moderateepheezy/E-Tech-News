@@ -31,6 +31,7 @@ import com.simpumind.e_tech_news.adapter.NewsPaperHolder;
 import com.simpumind.e_tech_news.adapter.SimpleAdapter;
 import com.simpumind.e_tech_news.adapter.VendorNewAdapter;
 import com.simpumind.e_tech_news.models.NewsPaper;
+import com.simpumind.e_tech_news.utils.EmptyRecyclerView;
 
 import static android.R.attr.button;
 
@@ -48,7 +49,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
     GridLayoutManager gridLayoutManager;
     //SimpleAdapter simpleAdapter;
 
-    RecyclerView recyclerView;
+    EmptyRecyclerView recyclerView;
 
     VendorNewAdapter vendorNewAdapter;
 
@@ -75,9 +76,13 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
         setHasOptionsMenu(true);
 
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (EmptyRecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.getItemAnimator().setChangeDuration(700);
         //simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), true);
+
+
+        View emptyView = view.findViewById(R.id.list_empty_view);
+        recyclerView.setEmptyView(emptyView);
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         childRef = mDatabaseRef.child("newspapers");

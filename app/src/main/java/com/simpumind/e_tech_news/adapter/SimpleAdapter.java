@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.simpumind.e_tech_news.R;
+import com.simpumind.e_tech_news.activities.NewsDetailActivity;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
 import com.simpumind.e_tech_news.fragments.SubMethodFragment;
 import com.simpumind.e_tech_news.fragments.SubscribeChoiceFragment;
@@ -36,7 +37,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.SimpleItem
 
     @Override
     public SimpleItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(isViewWithList ? R.layout.vendor_item_card : R.layout.vendor_grid_item_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.read_item_card, parent, false);
 
         context = parent.getContext();
 
@@ -46,44 +47,44 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.SimpleItem
     @Override
     public void onBindViewHolder(final SimpleItemViewHolder holder, int position) {
 
-        if(!isViewWithList) {
-
-            holder.sub.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    isColorsInverted = !isColorsInverted;
-                    TransitionManager.beginDelayedTransition(holder.transitionsContainer, new AutoTransition());
-                    holder.sub.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.colorAccent));
-                    holder.sub.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
-                    holder.sub.setText(isColorsInverted ? "Subscribed" : "Subscribe");
-
-                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
-
-                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
-                }
-            });
-
-        }else{
-            holder.sub.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    isColorsInverted = !isColorsInverted;
-                    TransitionManager.beginDelayedTransition(holder.transitionsContainer, new AutoTransition());
-                    holder.sub.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.pressedColor));
-                    holder.sub.setText(isColorsInverted ? "Subscribed" : "Subscribe");
-
-
-
-
-                    SubMethodFragment subMethodFragment = new SubMethodFragment();
-                    subMethodFragment.show(activity.getFragmentManager(), "show_dialog");
-
-                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
-
-                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
-                }
-            });
-        }
+//        if(!isViewWithList) {
+//
+//            holder.sub.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    isColorsInverted = !isColorsInverted;
+//                    TransitionManager.beginDelayedTransition(holder.transitionsContainer, new AutoTransition());
+//                    holder.sub.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.colorAccent));
+//                    holder.sub.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
+//                    holder.sub.setText(isColorsInverted ? "Subscribed" : "Subscribe");
+//
+//                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
+//
+//                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
+//                }
+//            });
+//
+//        }else{
+//            holder.sub.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    isColorsInverted = !isColorsInverted;
+//                    TransitionManager.beginDelayedTransition(holder.transitionsContainer, new AutoTransition());
+//                    holder.sub.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.pressedColor));
+//                    holder.sub.setText(isColorsInverted ? "Subscribed" : "Subscribe");
+//
+//
+//
+//
+//                    SubMethodFragment subMethodFragment = new SubMethodFragment();
+//                    subMethodFragment.show(activity.getFragmentManager(), "show_dialog");
+//
+//                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
+//
+//                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -93,7 +94,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.SimpleItem
 
     class SimpleItemViewHolder extends RecyclerView.ViewHolder {
 
-        Button sub;
+        //Button sub;
 
         ImageView newsImage;
 
@@ -102,14 +103,14 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.SimpleItem
             super(itemView);
 
             transitionsContainer = (ViewGroup) itemView.findViewById(R.id.transitions_container);
-            sub = (Button) transitionsContainer.findViewById(R.id.subscribe);
+            //sub = (Button) transitionsContainer.findViewById(R.id.subscribe);
 
             newsImage = (ImageView) itemView.findViewById(R.id.newsImage);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, VendorNewsListActivity.class);
+                    Intent intent = new Intent(context, NewsDetailActivity.class);
                     context.startActivity(intent);
                 }
             });

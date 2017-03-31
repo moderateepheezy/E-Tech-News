@@ -7,7 +7,7 @@
     tools:context="com.simpumind.e_tech_news.activities.VendorNewsListActivity">
 
 
-    <android.support.v7.widget.RecyclerView
+    <com.simpumind.e_tech_news.utils.EmptyRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

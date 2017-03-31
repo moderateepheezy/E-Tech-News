@@ -35,14 +35,15 @@
     <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">34sp</item>
         <item name="android:title">@null</item>
+        <item name="android:actionBarStyle">@style/Theme.AppCompat.Light.DarkActionBar</item>
         <item name="android:textColor">@android:color/transparent</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="CollapsedAppBar" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">24sp</item>
-        <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

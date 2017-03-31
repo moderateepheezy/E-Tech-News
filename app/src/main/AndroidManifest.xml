@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.simpumind.e_tech_news">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".ENewsApp"
         android:allowBackup="true"
@@ -11,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="icon">
+
+        <meta-data
+            tools:replace="android:value"
+            android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <activity android:name=".activities.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +52,7 @@
         <activity
             android:name=".activities.NewsDetailActivity"
             android:logo="@drawable/ic_close_white_24dp"
-            android:theme="@style/AppTime">
+            android:theme="@style/ActionBarTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.VendorNewsListActivity" />
@@ -56,6 +63,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.VendorNewsListActivity" />
         </activity>
+
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            tools:replace="android:theme"
+            android:label="@string/app_name" />
     </application>
 
 </manifest>

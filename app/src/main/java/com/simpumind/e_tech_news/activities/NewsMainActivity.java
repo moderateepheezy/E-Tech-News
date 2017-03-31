@@ -53,7 +53,7 @@ public class NewsMainActivity extends AppCompatActivity {
                                 break;
                             case R.id.profile:
                                 selectedFragment = new MyProfileFragment();
-                                setTitle("Settings");
+                                setTitle("My Profile");
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
