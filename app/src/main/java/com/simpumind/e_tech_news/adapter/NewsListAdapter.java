@@ -1,8 +1,10 @@
 package com.simpumind.e_tech_news.adapter;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -82,7 +84,7 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
 
         final News model = getItem(position);
 
@@ -115,12 +117,16 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, NewsDetailActivity.class);
+                    View sharedView = ((NewsListHolder) viewHolder).newsImage;
+                    String transitionName = activity.getString(R.string.blue_name);
+                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(activity, sharedView, transitionName);
                     intent.putExtra(NewsDetailActivity.SINGLE_NEWS, getRef(position).getKey());
                     intent.putExtra(NewsDetailActivity.VENDOR_NAME, vendorName);
                     intent.putExtra(NewsDetailActivity.VENDOR_ICON, vendorIcon);
-                    activity.startActivity(intent);
+                    ActivityCompat.startActivity(activity, intent, transitionActivityOptions.toBundle());
                 }
             });
+
         }
     }
 

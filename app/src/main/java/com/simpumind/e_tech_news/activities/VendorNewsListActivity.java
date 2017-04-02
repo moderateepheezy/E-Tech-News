@@ -66,16 +66,6 @@ public class VendorNewsListActivity extends AppCompatActivity {
         myRecycler.setAdapter(newsListAdapter);
     }
 
-    private void goToNewsDetails(ImageView image){
-
-        Intent i = new Intent(VendorNewsListActivity.this, NewsDetailActivity.class);
-
-        View sharedView = image;
-        String transitionName = getString(R.string.blue_name);
-
-        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(VendorNewsListActivity.this, sharedView, transitionName);
-        ActivityCompat.startActivity(VendorNewsListActivity.this, i, transitionActivityOptions.toBundle());
-    }
 
     @Override
     public boolean onSupportNavigateUp() {

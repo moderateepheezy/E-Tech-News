@@ -38,23 +38,13 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2 days ago"
-                    android:textSize="12sp"
-                    android:textStyle="normal"
-                    android:id="@+id/dateTime"
-                    android:layout_alignParentEnd="true"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:textColor="#2d2c2c"
                     android:textStyle="bold"
                     android:id="@+id/newsTitle"
-                    android:layout_below="@+id/dateTime"
                     android:layout_alignParentStart="true"
                     android:text="WWE Legend Jim Ross' Wife, Jan dies At 55 - Wrestling World Offers Their Condolences"
                     android:maxLines="4"/>
@@ -64,17 +54,29 @@
                     android:layout_height="15dp"
                     android:id="@+id/sub_icon"
                     android:layout_alignParentBottom="true"
+                    android:tint="#a4a4a4"
                     android:src="@drawable/sub_icon"/>
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
+                    android:text="2 days ago"
+                    android:textSize="12sp"
+                    android:textStyle="normal"
+                    android:id="@+id/dateTime"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/vendorName"
                     android:layout_marginLeft="5dp"
                     android:text="fmmbmvmmbmbmmb"
-                    android:layout_toRightOf="@+id/sub_icon"
-                    android:layout_alignParentBottom="true"/>
+                    android:textColor="#f75a5a"
+                    android:layout_alignTop="@+id/dateTime"
+                    android:layout_toEndOf="@+id/sub_icon" />
 
 
             </RelativeLayout>

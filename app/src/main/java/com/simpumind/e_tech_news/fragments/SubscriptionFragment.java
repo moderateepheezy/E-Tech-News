@@ -20,11 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsMainActivity;
 import com.simpumind.e_tech_news.adapter.NewsPaperHolder;
@@ -76,6 +80,10 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
         setHasOptionsMenu(true);
 
 
+        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+
+
         recyclerView = (EmptyRecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.getItemAnimator().setChangeDuration(700);
         //simpleAdapter = new SimpleAdapter((AppCompatActivity) getActivity(), true);
@@ -86,6 +94,18 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         childRef = mDatabaseRef.child("newspapers");
+        childRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         Log.d("chilref", childRef.getKey());
 
         //isViewWithList ? R.layout.vendor_grid_item_card : R.l
@@ -108,39 +128,39 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.vendor_menu, menu);
+        inflater.inflate(R.menu.main_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_list_to_grid) {
-            isViewWithList = !isViewWithList;
-            if (!((Animatable) item.getIcon()).isRunning()) {
-                if (isViewWithList) {
-                    item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_grid_to_list));
-                    recyclerView.getItemAnimator().setChangeDuration(700);
-                    vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_item_card,
-                            NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), true, getActivity());
-                    recyclerView.setAdapter(vendorNewAdapter);
-                    gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-                    recyclerView.setLayoutManager(gridLayoutManager);
-
-                } else {
-                    item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_list_to_grid));
-                    recyclerView.getItemAnimator().setChangeDuration(700);
-                    vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_grid_item_card,
-                            NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), false, getActivity());
-
-                    recyclerView.setAdapter(vendorNewAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                }
-                ((Animatable) item.getIcon()).start();
-                vendorNewAdapter.notifyItemRangeChanged(0, vendorNewAdapter.getItemCount());
-            }
-            return true;
-        }
+//        if (id == R.id.action_list_to_grid) {
+//            isViewWithList = !isViewWithList;
+//            if (!((Animatable) item.getIcon()).isRunning()) {
+//                if (isViewWithList) {
+//                    item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_grid_to_list));
+//                    recyclerView.getItemAnimator().setChangeDuration(700);
+//                    vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_item_card,
+//                            NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), true, getActivity());
+//                    recyclerView.setAdapter(vendorNewAdapter);
+//                    gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+//                    recyclerView.setLayoutManager(gridLayoutManager);
+//
+//                } else {
+//                    item.setIcon(AnimatedVectorDrawableCompat.create(getActivity(), R.drawable.avd_list_to_grid));
+//                    recyclerView.getItemAnimator().setChangeDuration(700);
+//                    vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_grid_item_card,
+//                            NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), false, getActivity());
+//
+//                    recyclerView.setAdapter(vendorNewAdapter);
+//                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//                }
+//                ((Animatable) item.getIcon()).start();
+//                vendorNewAdapter.notifyItemRangeChanged(0, vendorNewAdapter.getItemCount());
+//            }
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

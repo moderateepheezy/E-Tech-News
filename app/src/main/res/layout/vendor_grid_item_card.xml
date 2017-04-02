@@ -27,8 +27,8 @@
         <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/des"
-            android:id="@+id/firstNewsImage"
+            android:src="@drawable/denews"
+            android:id="@+id/vendorIcon"
             android:scaleType="centerCrop"/>
 
         <LinearLayout
@@ -38,14 +38,20 @@
             android:padding="8dp">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latest:"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="#2d2c2c"
-                android:textStyle="normal"
+                android:layout_marginTop="5dp"
                 android:id="@+id/firstNewsTitle"
-                android:text="WWE Legend Jim Ross' Wife, Jan dies At 55 - Wrestling World Offers Their Condolences"
-                android:maxLines="4"/>
+                android:maxLines="2"/>
 
 
             <RelativeLayout
@@ -60,19 +66,12 @@
                     android:layout_alignParentBottom="true"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:src="@drawable/news_lo"
-                        android:id="@+id/vendorIcon"
-                        android:layout_gravity="bottom"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cartoon Network"
                         android:textStyle="bold"
-                        android:textSize="8dp"
+                        android:textSize="12dp"
                         android:id="@+id/vendorName"
                         android:layout_marginBottom="5dp"
                         android:textColor="#f75a5a"/>

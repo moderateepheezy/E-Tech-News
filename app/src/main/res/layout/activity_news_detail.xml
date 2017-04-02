@@ -103,6 +103,7 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:layout_marginTop="10dp"
+            android:transitionName="@string/blue_name"
             android:src="@drawable/trump"/>
 
 

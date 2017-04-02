@@ -17,7 +17,6 @@ import com.simpumind.e_tech_news.R;
 public class NewsPaperHolder extends RecyclerView.ViewHolder {
     public ImageView vendorIcon;
     public Button subscribe;
-    public ImageView firstNewsImage;
     public TextView vendorName;
     public TextView firstNewsTitle;
     ViewGroup transitionsContainer;
@@ -30,7 +29,6 @@ public class NewsPaperHolder extends RecyclerView.ViewHolder {
         vendorName = (TextView) view.findViewById(R.id.vendorName);
         vendorIcon = (ImageView) view.findViewById(R.id.vendorIcon);
         subscribe = (Button) view.findViewById(R.id.subscribe);
-        firstNewsImage = (ImageView) view.findViewById(R.id.firstNewsImage);
         transitionsContainer = (ViewGroup) itemView.findViewById(R.id.transitions_container);
 
     }

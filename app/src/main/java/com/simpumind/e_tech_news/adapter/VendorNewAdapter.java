@@ -187,7 +187,6 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                     subMethodFragment.show(activity.getFragmentManager(), "show_dialog");
 
                     SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
-
                     dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
                 }
             });
@@ -209,8 +208,8 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
         encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
 
         byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
-        holder.firstNewsImage.setImageBitmap(BitmapFactory.decodeByteArray(
-                imageAsBytes, 0, imageAsBytes.length));
+        //holder.firstNewsImage.setImageBitmap(BitmapFactory.decodeByteArray(
+         //       imageAsBytes, 0, imageAsBytes.length));
 
 
 //        byte[] imageByteArray = Base64.decode(news.getThumbnail(), Base64.DEFAULT);
