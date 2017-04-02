@@ -29,6 +29,7 @@ public class VendorNewsListActivity extends AppCompatActivity {
 
     public static final String VENDOR_NAME = "vendor_name";
     public static final String VENDOR_ICON = "vendor_icon";
+    public static final String VENDOR_ID = "vendor_id";
 
     private DatabaseReference mDatabaseRef;
     private Query childRef;
@@ -52,6 +53,7 @@ public class VendorNewsListActivity extends AppCompatActivity {
 
         String vendorName = intent.getStringExtra(VENDOR_NAME);
         String vendorIcon = intent.getStringExtra(VENDOR_ICON);
+        String vendorId = intent.getStringExtra(VENDOR_ID);
 
         setTitle(vendorName);
 
@@ -61,7 +63,7 @@ public class VendorNewsListActivity extends AppCompatActivity {
         childRef = mDatabaseRef.child("news").orderByChild("newspaper_id").equalTo(id);
 
         newsListAdapter = new NewsListAdapter(News.class,  R.layout.vendor_news_item_list,
-                RecyclerView.ViewHolder.class, childRef, getApplicationContext(), this, vendorName, vendorIcon);
+                RecyclerView.ViewHolder.class, childRef, getApplicationContext(), this, vendorName, vendorIcon, vendorId);
 
         myRecycler.setAdapter(newsListAdapter);
     }

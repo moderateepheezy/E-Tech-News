@@ -62,10 +62,11 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<String, ReadListHol
                 viewHolder.newsTitle.setText(news.caption);
                 String encodedDataString = news.getThumbnail();
                 encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+                String[] dataString = encodedDataString.split("=");
 
-                byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
-               viewHolder.newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
-                        imageAsBytes, 0, imageAsBytes.length));
+//                byte[] imageAsBytes = Base64.decode(dataString[0].getBytes(), 0);
+//               viewHolder.newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
+//                        imageAsBytes, 0, imageAsBytes.length));
 
 
                 mChildRef = FirebaseDatabase.getInstance().getReference().child("newspapers");

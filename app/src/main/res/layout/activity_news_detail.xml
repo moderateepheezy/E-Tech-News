@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/transitions_container"
     android:background="@color/white"
-    android:id="@+id/cordinateLayout"
     android:orientation="vertical"
     tools:context="com.simpumind.e_tech_news.activities.NewsDetailActivity">
 
@@ -67,7 +67,8 @@
             android:backgroundTint="@color/black"
             android:background="@drawable/round_corner"
             android:text="Subscribe"
-            android:textSize="12sp"
+            android:id="@+id/subscribe"
+            android:textSize="10sp"
             android:textColor="@color/white"
             android:layout_centerVertical="true"/>
 

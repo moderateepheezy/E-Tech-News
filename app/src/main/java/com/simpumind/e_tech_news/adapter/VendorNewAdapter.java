@@ -56,6 +56,8 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference mDatabase;
+    private DatabaseReference childRef;
+    private DatabaseReference mDataRef;
 
     FirebaseAuth mAuth;
 
@@ -82,11 +84,52 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
     @Override
     protected void populateViewHolder(final NewsPaperHolder viewHolder, final NewsPaper model, final int position) {
 
+        final List<String> stringList = new ArrayList<>();
+
         viewHolder.vendorName.setText(model.getPaper_name());
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
 
         String oneChildRef = getRef(position).getKey();
+
+        mDataRef = FirebaseDatabase.getInstance().getReference();
+        childRef = mDataRef.child("users_subscription");
+        childRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                stringList.add(dataSnapshot.getValue().toString());
+
+                String subscribedId = dataSnapshot.getValue().toString();
+                if(subscribedId.equals(getRef(position).getKey())){
+                    TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
+                    viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.button_back_color));
+                    viewHolder.subscribe.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
+                    viewHolder.subscribe.setText("Unsubscribe");
+                }
+
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         mDatabaseRef.orderByChild("newspaper_id")
                 .equalTo(oneChildRef).limitToLast(1)
@@ -128,6 +171,8 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                 Intent intent = new Intent(context, VendorNewsListActivity.class);
                 intent.putExtra(VendorNewsListActivity.NEWS_PAPER_ID, getRef(position).getKey());
                 intent.putExtra(VendorNewsListActivity.VENDOR_NAME, model.getPaper_name());
+                intent.putExtra(VendorNewsListActivity.VENDOR_ICON, model.getLogo());
+                intent.putExtra(VendorNewsListActivity.VENDOR_ID, getRef(position).getKey());
                 context.startActivity(intent);
             }
         });
@@ -156,8 +201,8 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
 
                     SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
-//
                     dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
+
                 }
             });
 
@@ -183,9 +228,6 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 //                        mDatabase.setValue(getRef(position).getKey());
 //                    }
 
-                    SubMethodFragment subMethodFragment = new SubMethodFragment();
-                    subMethodFragment.show(activity.getFragmentManager(), "show_dialog");
-
                     SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
                     dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
                 }
@@ -204,10 +246,10 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
         holder.firstNewsTitle.setText(news.getCaption());
 
-        String encodedDataString = news.getThumbnail();
-        encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+        //String encodedDataString = news.getThumbnail();
+        //encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
 
-        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+       // byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
         //holder.firstNewsImage.setImageBitmap(BitmapFactory.decodeByteArray(
          //       imageAsBytes, 0, imageAsBytes.length));
 

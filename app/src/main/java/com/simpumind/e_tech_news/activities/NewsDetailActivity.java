@@ -9,12 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -36,14 +40,20 @@ public class NewsDetailActivity extends AppCompatActivity {
     public static final String SINGLE_NEWS = "Single_news";
     public static final String VENDOR_NAME = "vendor_name";
     public static final String VENDOR_ICON = "vendor_icon";
+    public static final String VENDOR_ID = "vendor_id";
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference childRef;
-     ExpandableTextView expandableTextView;
+    private DatabaseReference mDataRef;
+    ExpandableTextView expandableTextView;
     ImageView newsImage;
     TextView titleNews;
     TextView vendorName;
     ImageView vendorIcon;
+    Button subscribe;
+    ViewGroup transitionsContainer;
+
+    private boolean isUserSubscribed;
 
 
     private DatabaseReference mDatabase;
@@ -85,10 +95,59 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         vendorName = (TextView) findViewById(R.id.vendorName);
 
-
-
+        subscribe = (Button) findViewById(R.id.subscribe);
+        transitionsContainer = (ViewGroup) findViewById(R.id.transitions_container);
         expandableTextView = (ExpandableTextView) this.findViewById(R.id.description);
         final Button buttonToggle = (Button) this.findViewById(R.id.button_toggle);
+
+
+        final String vendor_id  = intent.getStringExtra(VENDOR_ID);
+
+        mDataRef = FirebaseDatabase.getInstance().getReference();
+        childRef = mDataRef.child("users_subscription");
+        childRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                String subscribedId = dataSnapshot.getValue().toString();
+                if(subscribedId.equals(vendor_id)){
+
+                    isUserSubscribed = true;
+                    expandableTextView.expand();
+                    buttonToggle.setVisibility(View.INVISIBLE);
+                    TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
+                    subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
+                    subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
+                    subscribe.setText("Unsubscribe");
+
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("read_by_user").push();
+                    mDatabase.setValue(news_id);
+                }
+
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         expandableTextView.setAnimationDuration(1000L);
 
@@ -110,17 +169,19 @@ public class NewsDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v)
             {
-                if (expandableTextView.isExpanded())
+                if (!isUserSubscribed)
                 {
                     //expandableTextView.collapse();
                    // buttonToggle.setText("UnSubscribe");
+
+                    Toast.makeText(NewsDetailActivity.this, "You are not subscribed to this vendor", Toast.LENGTH_LONG).show();
                 }
                 else
                 {
                     expandableTextView.expand();
-                    buttonToggle.setText("Subscribe");
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("read_by_user").push();
-                    mDatabase.setValue(news_id);
+//                    buttonToggle.setText("Subscribe");
+//                    mDatabase = FirebaseDatabase.getInstance().getReference().child("read_by_user").push();
+//                    mDatabase.setValue(news_id);
                     buttonToggle.setVisibility(View.INVISIBLE);
                 }
             }
@@ -158,14 +219,15 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         if(intent.getStringExtra(VENDOR_NAME) != null){
             String vendName = intent.getStringExtra(VENDOR_NAME);
-            //String vendIcon = intent.getStringExtra(VENDOR_ICON);
+            String vendIcon = intent.getStringExtra(VENDOR_ICON);
 
             vendorName.setText(vendName);
 
 //            String encodedDataString = vendIcon;
 //            encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+//            String[] dataString = encodedDataString.split("=");
 //
-//            byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+//            byte[] imageAsBytes = Base64.decode(dataString[0].getBytes(), Base64.NO_PADDING);
 //            vendorIcon.setImageBitmap(BitmapFactory.decodeByteArray(
 //                    imageAsBytes, 0, imageAsBytes.length));
         }
@@ -176,8 +238,9 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         String encodedDataString = news.getThumbnail();
         encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+        String[] dataString = encodedDataString.split("=");
 
-        byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+        byte[] imageAsBytes = Base64.decode(dataString[0].getBytes(), Base64.NO_PADDING);
         newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
                 imageAsBytes, 0, imageAsBytes.length));
 

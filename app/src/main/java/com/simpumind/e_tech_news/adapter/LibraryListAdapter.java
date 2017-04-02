@@ -28,6 +28,7 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<String, LibraryL
     private DatabaseReference mDatabase;
     private String vendotName;
     private String vendorIcon;
+    private String vendorId;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -68,6 +69,7 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<String, LibraryL
 
                 vendotName = newsPaper.getPaper_name();
                 vendorIcon = newsPaper.getLogo();
+                vendorId = dataSnapshot.getKey();
             }
 
             @Override
@@ -83,6 +85,7 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<String, LibraryL
                 intent.putExtra(VendorNewsListActivity.NEWS_PAPER_ID, model);
                 intent.putExtra(VendorNewsListActivity.VENDOR_NAME, vendotName);
                 intent.putExtra(VendorNewsListActivity.VENDOR_ICON, vendorIcon);
+                intent.putExtra(VendorNewsListActivity.VENDOR_ID, vendorId);
                 context.startActivity(intent);
             }
         });

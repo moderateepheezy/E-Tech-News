@@ -37,6 +37,7 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
 
     private String vendorName;
     private String vendorIcon;
+    private String vendorId;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -49,12 +50,14 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
      *                        using some combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
     public  NewsListAdapter(Class<News> modelClass, int modelLayout, Class<RecyclerView.ViewHolder> viewHolderClass,
-                            Query ref, Context context, AppCompatActivity activity, String vendorName, String vendorIcon) {
+                            Query ref, Context context, AppCompatActivity activity,
+                            String vendorName, String vendorIcon, String vendorId) {
         super(modelClass, modelLayout, viewHolderClass, ref);
         this.context = context;
         this.activity = activity;
         this.vendorName = vendorName;
         this.vendorIcon = vendorIcon;
+        this.vendorId = vendorId;
     }
 
     @Override
@@ -94,10 +97,10 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
             //Picasso.with(context).load(model.getThumbnail()).into(((HeaderViewHolder) viewHolder).imageView2);
 
 
-            String encodedDataString = model.getThumbnail();
-            encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+            String[] encodedDataString = model.getThumbnail().split("=");
+            //encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
 
-            byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+            byte[] imageAsBytes = Base64.decode(encodedDataString[0], Base64.NO_PADDING);
             ((HeaderViewHolder) viewHolder).imageView2.setImageBitmap(BitmapFactory.decodeByteArray(
                     imageAsBytes, 0, imageAsBytes.length));
         }else {
@@ -108,8 +111,9 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
 
             String encodedDataString = model.getThumbnail();
             encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
+            String[] dataString = encodedDataString.split("=");
 
-            byte[] imageAsBytes = Base64.decode(encodedDataString.getBytes(), 0);
+            byte[] imageAsBytes = Base64.decode(dataString[0].getBytes(), 0);
             ((NewsListHolder) viewHolder).newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
                     imageAsBytes, 0, imageAsBytes.length));
 
@@ -123,6 +127,7 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
                     intent.putExtra(NewsDetailActivity.SINGLE_NEWS, getRef(position).getKey());
                     intent.putExtra(NewsDetailActivity.VENDOR_NAME, vendorName);
                     intent.putExtra(NewsDetailActivity.VENDOR_ICON, vendorIcon);
+                    intent.putExtra(NewsDetailActivity.VENDOR_ID, vendorId);
                     ActivityCompat.startActivity(activity, intent, transitionActivityOptions.toBundle());
                 }
             });
