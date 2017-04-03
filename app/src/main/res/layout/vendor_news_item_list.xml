@@ -27,7 +27,7 @@
             <ImageView
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/trump"
+                android:src="@drawable/denews"
                 android:transitionName="@string/blue_name"
                 android:id="@+id/newsImage"
                 android:scaleType="centerCrop"/>

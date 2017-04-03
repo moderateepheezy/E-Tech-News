@@ -21,7 +21,7 @@ import com.simpumind.e_tech_news.models.NewsPaper;
  * Created by simpumind on 3/31/17.
  */
 
-public class LibraryListAdapter extends FirebaseRecyclerAdapter<String, LibraryListHolder>{
+public class LibraryListAdapter extends FirebaseRecyclerAdapter<Boolean, LibraryListHolder>{
 
     private Context context;
     private DatabaseReference mDatabaseRef;
@@ -40,7 +40,7 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<String, LibraryL
      * @param ref             The Firebase location to watch for data changes. Can also be a slice of a location,
      *                        using some combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public LibraryListAdapter(Class<String> modelClass, int modelLayout,
+    public LibraryListAdapter(Class<Boolean> modelClass, int modelLayout,
                               Class<LibraryListHolder> viewHolderClass, Query ref, Context context) {
         super(modelClass, modelLayout, viewHolderClass, ref);
         this.context = context;
@@ -48,14 +48,12 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<String, LibraryL
 
 
     @Override
-    protected void populateViewHolder(final LibraryListHolder viewHolder, final String model, int position) {
+    protected void populateViewHolder(final LibraryListHolder viewHolder, final Boolean model, int position) {
 
 
-
-        Log.d("ggmgmgmg", model);
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("newspapers");
-        mDatabaseRef.child(model).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseRef.child(getRef(position).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 NewsPaper newsPaper = dataSnapshot.getValue(NewsPaper.class);

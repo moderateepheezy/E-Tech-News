@@ -36,6 +36,7 @@ import com.simpumind.e_tech_news.fragments.SubMethodFragment;
 import com.simpumind.e_tech_news.fragments.SubscribeChoiceFragment;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.NewsPaper;
+import com.simpumind.e_tech_news.utils.PrefManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
     private DatabaseReference childRef;
     private DatabaseReference mDataRef;
 
+    private static boolean isUserSubscribed = false;
     FirebaseAuth mAuth;
 
     /**
@@ -84,45 +86,27 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
     @Override
     protected void populateViewHolder(final NewsPaperHolder viewHolder, final NewsPaper model, final int position) {
 
-        final List<String> stringList = new ArrayList<>();
-
         viewHolder.vendorName.setText(model.getPaper_name());
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
 
-        String oneChildRef = getRef(position).getKey();
+        final String oneChildRef = getRef(position).getKey();
 
         mDataRef = FirebaseDatabase.getInstance().getReference();
-        childRef = mDataRef.child("users_subscription");
-        childRef.addChildEventListener(new ChildEventListener() {
+        childRef = FirebaseDatabase.getInstance().getReference();
+        Query query = mDataRef.child("subscriber").child(PrefManager.readUserKey(context)).child("susbscriptions").child(oneChildRef);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                stringList.add(dataSnapshot.getValue().toString());
-
-                String subscribedId = dataSnapshot.getValue().toString();
-                if(subscribedId.equals(getRef(position).getKey())){
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().equals(getRef(position).getKey()) && dataSnapshot.getValue() != null){
+                    isUserSubscribed = true;
                     TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
                     viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.button_back_color));
                     viewHolder.subscribe.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
                     viewHolder.subscribe.setText("Unsubscribe");
+                }else {
+                    isUserSubscribed = false;
                 }
-
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
@@ -133,27 +117,15 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
         mDatabaseRef.orderByChild("newspaper_id")
                 .equalTo(oneChildRef).limitToLast(1)
-                .addChildEventListener(new ChildEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        News n = dataSnapshot.getValue(News.class);
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        updateUI(viewHolder, n);
-                    }
+                        for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                            News n = childSnapshot.getValue(News.class);
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                            updateUI(viewHolder, n);
+                        }
                     }
 
                     @Override
@@ -184,55 +156,29 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 //        viewHolder.vendorIcon.setImageBitmap(BitmapFactory.decodeByteArray(
 //                imageAsBytes, 0, imageAsBytes.length));
 
-        if(!isColorsInverted) {
+        viewHolder.subscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isColorsInverted = !isColorsInverted;
 
-            viewHolder.subscribe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    isColorsInverted = !isColorsInverted;
+                if(isUserSubscribed){
+                    isUserSubscribed = false;
                     TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
-                    viewHolder.subscribe.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.colorAccent));
-                    viewHolder.subscribe.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
-                    viewHolder.subscribe.setText(isColorsInverted ? "Subscribed" : "Subscribe");
-
-
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("users_subscription").push();
-                        mDatabase.setValue(getRef(position).getKey());
-
-
+                    viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.colorAccent));
+                    viewHolder.subscribe.setText("Subscribe");
+                    unSubscribeVendor(getRef(position).getKey());
+                }else {
+                    isUserSubscribed = true;
                     SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
                     dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
-
-                }
-            });
-
-        }else{
-            viewHolder.subscribe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    isColorsInverted = !isColorsInverted;
                     TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
-                    viewHolder.subscribe.setBackgroundTintList(isColorsInverted ? context.getResources().getColorStateList(R.color.button_back_color) : context.getResources().getColorStateList(R.color.pressedColor));
-                    viewHolder.subscribe.setText(isColorsInverted ? "Subscribed" : "Subscribe");
-
-
-                    mAuth = FirebaseAuth.getInstance();
-
-                    mDatabase = FirebaseDatabase.getInstance().getReference();
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("users_subscription");
-                    mDatabase.setValue(getRef(position).getKey());
-
-//                    FirebaseUser user = mAuth.getCurrentUser();
-//                    if(user != null){
-//                        mDatabase.child("users").child(user.getUid()).child("users_subscription").push();
-//                        mDatabase.setValue(getRef(position).getKey());
-//                    }
-
-                    SubscribeChoiceFragment dialog = new SubscribeChoiceFragment();
-                    dialog.show(activity.getFragmentManager(), CHOICE_DIALOG);
+                    viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.button_back_color));
+                    viewHolder.subscribe.setText("Unsubscribe");
+                    subscribeVendor(getRef(position).getKey());
                 }
-            });
-        }
+
+            }
+        });
 
 //        byte[] imageByteArray = Base64.decode(model.getLogo(), Base64.DEFAULT);
 //        Glide.with(context).
@@ -260,6 +206,50 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 //                .asBitmap()
 //                .into(holder.firstNewsImage);
 
+    }
+
+    public void subscribeVendor(final String vendorId){
+        mAuth = FirebaseAuth.getInstance();
+
+
+
+        Query query = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(context)).orderByChild("susbscriptions").equalTo(vendorId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() > 0){
+
+                }else {
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("subscriber").child(PrefManager
+                            .readUserKey(context)).child("susbscriptions");
+                    mDatabase.child(vendorId).setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void unSubscribeVendor(final String vendorId){
+        DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference();
+        Query query = mDataRef.child("subscriber").child(PrefManager.readUserKey(context)).child("susbscriptions").child(vendorId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().equals(vendorId)){
+                    FirebaseDatabase.getInstance().getReference().child("subscriber")
+                            .child(PrefManager.readUserKey(context)).child("susbscriptions").child(vendorId).removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

@@ -20,14 +20,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.models.News;
+import com.simpumind.e_tech_news.utils.PrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +56,7 @@ public class NewsDetailActivity extends AppCompatActivity {
     Button subscribe;
     ViewGroup transitionsContainer;
 
-    private boolean isUserSubscribed;
+    private static boolean isUserSubscribed;
 
 
     private DatabaseReference mDatabase;
@@ -103,15 +106,12 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         final String vendor_id  = intent.getStringExtra(VENDOR_ID);
 
-        mDataRef = FirebaseDatabase.getInstance().getReference();
-        childRef = mDataRef.child("users_subscription");
-        childRef.addChildEventListener(new ChildEventListener() {
+        childRef = FirebaseDatabase.getInstance().getReference();
+        Query query = childRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendor_id);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                String subscribedId = dataSnapshot.getValue().toString();
-                if(subscribedId.equals(vendor_id)){
-
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().equals(vendor_id)){
                     isUserSubscribed = true;
                     expandableTextView.expand();
                     buttonToggle.setVisibility(View.INVISIBLE);
@@ -120,26 +120,8 @@ public class NewsDetailActivity extends AppCompatActivity {
                     subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
                     subscribe.setText("Unsubscribe");
 
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("read_by_user").push();
-                    mDatabase.setValue(news_id);
+                    readByUser(news_id);
                 }
-
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
@@ -182,7 +164,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 //                    buttonToggle.setText("Subscribe");
 //                    mDatabase = FirebaseDatabase.getInstance().getReference().child("read_by_user").push();
 //                    mDatabase.setValue(news_id);
-                    buttonToggle.setVisibility(View.INVISIBLE);
+                    buttonToggle.setVisibility(View.GONE);
                 }
             }
         });
@@ -200,6 +182,40 @@ public class NewsDetailActivity extends AppCompatActivity {
             public void onCollapse(final ExpandableTextView view)
             {
                 Log.d(TAG, "ExpandableTextView collapsed");
+            }
+        });
+
+
+        subscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if(isUserSubscribed){
+                    isUserSubscribed = false;
+                    expandableTextView.collapse();
+                    buttonToggle.setVisibility(View.VISIBLE);
+
+                    TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
+                    subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+                    subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
+                    subscribe.setText("Subscribe");
+
+                    unSubscribeVednor(vendor_id);
+
+                }else {
+                    isUserSubscribed = true;
+                    expandableTextView.expand();
+                    buttonToggle.setVisibility(View.GONE);
+
+
+                    subscribeVendor(vendor_id);
+
+                    TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
+                    subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
+                    subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
+                    subscribe.setText("Unsubscribe");
+                }
             }
         });
     }
@@ -244,5 +260,90 @@ public class NewsDetailActivity extends AppCompatActivity {
         newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
                 imageAsBytes, 0, imageAsBytes.length));
 
+    }
+
+    public void unSubscribeVednor(final String vendorId){
+
+
+        childRef = mDataRef.child("users_subscription");
+        childRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                String subscribedId = dataSnapshot.getValue().toString();
+                if(subscribedId.equals(vendorId)){
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("users_subscription").child(dataSnapshot.getKey()).removeValue();
+                }
+
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void subscribeVendor(final String vendorId){
+
+        Query query = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).orderByChild("susbscriptions").equalTo(vendorId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() > 0){
+
+                }else {
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("subscriber").child(PrefManager
+                            .readUserKey(getApplicationContext())).child("susbscriptions");
+                    mDatabase.child(vendorId).setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void readByUser(final String newsId){
+
+
+
+        Query query = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).orderByChild("read_news").equalTo(newsId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() > 0){
+
+                }else {
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("subscriber").child(PrefManager
+                            .readUserKey(getApplicationContext())).child("read_news");
+                    mDatabase.child(newsId).setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

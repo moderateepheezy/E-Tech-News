@@ -11,6 +11,7 @@ import com.simpumind.e_tech_news.models.User;
 
 public class PrefManager {
 
+    public static final String USER_KEY = "user_key";
     private static final String PREFERENCES_FILE = "quiz_settings";
 
     private static final String PREF_NAME = "quiz_key";
@@ -42,6 +43,18 @@ public class PrefManager {
         SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(constName, mssisdn);
+        editor.apply();
+    }
+
+    public static String readUserKey(Context ctx) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        return sharedPref.getString(USER_KEY, "");
+    }
+
+    public static void saveUserKey(Context ctx, String key){
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(USER_KEY, key);
         editor.apply();
     }
 

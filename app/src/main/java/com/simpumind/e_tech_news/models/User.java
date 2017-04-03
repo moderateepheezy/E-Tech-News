@@ -1,5 +1,10 @@
 package com.simpumind.e_tech_news.models;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by simpumind on 3/27/17.
  */
@@ -73,5 +78,19 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    @Exclude
+    public Map<String, Object> toMap() {
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("username", username);
+        result.put("msisdn", msisdn);
+        result.put("email", email);
+        result.put("physical_address", physical_address);
+        result.put("password", password);
+        result.put("profileImage", userProfile);
+        return  result;
     }
 }

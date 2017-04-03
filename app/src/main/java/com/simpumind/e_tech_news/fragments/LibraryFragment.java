@@ -30,6 +30,7 @@ import com.simpumind.e_tech_news.adapter.LibraryListHolder;
 import com.simpumind.e_tech_news.models.MyList;
 import com.simpumind.e_tech_news.models.NewsPaper;
 import com.simpumind.e_tech_news.utils.EmptyRecyclerView;
+import com.simpumind.e_tech_news.utils.PrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +113,7 @@ public class LibraryFragment extends Fragment implements View.OnClickListener{
         }
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        childRef = mDatabaseRef.child("users_subscription");
+        childRef = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getActivity())).child("susbscriptions");
         childRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -140,7 +141,7 @@ public class LibraryFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        adapter = new LibraryListAdapter(String.class, R.layout.library_list_item,
+        adapter = new LibraryListAdapter(Boolean.class, R.layout.library_list_item,
                 LibraryListHolder.class, childRef, getContext());
         recyclerView.setAdapter(adapter);
     }

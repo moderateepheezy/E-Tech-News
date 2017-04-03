@@ -12,6 +12,7 @@ import com.codemybrainsout.onboarder.AhoyOnboarderCard;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.simpumind.e_tech_news.R;
+import com.simpumind.e_tech_news.utils.PrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,12 @@ public class IntroActivity extends AhoyOnboarderActivity {
         //setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        String mssisdn = PrefManager.readMSSISDN(getApplicationContext(), "identify");
+        if(mssisdn != null){
+            Intent intent = new Intent(IntroActivity.this, NewsMainActivity.class);
+            startActivity(intent);
+        }
+
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -47,6 +54,7 @@ public class IntroActivity extends AhoyOnboarderActivity {
                 // ...
             }
         };
+
 
         AhoyOnboarderCard firstScreen = new AhoyOnboarderCard(getString(R.string.first_title), getString(R.string.first_description), R.drawable.bookone);
         firstScreen.setBackgroundColor(R.color.colorPrimaryDark);

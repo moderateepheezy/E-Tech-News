@@ -25,9 +25,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.models.User;
 import com.simpumind.e_tech_news.utils.PrefManager;
@@ -44,12 +47,13 @@ import static android.R.attr.country;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private DatabaseReference mDatabase;
+
+    private DatabaseReference mDatabaseRef;
+    private DatabaseReference childRef;
+    private DatabaseReference innerMDatabaseRef;
+    private DatabaseReference innerChildRef;
 
     private FirebaseAuth mAuth;
-
-
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
 
     PhoneNumberVerifier.Countries country;
@@ -130,83 +134,87 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.go){
-            Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-            startActivity(intent);
 
-//            progress=new ProgressDialog(this);
-//            progress.setMessage("Signing in...");
-//            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//            progress.setIndeterminate(true);
-//            progress.show();
+
+            String number = phoneNumber.getText().toString();
+
+            if(phoneNumber.getText().toString().isEmpty()){
+                phoneNumber.setError("Cannot be empty");
+            }
+            try {
+                PhoneModel phoneModel = country.isNumberValid(country, number);
+                if (phoneModel.isValidPhoneNumber()) {
+
+                    progress=new ProgressDialog(this);
+                    progress.setMessage("Signing in...");
+                    progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progress.setIndeterminate(true);
+                    progress.show();
+
+                    number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
+                    //outputTextView.setText(number);
+                    Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
+
+                    mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+
+                    Query query = mDatabaseRef.child("subscriber").orderByChild("msisdn").equalTo(number);
+
+                    final String finalNumber = number;
+                    final String finalNumber1 = number;
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if(dataSnapshot.getChildrenCount() > 0){
+                                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                                    String subscriberKey = childSnapshot.getKey();
+
+                                    PrefManager.saveUserKey(getApplicationContext(), subscriberKey);
+                                }
+
+                                progress.dismiss();
+                                Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            } else {
+                                innerMDatabaseRef = FirebaseDatabase.getInstance().getReference();
 //
-//
-//            String number = phoneNumber.getText().toString();
-//
-//            if(phoneNumber.getText().toString().isEmpty()){
-//                phoneNumber.setError("Cannot be empty");
-//            }
-//            try {
-//                PhoneModel phoneModel = country.isNumberValid(country, number);
-//                if (phoneModel.isValidPhoneNumber()) {
-//                    number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
-//                    //outputTextView.setText(number);
-//                    Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
-//
-//                    PrefManager.saveMSSIDN(getApplicationContext(), "identify", number);
-//
-////                    final String finalNumber = number;
-////                    mAuth.createUserWithEmailAndPassword(number +"@gmail.com", "somerandomepassword")
-////                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-////                                @Override
-////                                public void onComplete(@NonNull Task<AuthResult> task) {
-////                                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-////
-////                                    // If sign in fails, display a message to the user. If sign in succeeds
-////                                    // the auth state listener will be notified and logic to handle the
-////                                    // signed in user can be handled in the listener.
-////                                    if (task.isSuccessful()) {
-////                                        Toast.makeText(LoginActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-////
-////                                        FirebaseUser user = mAuth.getCurrentUser();
-////
-////                                        if (user != null) {
-////                                            // User is signed in
-////                                            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-////
-////                                            mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
-////
-////                                            User us = new User("tolu","email@gmail.com", finalNumber, "some address", "passowrd", "");
-////                                            mDatabase.setValue(us, new DatabaseReference.CompletionListener() {
-////                                                @Override
-////                                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-////                                                    if (databaseError != null) {
-////                                                        Log.d("Datadd", databaseError.getMessage());
-////                                                    } else {
-////                                                        Log.d("Datadd","Data saved successfully.");
-////                                                        progress.dismiss();
-////                                                    }
-////                                                }
-////                                            });
-////                                        } else {
-////                                            // User is signed out
-////                                            Log.d(TAG, "onbadfgr");
-////                                        }
-////
-////                                    }else {
-////                                        Toast.makeText(LoginActivity.this, "Error " + task.getResult(), Toast.LENGTH_SHORT).show();
-////                                    }
-////
-////                                    // ...
-////                                }
-////                            });
-//
-//                } else {
-//                    //outputTextView.setText("Not a valid phone number");
-//                    phoneNumber.setError("Not a valid number");
-//                }
-//            } catch (PhoneFormatException e) {
-//                //outputTextView.setText(e.getMessage());
-//            }
+                                innerChildRef = innerMDatabaseRef.child("subscriber").push();
+                                innerChildRef.child("msisdn").setValue(finalNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        progress.dismiss();
+
+                                        PrefManager.saveUserKey(getApplicationContext(), innerChildRef.getKey());
+
+                                        Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+
+                            }
+
+                            PrefManager.saveMSSIDN(getApplicationContext(), "identify", finalNumber1);
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                } else {
+                    //outputTextView.setText("Not a valid phone number");
+                    phoneNumber.setError("Not a valid number");
+                }
+            } catch (PhoneFormatException e) {
+                //outputTextView.setText(e.getMessage());
+            }
         }
     }
 
@@ -265,17 +273,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        if (mAuthListener != null) {
-//            mAuth.removeAuthStateListener(mAuthListener);
-//        }
-//    }
+
 }

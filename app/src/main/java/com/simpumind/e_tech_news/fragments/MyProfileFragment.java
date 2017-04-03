@@ -46,6 +46,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsMainActivity;
 import com.simpumind.e_tech_news.adapter.NewsReadAdapter;
@@ -61,7 +63,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -77,6 +81,9 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference childRef;
+
+    private DatabaseReference innerMDatabaseRef;
+    private DatabaseReference innerChildRef;
 
     View view;
 
@@ -144,7 +151,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
 
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        childRef = mDatabaseRef.child("read_by_user");
+        childRef = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getActivity())).child("read_news");
 
 
 
@@ -269,6 +276,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
 
             User user = new User(acct.getDisplayName(), acct.getEmail(), mssisdn,  "address", "password", acct.getPhotoUrl().toString());
 
+            pushUserToFirebase(user);
             PrefManager.storeUser(getActivity(), user);
 
 
@@ -325,6 +333,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
                             String mssisdn = PrefManager.readMSSISDN(getActivity(), "identify");
 
                             User user = new User(f_name, email_id, mssisdn,  "address", "password", picUrl);
+                            pushUserToFirebase(user);
 
                            PrefManager.storeUser(getActivity(), user);
 
@@ -403,17 +412,27 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
                 .into(profileImage);
 
         main1.setVisibility(View.VISIBLE);
+        main.setVisibility(View.GONE);
     }
 
 
     private void loadRecyclerViewItem() {
 
-        adapter = new NewsReadAdapter(String.class, R.layout.read_item_card,
-                ReadListHolder.class, childRef, getActivity());
+        adapter = new NewsReadAdapter(Boolean.class, R.layout.read_item_card,
+                ReadListHolder.class, childRef, getActivity(), (AppCompatActivity) getActivity());
         recyclerView.setAdapter(adapter);
 
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
+    }
+
+    public void pushUserToFirebase(User user){
+
+        Map<String, Object> userValues = user.toMap();
+        innerMDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        innerChildRef = innerMDatabaseRef.child("subscriber").child(PrefManager
+                .readUserKey(getActivity()));
+        innerChildRef.child("users").setValue(userValues);
     }
 }
