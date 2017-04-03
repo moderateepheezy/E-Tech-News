@@ -136,66 +136,85 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (v.getId() == R.id.go){
 
 
-            final String number = phoneNumber.getText().toString();
+            String number = phoneNumber.getText().toString();
 
             if(phoneNumber.getText().toString().isEmpty()){
                 phoneNumber.setError("Cannot be empty");
             }
+            try {
+                PhoneModel phoneModel = country.isNumberValid(country, number);
+                if (phoneModel.isValidPhoneNumber()) {
 
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+                    progress=new ProgressDialog(this);
+                    progress.setMessage("Signing in...");
+                    progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progress.setIndeterminate(true);
+                    progress.show();
 
-                Query query = mDatabaseRef.child("subscriber").orderByChild("msisdn").equalTo(number);
+                    number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
+                    //outputTextView.setText(number);
+                    Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
 
-                final String finalNumber = number;
-                final String finalNumber1 = number;
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    mDatabaseRef = FirebaseDatabase.getInstance().getReference();
 
-                        if (dataSnapshot.getChildrenCount() > 0) {
-                            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                                String subscriberKey = childSnapshot.getKey();
+                    Query query = mDatabaseRef.child("subscriber").orderByChild("msisdn").equalTo(number);
 
-                                PrefManager.saveUserKey(getApplicationContext(), subscriberKey);
+                    final String finalNumber = number;
+                    final String finalNumber1 = number;
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if(dataSnapshot.getChildrenCount() > 0){
+                                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                                    String subscriberKey = childSnapshot.getKey();
+
+                                    PrefManager.saveUserKey(getApplicationContext(), subscriberKey);
+                                }
+
+                                progress.dismiss();
+                                Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            } else {
+                                innerMDatabaseRef = FirebaseDatabase.getInstance().getReference();
+//
+                                innerChildRef = innerMDatabaseRef.child("subscriber").push();
+                                innerChildRef.child("msisdn").setValue(finalNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        progress.dismiss();
+
+                                        PrefManager.saveUserKey(getApplicationContext(), innerChildRef.getKey());
+
+                                        Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+
                             }
 
-                            progress.dismiss();
-                            Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            PrefManager.saveMSSIDN(getApplicationContext(), "identify", finalNumber1);
 
-                        } else {
-                            innerMDatabaseRef = FirebaseDatabase.getInstance().getReference();
-//
-                            innerChildRef = innerMDatabaseRef.child("subscriber").push();
-                            innerChildRef.child("msisdn").setValue(number).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    progress.dismiss();
-
-                                    PrefManager.saveUserKey(getApplicationContext(), innerChildRef.getKey());
-
-                                    Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
 
                         }
 
-                        PrefManager.saveMSSIDN(getApplicationContext(), "identify", number);
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
 
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
-
+                } else {
+                    //outputTextView.setText("Not a valid phone number");
+                    phoneNumber.setError("Not a valid number");
+                }
+            } catch (PhoneFormatException e) {
+                //outputTextView.setText(e.getMessage());
+            }
         }
     }
 
