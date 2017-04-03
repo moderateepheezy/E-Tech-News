@@ -136,85 +136,66 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (v.getId() == R.id.go){
 
 
-            String number = phoneNumber.getText().toString();
+            final String number = phoneNumber.getText().toString();
 
             if(phoneNumber.getText().toString().isEmpty()){
                 phoneNumber.setError("Cannot be empty");
             }
-            try {
-                PhoneModel phoneModel = country.isNumberValid(country, number);
-                if (phoneModel.isValidPhoneNumber()) {
 
-                    progress=new ProgressDialog(this);
-                    progress.setMessage("Signing in...");
-                    progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    progress.setIndeterminate(true);
-                    progress.show();
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference();
 
-                    number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
-                    //outputTextView.setText(number);
-                    Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
+                Query query = mDatabaseRef.child("subscriber").orderByChild("msisdn").equalTo(number);
 
-                    mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+                final String finalNumber = number;
+                final String finalNumber1 = number;
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    Query query = mDatabaseRef.child("subscriber").orderByChild("msisdn").equalTo(number);
+                        if (dataSnapshot.getChildrenCount() > 0) {
+                            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                String subscriberKey = childSnapshot.getKey();
 
-                    final String finalNumber = number;
-                    final String finalNumber1 = number;
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            if(dataSnapshot.getChildrenCount() > 0){
-                                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                                    String subscriberKey = childSnapshot.getKey();
-
-                                    PrefManager.saveUserKey(getApplicationContext(), subscriberKey);
-                                }
-
-                                progress.dismiss();
-                                Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-                                startActivity(intent);
-                                finish();
-
-                            } else {
-                                innerMDatabaseRef = FirebaseDatabase.getInstance().getReference();
-//
-                                innerChildRef = innerMDatabaseRef.child("subscriber").push();
-                                innerChildRef.child("msisdn").setValue(finalNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        progress.dismiss();
-
-                                        PrefManager.saveUserKey(getApplicationContext(), innerChildRef.getKey());
-
-                                        Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                });
-
+                                PrefManager.saveUserKey(getApplicationContext(), subscriberKey);
                             }
 
-                            PrefManager.saveMSSIDN(getApplicationContext(), "identify", finalNumber1);
+                            progress.dismiss();
+                            Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+                            startActivity(intent);
+                            finish();
 
+                        } else {
+                            innerMDatabaseRef = FirebaseDatabase.getInstance().getReference();
+//
+                            innerChildRef = innerMDatabaseRef.child("subscriber").push();
+                            innerChildRef.child("msisdn").setValue(number).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    progress.dismiss();
+
+                                    PrefManager.saveUserKey(getApplicationContext(), innerChildRef.getKey());
+
+                                    Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
 
                         }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                        PrefManager.saveMSSIDN(getApplicationContext(), "identify", number);
 
 
-                } else {
-                    //outputTextView.setText("Not a valid phone number");
-                    phoneNumber.setError("Not a valid number");
-                }
-            } catch (PhoneFormatException e) {
-                //outputTextView.setText(e.getMessage());
-            }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
         }
     }
 
