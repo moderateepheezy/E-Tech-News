@@ -4,10 +4,13 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsDetailActivity;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
@@ -38,6 +46,8 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
     private String vendorName;
     private String vendorIcon;
     private String vendorId;
+
+    private StorageReference mStorage;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -93,29 +103,43 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
 
         if(viewHolder instanceof HeaderViewHolder){
             ((HeaderViewHolder) viewHolder).title.setText(model.getCaption());
-            //((HeaderViewHolder) viewHolder).dateTime.setText(model.getime());
-            //Picasso.with(context).load(model.getThumbnail()).into(((HeaderViewHolder) viewHolder).imageView2);
 
-
-            String[] encodedDataString = model.getThumbnail().split("=");
-            //encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
-
-            byte[] imageAsBytes = Base64.decode(encodedDataString[0], Base64.NO_PADDING);
-            ((HeaderViewHolder) viewHolder).imageView2.setImageBitmap(BitmapFactory.decodeByteArray(
-                    imageAsBytes, 0, imageAsBytes.length));
+            mStorage = FirebaseStorage.getInstance().getReference();
+            mStorage.child(model.getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.with(context).load(uri.toString())
+                            .error(R.drawable.denews)
+                            .placeholder(R.drawable.denews)
+                            .into(((NewsListHolder) viewHolder).newsImage);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("Failed", e.getMessage());
+                }
+            });
         }else {
 
             ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption());
             //Picasso.with(context).load(model.getThumbnail()).into(((NewsListHolder) viewHolder).newsImage);
             ((NewsListHolder) viewHolder).vendorName.setText(vendorName);
 
-            String encodedDataString = model.getThumbnail();
-            encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
-            String[] dataString = encodedDataString.split("=");
-
-            byte[] imageAsBytes = Base64.decode(dataString[0].getBytes(), 0);
-            ((NewsListHolder) viewHolder).newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
-                    imageAsBytes, 0, imageAsBytes.length));
+            mStorage = FirebaseStorage.getInstance().getReference();
+            mStorage.child(model.getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.with(context).load(uri.toString())
+                            .error(R.drawable.denews)
+                            .placeholder(R.drawable.denews)
+                            .into(((NewsListHolder) viewHolder).newsImage);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("Failed", e.getMessage());
+                }
+            });
 
             ((NewsListHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

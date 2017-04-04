@@ -6,7 +6,6 @@ package com.simpumind.e_tech_news.models;
 
 public class NewsPaper {
 
-    public int content_provider;
     public String cost;
     public String  logo;
     public String method;
@@ -17,13 +16,12 @@ public class NewsPaper {
 
     }
 
-    public NewsPaper(String cost, String logo, String method, String paper_name, String validity, int content_provider) {
+    public NewsPaper(String cost, String logo, String method, String paper_name, String validity) {
         this.cost = cost;
         this.logo = logo;
         this.method = method;
         this.paper_name = paper_name;
         this.validity = validity;
-        this.content_provider = content_provider;
     }
 
     public String getCost() {

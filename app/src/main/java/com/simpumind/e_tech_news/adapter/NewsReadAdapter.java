@@ -4,22 +4,33 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsDetailActivity;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.NewsPaper;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by simpumind on 3/31/17.
@@ -35,6 +46,7 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
     private String newsId;
     private String vendorId;
     private AppCompatActivity activity;
+    private StorageReference mStorage;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -65,35 +77,32 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
             public void onDataChange(DataSnapshot dataSnapshot) {
                 News news = dataSnapshot.getValue(News.class);
 
-                newsId = dataSnapshot.getKey();
-                vendorId = news.newspaper_id;
+                if(news != null){
+                    newsId = dataSnapshot.getKey();
+                    vendorId = news.getNewspaper_id();
 
-                viewHolder.newsTitle.setText(news.caption);
-                String encodedDataString = news.getThumbnail();
-                encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
-                String[] dataString = encodedDataString.split("=");
+                    viewHolder.newsTitle.setText(news.caption);
 
-//                byte[] imageAsBytes = Base64.decode(dataString[0].getBytes(), 0);
-//               viewHolder.newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
-//                        imageAsBytes, 0, imageAsBytes.length));
+                    loadImage(viewHolder.newsImage, news.getThumbnail(), context);
 
 
-                mChildRef = FirebaseDatabase.getInstance().getReference().child("newspapers");
-                mChildRef.child(news.getNewspaper_id()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        NewsPaper newsPaper = dataSnapshot.getValue(NewsPaper.class);
-                        viewHolder.vendorName.setText(newsPaper.getPaper_name());
+                    mChildRef = FirebaseDatabase.getInstance().getReference().child("newspapers");
+                    mChildRef.child(news.getNewspaper_id()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            NewsPaper newsPaper = dataSnapshot.getValue(NewsPaper.class);
+                            viewHolder.vendorName.setText(newsPaper.getPaper_name());
 
-                        vendorName = newsPaper.getPaper_name();
-                        vendorIcon = newsPaper.getLogo();
-                    }
+                            vendorName = newsPaper.getPaper_name();
+                            vendorIcon = newsPaper.getLogo();
+                        }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
 
             @Override
@@ -119,5 +128,53 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
             }
         });
 
+    }
+
+    private void loadImage(final ImageView imageView, String imagePath, final Context context){
+        mStorage = FirebaseStorage.getInstance().getReference();
+        mStorage.child(imagePath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.with(context).load(uri.toString())
+                        .fit()
+                        .error(R.drawable.denews)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .placeholder(R.drawable.denews)
+                        .into(imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Picasso.with(context)
+                                        .load(uri.toString())
+                                        .fit()
+                                        .error(R.drawable.denews)
+                                        .placeholder(R.drawable.denews)
+                                        .into(imageView, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+
+                                            }
+
+                                            @Override
+                                            public void onError() {
+                                                Log.v("Picasso","Could not fetch image");
+                                            }
+                                        });
+                            }
+                        });
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Failed", e.getMessage());
+
+
+            }
+        });
     }
 }

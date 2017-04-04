@@ -55,6 +55,7 @@
                     android:id="@+id/sub_icon"
                     android:layout_alignParentBottom="true"
                     android:tint="#a4a4a4"
+                    android:visibility="gone"
                     android:src="@drawable/sub_icon"/>
 
 

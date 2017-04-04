@@ -32,9 +32,10 @@ public class IntroActivity extends AhoyOnboarderActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         String mssisdn = PrefManager.readMSSISDN(getApplicationContext(), "identify");
-        if(mssisdn != null){
+        if(!mssisdn.equals("")){
             Intent intent = new Intent(IntroActivity.this, NewsMainActivity.class);
             startActivity(intent);
+            finish();
         }
 
         mAuth = FirebaseAuth.getInstance();

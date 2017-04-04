@@ -28,8 +28,7 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:id="@+id/vendorIcon"
-                android:src="@drawable/news_lo"/>
+                android:id="@+id/vendorIcon"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -44,8 +43,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="#181818"
-                    android:id="@+id/vendorName"
-                    android:text="Cartoon Network"/>
+                    android:id="@+id/vendorName"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -102,10 +100,10 @@
             android:id="@+id/toolbarImage"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
             android:layout_marginTop="10dp"
-            android:transitionName="@string/blue_name"
-            android:src="@drawable/trump"/>
+            android:transitionName="@string/blue_name"/>
 
 
             <LinearLayout
@@ -122,7 +120,7 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/dummy"
                     android:id="@+id/description"
-                    android:lineSpacingExtra="@dimen/_3sdp"
+                    android:lineSpacingExtra="3dp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
 
 

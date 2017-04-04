@@ -1,8 +1,11 @@
 package com.simpumind.e_tech_news.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -28,9 +33,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.utils.PrefManager;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +66,11 @@ public class NewsDetailActivity extends AppCompatActivity {
     Button subscribe;
     ViewGroup transitionsContainer;
 
-    private static boolean isUserSubscribed;
+    private static boolean isUserSubscribed = false;
 
 
     private DatabaseReference mDatabase;
+    private StorageReference mStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +117,8 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         final String vendor_id  = intent.getStringExtra(VENDOR_ID);
 
-        childRef = FirebaseDatabase.getInstance().getReference();
-        Query query = childRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendor_id);
+        mDataRef = FirebaseDatabase.getInstance().getReference();
+        Query query = mDataRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendor_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -239,26 +250,14 @@ public class NewsDetailActivity extends AppCompatActivity {
 
             vendorName.setText(vendName);
 
-//            String encodedDataString = vendIcon;
-//            encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
-//            String[] dataString = encodedDataString.split("=");
-//
-//            byte[] imageAsBytes = Base64.decode(dataString[0].getBytes(), Base64.NO_PADDING);
-//            vendorIcon.setImageBitmap(BitmapFactory.decodeByteArray(
-//                    imageAsBytes, 0, imageAsBytes.length));
+            loadImage(vendorIcon, vendIcon, getApplicationContext());
         }
 
         expandableTextView.setText(Html.fromHtml(news.content));
 
         titleNews.setText(news.caption);
 
-        String encodedDataString = news.getThumbnail();
-        encodedDataString = encodedDataString.replace("data:image/jpeg;base64,","");
-        String[] dataString = encodedDataString.split("=");
-
-        byte[] imageAsBytes = Base64.decode(dataString[0].getBytes(), Base64.NO_PADDING);
-        newsImage.setImageBitmap(BitmapFactory.decodeByteArray(
-                imageAsBytes, 0, imageAsBytes.length));
+        loadImage(newsImage, news.getThumbnail(), getApplicationContext());
 
     }
 
@@ -342,6 +341,52 @@ public class NewsDetailActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadImage(final ImageView imageView, String imagePath, final Context context){
+        mStorage = FirebaseStorage.getInstance().getReference();
+        mStorage.child(imagePath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.with(context).load(uri.toString())
+                        .error(R.drawable.denews)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .placeholder(R.drawable.denews)
+                        .into(imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Picasso.with(context)
+                                        .load(uri.toString())
+                                        .error(R.drawable.denews)
+                                        .placeholder(R.drawable.denews)
+                                        .into(imageView, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+
+                                            }
+
+                                            @Override
+                                            public void onError() {
+                                                Log.v("Picasso","Could not fetch image");
+                                            }
+                                        });
+                            }
+                        });
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Failed", e.getMessage());
+
 
             }
         });

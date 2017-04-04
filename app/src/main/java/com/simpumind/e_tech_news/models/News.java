@@ -11,18 +11,20 @@ public class News {
     public String newspaper_id;
     public String thumbnail;
     public String user;
+    public Long created_on;
 
 
     public News(){
 
     }
 
-    public News(String caption, String content, String newspaper_id, String thumbnail, String user) {
+    public News(String caption, String content, String newspaper_id, String thumbnail, String user, Long created_on) {
         this.caption = caption;
         this.content = content;
         this.newspaper_id = newspaper_id;
         this.thumbnail = thumbnail;
         this.user = user;
+        this.created_on = created_on;
     }
 
     public String getCaption() {
