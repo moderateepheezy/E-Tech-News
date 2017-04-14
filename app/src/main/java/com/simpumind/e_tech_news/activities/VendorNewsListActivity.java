@@ -3,10 +3,12 @@ package com.simpumind.e_tech_news.activities;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +24,7 @@ import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.utils.EmptyRecyclerView;
 
 
-public class VendorNewsListActivity extends AppCompatActivity {
+public class VendorNewsListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
     private static final String TAG = VendorNewsListActivity.class.getSimpleName();
     public static final String NEWS_PAPER_ID = "news_paper_id";
@@ -81,6 +83,9 @@ public class VendorNewsListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
          getMenuInflater().inflate(R.menu.vendor_news_menu, menu);
+        final MenuItem searchItem = menu.findItem(R.id.search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -91,10 +96,32 @@ public class VendorNewsListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.settings) {
+
+            Intent i = getIntent();
+
+            String vendorName = i.getStringExtra(VENDOR_NAME);
+            String vendorIcon = i.getStringExtra(VENDOR_ICON);
+            String vendorId = i.getStringExtra(VENDOR_ID);
+
             Intent intent = new Intent(VendorNewsListActivity.this, VendorSettingsActivity.class);
+            intent.putExtra(VendorSettingsActivity.VENDOR_NAME, vendorName);
+            intent.putExtra(VendorSettingsActivity.VENDOR_ICON, vendorIcon);
+            intent.putExtra(VendorSettingsActivity.VENDOR_ID, vendorId);
             startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        // Here is where we are going to implement the filter logic
+        newsListAdapter.filter(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 }

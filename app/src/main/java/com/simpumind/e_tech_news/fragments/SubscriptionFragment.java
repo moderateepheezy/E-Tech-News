@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -43,7 +45,7 @@ import static android.R.attr.button;
  * Created by simpumind on 3/23/17.
  */
 
-public class SubscriptionFragment extends Fragment implements View.OnClickListener{
+public class SubscriptionFragment extends Fragment implements View.OnClickListener, SearchView.OnQueryTextListener {
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference childRef;
@@ -129,6 +131,9 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.main_menu, menu);
+        final MenuItem searchItem = menu.findItem(R.id.search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override
@@ -163,5 +168,17 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 //        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        // Here is where we are going to implement the filter logic
+        vendorNewAdapter.filter(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 }

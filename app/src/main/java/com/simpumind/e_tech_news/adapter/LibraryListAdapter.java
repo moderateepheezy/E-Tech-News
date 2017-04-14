@@ -60,7 +60,7 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<Boolean, Library
 
 
     @Override
-    protected void populateViewHolder(final LibraryListHolder viewHolder, final Boolean model, int position) {
+    protected void populateViewHolder(final LibraryListHolder viewHolder, final Boolean model, final int position) {
 
 
 
@@ -88,7 +88,7 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<Boolean, Library
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, VendorNewsListActivity.class);
-                intent.putExtra(VendorNewsListActivity.NEWS_PAPER_ID, model);
+                intent.putExtra(VendorNewsListActivity.NEWS_PAPER_ID, getRef(position).getKey());
                 intent.putExtra(VendorNewsListActivity.VENDOR_NAME, vendotName);
                 intent.putExtra(VendorNewsListActivity.VENDOR_ICON, vendorIcon);
                 intent.putExtra(VendorNewsListActivity.VENDOR_ID, vendorId);

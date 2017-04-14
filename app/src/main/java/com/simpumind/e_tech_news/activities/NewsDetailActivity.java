@@ -35,7 +35,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.simplealertdialog.SimpleAlertDialog;
+import com.simplealertdialog.SimpleAlertDialogFragment;
 import com.simpumind.e_tech_news.R;
+import com.simpumind.e_tech_news.fragments.SubscribeChoiceFragment;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.utils.PrefManager;
 import com.squareup.picasso.Callback;
@@ -47,13 +50,16 @@ import java.util.List;
 
 import at.blogc.android.views.ExpandableTextView;
 
-public class NewsDetailActivity extends AppCompatActivity {
+public class NewsDetailActivity extends AppCompatActivity implements SimpleAlertDialog.SingleChoiceArrayItemProvider{
 
     private static final String TAG = NewsDetailActivity.class.getSimpleName();
     public static final String SINGLE_NEWS = "Single_news";
     public static final String VENDOR_NAME = "vendor_name";
     public static final String VENDOR_ICON = "vendor_icon";
     public static final String VENDOR_ID = "vendor_id";
+    private static final String CHOICE_DIALOG =  "choice_dialog";
+    private static final int REQUEST_CODE_SINGLE_CHOICE_LIST = 34005;
+    private static final int REQUEST_CODE_SINGLE_Any_CHOICE_LIST = 340005;
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference childRef;
@@ -65,6 +71,11 @@ public class NewsDetailActivity extends AppCompatActivity {
     ImageView vendorIcon;
     Button subscribe;
     ViewGroup transitionsContainer;
+
+    Button buttonToggle;
+
+    static String vendor_id;
+    static String news_id;
 
     private static boolean isUserSubscribed = false;
 
@@ -81,7 +92,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        final String news_id  = intent.getStringExtra(SINGLE_NEWS);
+        news_id  = intent.getStringExtra(SINGLE_NEWS);
 
         Log.d("fdmfmdmdfdc", news_id);
 
@@ -112,17 +123,18 @@ public class NewsDetailActivity extends AppCompatActivity {
         subscribe = (Button) findViewById(R.id.subscribe);
         transitionsContainer = (ViewGroup) findViewById(R.id.transitions_container);
         expandableTextView = (ExpandableTextView) this.findViewById(R.id.description);
-        final Button buttonToggle = (Button) this.findViewById(R.id.button_toggle);
+        buttonToggle = (Button) this.findViewById(R.id.button_toggle);
 
 
-        final String vendor_id  = intent.getStringExtra(VENDOR_ID);
+        vendor_id  = intent.getStringExtra(VENDOR_ID);
 
+        String userId = PrefManager.readUserKey(getApplicationContext());
         mDataRef = FirebaseDatabase.getInstance().getReference();
-        Query query = mDataRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendor_id);
+        Query query = mDataRef.child("subscriber").child(userId).child("susbscriptions").child(vendor_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getKey().equals(vendor_id)){
+                if(dataSnapshot.getKey().equals(vendor_id) && dataSnapshot.getValue() != null){
                     isUserSubscribed = true;
                     expandableTextView.expand();
                     buttonToggle.setVisibility(View.INVISIBLE);
@@ -215,17 +227,14 @@ public class NewsDetailActivity extends AppCompatActivity {
                     unSubscribeVednor(vendor_id);
 
                 }else {
-                    isUserSubscribed = true;
-                    expandableTextView.expand();
-                    buttonToggle.setVisibility(View.GONE);
 
-
-                    subscribeVendor(vendor_id);
-
-                    TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
-                    subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
-                    subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
-                    subscribe.setText("Unsubscribe");
+                    new SimpleAlertDialogFragment.Builder()
+                            .setTitle("Choose one")
+                            .setSingleChoiceCheckedItem(0) // This enables a single choice list
+                            .setRequestCode(REQUEST_CODE_SINGLE_CHOICE_LIST)
+                            .setNegativeButton("Cancel")
+                            .setCancelable(true)
+                            .create().show(getFragmentManager(), "dialog");
                 }
             }
         });
@@ -391,4 +400,45 @@ public class NewsDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public CharSequence[] onCreateSingleChoiceArray(SimpleAlertDialog dialog, int requestCode) {
+
+        if (requestCode == REQUEST_CODE_SINGLE_CHOICE_LIST) {
+            final CharSequence  items [] = {"Daily","Weekly","Monthly"};
+            return  items;
+        }else if(requestCode == REQUEST_CODE_SINGLE_Any_CHOICE_LIST){
+            final CharSequence  items [] = {"Direct Billing","Mobile Money"};
+            return  items;
+        }
+        return null;
+    }
+
+    @Override
+    public void onSingleChoiceArrayItemClick(SimpleAlertDialog dialog, int requestCode, int position) {
+        if (requestCode == REQUEST_CODE_SINGLE_CHOICE_LIST) {
+            // Do something
+            new SimpleAlertDialogFragment.Builder()
+                    .setTitle("Choose one")
+                    .setSingleChoiceCheckedItem(0) // This enables a single choice list
+                    .setRequestCode(REQUEST_CODE_SINGLE_Any_CHOICE_LIST)
+                    .setCancelable(true)
+                    .setNegativeButton("Cancel")
+                    .create().show(getFragmentManager(), "dialog2");
+        }else if (requestCode == REQUEST_CODE_SINGLE_Any_CHOICE_LIST){
+            isUserSubscribed = true;
+            expandableTextView.expand();
+            buttonToggle.setVisibility(View.GONE);
+
+            readByUser(news_id);
+
+            subscribeVendor(vendor_id);
+
+            TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
+            subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
+            subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
+            subscribe.setText("Unsubscribe");
+        }
+    }
+
 }

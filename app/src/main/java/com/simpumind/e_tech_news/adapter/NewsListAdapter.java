@@ -21,6 +21,9 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
@@ -29,7 +32,11 @@ import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsDetailActivity;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
 import com.simpumind.e_tech_news.models.News;
+import com.simpumind.e_tech_news.models.NewsPaper;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by simpumind on 3/28/17.
@@ -48,6 +55,20 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
     private String vendorId;
 
     private StorageReference mStorage;
+
+
+
+    private Query mRef;
+    private Class<News> mModelClass;
+    private int mLayout;
+    private LayoutInflater mInflater;
+    private ChildEventListener mListener;
+
+    List<News> newsPaperList;
+
+    private List<News> posts = new ArrayList<>();
+    private List<News> postsCopy= new ArrayList<>();
+    private List<String> mKeys;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -68,6 +89,107 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
         this.vendorName = vendorName;
         this.vendorIcon = vendorIcon;
         this.vendorId = vendorId;
+
+
+        this.mRef = ref;
+        this.mModelClass = modelClass;
+        this.mLayout = modelLayout;
+        mInflater = activity.getLayoutInflater();
+        posts = new ArrayList<>();
+        mKeys = new ArrayList<>();
+        // Look for all child events. We will then map them to our own internal ArrayList, which backs ListView
+        mListener = this.mRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+
+                News model = dataSnapshot.getValue(NewsListAdapter.this.mModelClass);
+                String key = dataSnapshot.getKey();
+
+                // Insert into the correct location, based on previousChildName
+                if (previousChildName == null) {
+                    posts.add(0, model);
+                    postsCopy.add(0, model);
+                    mKeys.add(0, key);
+                } else {
+                    int previousIndex = mKeys.indexOf(previousChildName);
+                    int nextIndex = previousIndex + 1;
+                    if (nextIndex == posts.size()) {
+                        posts.add(model);
+                        postsCopy.add(model);
+                        mKeys.add(key);
+                    } else {
+                        posts.add(nextIndex, model);
+                        postsCopy.add(nextIndex, model);
+                        mKeys.add(nextIndex, key);
+                    }
+                }
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                // One of the posts changed. Replace it in our list and name mapping
+                String key = dataSnapshot.getKey();
+                News newModel = dataSnapshot.getValue(NewsListAdapter.this.mModelClass);
+                int index = mKeys.indexOf(key);
+
+                posts.set(index, newModel);
+                postsCopy.set(index, newModel);
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                // A model was removed from the list. Remove it from our list and the name mapping
+                String key = dataSnapshot.getKey();
+                int index = mKeys.indexOf(key);
+
+                mKeys.remove(index);
+                posts.remove(index);
+                postsCopy.remove(index);
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+
+                // A model changed position in the list. Update our list accordingly
+                String key = dataSnapshot.getKey();
+                News newModel = dataSnapshot.getValue(NewsListAdapter.this.mModelClass);
+                int index = mKeys.indexOf(key);
+                posts.remove(index);
+                postsCopy.remove(index);
+                mKeys.remove(index);
+                if (previousChildName == null) {
+                    posts.add(0, newModel);
+                    postsCopy.add(0,newModel);
+                    mKeys.add(0, key);
+                } else {
+                    int previousIndex = mKeys.indexOf(previousChildName);
+                    int nextIndex = previousIndex + 1;
+                    if (nextIndex == posts.size()) {
+                        posts.add(newModel);
+                        postsCopy.add(newModel);
+                        mKeys.add(key);
+                    } else {
+                        posts.add(nextIndex, newModel);
+                        postsCopy.add(nextIndex, newModel);
+                        mKeys.add(nextIndex, key);
+                    }
+                }
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                Log.e("FirebaseListAdapter", "Listen was cancelled, no more updates will occur");
+            }
+
+        });
     }
 
     @Override
@@ -158,6 +280,52 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
 
         }
     }
+
+
+    public void setList(List<News> list) {
+        newsPaperList = list;
+    }
+
+
+    public void cleanup() {
+        // We're being destroyed, let go of our mListener and forget about all of the posts
+        mRef.removeEventListener(mListener);
+        posts.clear();
+        postsCopy.clear();
+        mKeys.clear();
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return posts.size();
+    }
+
+    @Override
+    public News getItem(int i) {
+        return posts.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    public void filter(String text) {
+        posts.clear();
+        if(text.isEmpty()){
+            posts.addAll(postsCopy);
+        } else{
+            text = text.toLowerCase();
+            for(News post : postsCopy){
+                if(post.getCaption().toLowerCase().contains(text)){
+                    posts.add(post);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 
     @Override
     protected void populateViewHolder(RecyclerView.ViewHolder viewHolder, final News model, final int position) {

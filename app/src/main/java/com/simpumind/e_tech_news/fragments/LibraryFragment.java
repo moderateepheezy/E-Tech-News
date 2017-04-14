@@ -106,40 +106,9 @@ public class LibraryFragment extends Fragment implements View.OnClickListener{
     }
 
     private void loadRecyclerViewItem() {
-        //you can fetch the data from server or some apis
-        //for this tutorial I am adding some dummy data directly
-        for (int i = 1; i <= 5; i++) {
-
-        }
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         childRef = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getActivity())).child("susbscriptions");
-        childRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         adapter = new LibraryListAdapter(Boolean.class, R.layout.library_list_item,
                 LibraryListHolder.class, childRef, getContext());

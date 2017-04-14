@@ -58,4 +58,33 @@ public class News {
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        News news = (News) o;
+
+        if (caption != null ? !caption.equals(news.caption) : news.caption != null) return false;
+        if (content != null ? !content.equals(news.content) : news.content != null) return false;
+        if (newspaper_id != null ? !newspaper_id.equals(news.newspaper_id) : news.newspaper_id != null)
+            return false;
+        if (thumbnail != null ? !thumbnail.equals(news.thumbnail) : news.thumbnail != null)
+            return false;
+        if (user != null ? !user.equals(news.user) : news.user != null) return false;
+        return created_on != null ? created_on.equals(news.created_on) : news.created_on == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = caption != null ? caption.hashCode() : 0;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (newspaper_id != null ? newspaper_id.hashCode() : 0);
+        result = 31 * result + (thumbnail != null ? thumbnail.hashCode() : 0);
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (created_on != null ? created_on.hashCode() : 0);
+        return result;
+    }
 }

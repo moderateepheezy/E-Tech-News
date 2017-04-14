@@ -75,5 +75,6 @@
         android:layout_gravity="center"
         android:text="UnSubscribe"
         android:textStyle="bold"
+        android:id="@+id/subscribe"
         android:layout_height="wrap_content" />
 </LinearLayout>

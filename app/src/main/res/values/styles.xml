@@ -59,5 +59,9 @@
         <item name="colorAccent">@color/colorAccent</item>
 
     </style>
+    <style name="SimpleAlertDialogTitleTextStyle">
+        <item name="android:textColor">#0e1301</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
 
 </resources>

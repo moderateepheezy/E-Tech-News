@@ -63,4 +63,34 @@ public class NewsPaper {
     public void setValidity(String validity) {
         this.validity = validity;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NewsPaper newsPaper = (NewsPaper) o;
+
+        if (cost != null ? !cost.equals(newsPaper.cost) : newsPaper.cost != null) return false;
+        if (logo != null ? !logo.equals(newsPaper.logo) : newsPaper.logo != null) return false;
+        if (method != null ? !method.equals(newsPaper.method) : newsPaper.method != null)
+            return false;
+        if (paper_name != null ? !paper_name.equals(newsPaper.paper_name) : newsPaper.paper_name != null)
+            return false;
+        return validity != null ? validity.equals(newsPaper.validity) : newsPaper.validity == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = cost != null ? cost.hashCode() : 0;
+        result = 31 * result + (logo != null ? logo.hashCode() : 0);
+        result = 31 * result + (method != null ? method.hashCode() : 0);
+        result = 31 * result + (paper_name != null ? paper_name.hashCode() : 0);
+        result = 31 * result + (validity != null ? validity.hashCode() : 0);
+        return result;
+    }
+
+
 }
