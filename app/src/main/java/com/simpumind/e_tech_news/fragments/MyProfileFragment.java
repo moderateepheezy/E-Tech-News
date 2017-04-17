@@ -50,6 +50,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsMainActivity;
+import com.simpumind.e_tech_news.activities.SettingsActivity;
 import com.simpumind.e_tech_news.adapter.NewsReadAdapter;
 import com.simpumind.e_tech_news.adapter.ReadListHolder;
 import com.simpumind.e_tech_news.adapter.SimpleAdapter;
@@ -145,6 +146,8 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 Toast.makeText(getActivity(),"Item 1 Selected",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
                 return true;
             }
         });
