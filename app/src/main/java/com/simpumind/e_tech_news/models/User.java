@@ -17,19 +17,21 @@ public class User {
     public String physical_address;
     public String password;
     public String userProfile;
+    public String signinType;
 
 
     public User(){
 
     }
 
-    public User(String username, String email, String msisdn, String physical_address, String password, String userProfile) {
+    public User(String username, String email, String msisdn, String physical_address, String password, String userProfile, String signinType) {
         this.username = username;
         this.email = email;
         this.msisdn = msisdn;
         this.physical_address = physical_address;
         this.password = password;
         this.userProfile = userProfile;
+        this.signinType = signinType;
     }
 
     public String getUserProfile() {
@@ -72,6 +74,14 @@ public class User {
         this.physical_address = physical_address;
     }
 
+    public String getSigninType() {
+        return signinType;
+    }
+
+    public void setSigninType(String signinType) {
+        this.signinType = signinType;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -91,6 +101,7 @@ public class User {
         result.put("physical_address", physical_address);
         result.put("password", password);
         result.put("profileImage", userProfile);
+        result.put("signinType", signinType);
         return  result;
     }
 }

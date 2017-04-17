@@ -277,7 +277,8 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
 
             String mssisdn = PrefManager.readMSSISDN(getActivity(), "identify");
 
-            User user = new User(acct.getDisplayName(), acct.getEmail(), mssisdn,  "address", "password", acct.getPhotoUrl().toString());
+            User user = new User(acct.getDisplayName(), acct.getEmail(), mssisdn,
+                    "address", "password", acct.getPhotoUrl().toString(), "Google");
 
             pushUserToFirebase(user);
             PrefManager.storeUser(getActivity(), user);
@@ -335,7 +336,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
 
                             String mssisdn = PrefManager.readMSSISDN(getActivity(), "identify");
 
-                            User user = new User(f_name, email_id, mssisdn,  "address", "password", picUrl);
+                            User user = new User(f_name, email_id, mssisdn,  "address", "password", picUrl, "Facebook");
                             pushUserToFirebase(user);
 
                            PrefManager.storeUser(getActivity(), user);

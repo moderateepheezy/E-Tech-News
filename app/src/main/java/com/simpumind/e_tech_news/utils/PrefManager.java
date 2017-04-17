@@ -25,6 +25,7 @@ public class PrefManager {
     private static final String KEY_PROFILR_IMAGE = "profile_image";
     private static final String KEY_MSSISDN = "key_mssisdn";
     private static final String KEY_ADDRESS = "key_address";
+    private static final  String KEY_TYPE = "key_type";
 
 
     public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
@@ -72,6 +73,7 @@ public class PrefManager {
         editor.putString(KEY_PROFILR_IMAGE, user.getUserProfile());
         editor.putString(KEY_MSSISDN, user.getMsisdn());
         editor.putString(KEY_ADDRESS, user.getPhysical_address());
+        editor.putString(KEY_TYPE, user.getSigninType());
         editor.apply();
         editor.apply();
     }
@@ -80,7 +82,7 @@ public class PrefManager {
 
         SharedPreferences pref = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
-        String name, email, password, profileImage, mssisdn, address;
+        String name, email, password, profileImage, mssisdn, address, type;
         int id = pref.getInt(KEY_USER_ID, 0);
         name = pref.getString(KEY_USER_NAME, "");
         email = pref.getString(KEY_USER_EMAIL, "");
@@ -88,8 +90,10 @@ public class PrefManager {
         profileImage = pref.getString(KEY_PROFILR_IMAGE, "");
         mssisdn = pref.getString(KEY_MSSISDN, "");
         address = pref.getString(KEY_ADDRESS, "");
+        type = pref.getString(KEY_TYPE, "");
 
-        User user = new User(name, email,mssisdn, address, password, profileImage);
+
+        User user = new User(name, email,mssisdn, address, password, profileImage, type);
         return user;
     }
 }
