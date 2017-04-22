@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -41,6 +44,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan;
+import uk.co.chrisjenx.calligraphy.TypefaceUtils;
 
 
 /**
@@ -203,7 +209,7 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
     @Override
     protected void populateViewHolder(final NewsPaperHolder viewHolder, final NewsPaper model, final int position) {
 
-        viewHolder.vendorName.setText(model.getPaper_name());
+        viewHolder.vendorName.setText(changeFont(model.getPaper_name()), TextView.BufferType.SPANNABLE);
 
         loadImage(viewHolder.vendorIcon, model.getLogo(), context);
 
@@ -222,7 +228,7 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                     TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
                     viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.button_back_color));
                     viewHolder.subscribe.setBackground(context.getResources().getDrawable(R.drawable.round_corner));
-                    viewHolder.subscribe.setText("UnSubscribe");
+                    viewHolder.subscribe.setText(context.getResources().getString(R.string.unsubscribe));
                 }
             }
 
@@ -273,7 +279,7 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                     isUserSubscribed = false;
                     TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
                     viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.colorAccent));
-                    viewHolder.subscribe.setText("Subscribe");
+                    viewHolder.subscribe.setText(context.getResources().getString(R.string.subscribe));
                     unSubscribeVendor(getRef(position).getKey());
                 }else {
 
@@ -300,7 +306,7 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                                                     isUserSubscribed = true;
                                                     TransitionManager.beginDelayedTransition(viewHolder.transitionsContainer, new AutoTransition());
                                                     viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.button_back_color));
-                                                    viewHolder.subscribe.setText("Unsubscribe");
+                                                    viewHolder.subscribe.setText(context.getResources().getString(R.string.unsubscribe));
                                                     subscribeVendor(getRef(position).getKey());
                                                     return true; // allow selection
                                                 }
@@ -369,13 +375,31 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
     public void updateUI(NewsPaperHolder holder, News news){
 
-        String latest = "Latest:  ";
-        String caption = news.getCaption();
-        String newsTitle = latest + caption;
-        Spannable sb = new SpannableString( newsTitle );
+        SpannableStringBuilder sBuilder = new SpannableStringBuilder();
+        sBuilder.append("Latest: ") // Bold this
+                .append(news.getCaption()); // Default TextView font.
+// Create the Typeface you want to apply to certain text
+        //CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(context.getAssets(), "fonts/Montserrat-Bold.ttf"));
+// Apply typeface to the Spannable 0 - 6 "Hello!" This can of course by dynamic.
+        CalligraphyTypefaceSpan typefaceSpan2 = new CalligraphyTypefaceSpan(TypefaceUtils.load(context.getAssets(), "fonts/Montserrat-Regular.ttf"));
+        //sBuilder.setSpan(typefaceSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sBuilder.setSpan(typefaceSpan2, 7, news.getCaption().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        holder.firstNewsTitle.setText(latest + news.getCaption());
 
+        holder.firstNewsTitle.setText(sBuilder, TextView.BufferType.SPANNABLE);
+
+    }
+
+
+    public SpannableStringBuilder changeFont(String text){
+        SpannableStringBuilder sBuilder = new SpannableStringBuilder() // Bold this
+                .append(text); // Default TextView font.
+// Create the Typeface you want to apply to certain text
+        CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(context.getAssets(), "fonts/BodoniFLF-Bold.ttf"));
+// Apply typeface to the Spannable 0 - 6 "Hello!" This can of course by dynamic.
+        sBuilder.setSpan(typefaceSpan, 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        return sBuilder;
     }
 
     public void subscribeVendor(final String vendorId){

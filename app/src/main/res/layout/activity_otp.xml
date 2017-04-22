@@ -33,7 +33,7 @@
         android:gravity="center"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="Please enter OTP Code  that has been sent to your phone through SMS "
+        android:text="@string/enter_otp"
         android:layout_below="@id/logo"
         android:maxLines="4"/>
 
@@ -62,7 +62,7 @@
         android:layout_margin="25dp"
         android:layout_centerHorizontal="true"
         android:textColor="@color/colorAccent"
-        android:text="Submit"
+        android:text="@string/submit"
         android:id="@+id/submit"
         android:background="@drawable/border_round_corner"/>
 

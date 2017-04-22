@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">E-Tech-News</string>
+
+
+    <string name="first_title">E-Tech News</string>
+    <string name="first_description">Lire les nouvelles de différents fournisseurs</string>
+    <string name="second_description">Ajouter des fournisseurs à la bibliothèque</string>
+    <string name="third_description">Souscription sans fil</string>
+    <string name="library">Bibliothèque</string>
+    <string name="settings">Paramètres</string>
+    <string name="subscriptions">Abonnements</string>
+    <string name="search">Chercher</string>
+    <string name="vendor">Vendeurs</string>
+
+    <string name="title_list_to_grid">Liste à la grille</string>
+
+    <string name="facebook_app_id">710404902495153</string>
+
+
+    <string name="login_success">Succès de connexion</string>
+    <string name="login">S\'IDENTIFIER</string>
+    <string name="Username">Numéro de téléphone</string>
+    <string name="Password">Mot de passe</string>
+    <string name="forgot_your_password">Mot de passe oublié ?</string>
+    <string name="go">ALLER</string>
+    <string name="repeat_password">Répéter le mot de passe</string>
+    <string name="next">PROCHAIN</string>
+    <string name="register">REGISTRE</string>
+    <string name="dummy">Of course, some code must have been written to govern the behaviors of the widgets and Views in our samples above. The CoordinatorLayout automatically does all this already. However, you might want to define your own reactions and behaviors, rather than use the default and standard behaviors. It is remarkably easy to do. The complexity lies in how unique a behavior you want, and not in implementing a behavior. Our custom behavior is really simple. From the FabFollowsWidget sample above, we want the CircleImageView to grow larger as the user scrolls to the end of the Cards.</string>
+    <string name="blue_name">share name</string>
+    <string name="profile">Mon profil</string>
+    <string name="no_value">Aucune valeur!</string>
+    <string name="comments">Commentaires</string>
+    <string name="subscribe">Souscrire</string>
+    <string name="read_more">Lire la suite</string>
+    <string name="intro_title">Entrez le lieu</string>
+    <string name="phone_number">Numéro de téléphone</string>
+    <string name="have_account">Vous n\'avez pas de compte? registre</string>
+    <string name="enter_otp">Entrez le code OTP qui a été envoyé à votre téléphone par SMS</string>
+    <string name="submit">Soumettre</string>
+    <string name="account">COMPTE</string>
+    <string name="general">GÉNÉRAL</string>
+    <string name="general_notifications">Notifications générales</string>
+    <string name="sign_out_from">Se déconnecter de</string>
+    <string name="unsubscribe_from_all_vendors">Désinscription de tous les fournisseurs</string>
+    <string name="language">La langue</string>
+    <string name="expiry_date">Date d\'expiration</string>
+    <string name="enable_notification">Activer la notification</string>
+    <string name="extend_subsciption">Étendre la souscription</string>
+    <string name="unsubscribe">Se désabonner</string>
+    <string name="write_a_comment">Écrire un commentaire</string>
+    <string name="subcribe_to_vendors">S\'abonner aux fournisseurs</string>
+    <string name="read_news">Lire les nouvelles</string>
+    <string name="complete_registration_with">Enregistrement complet avec:</string>
+    <string name="no_news">Pas de nouvelles en ce moment!</string>
+
+
+</resources>

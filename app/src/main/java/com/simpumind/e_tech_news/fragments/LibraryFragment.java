@@ -3,6 +3,7 @@ package com.simpumind.e_tech_news.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +35,8 @@ import com.simpumind.e_tech_news.utils.PrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by simpumind on 3/23/17.
@@ -42,6 +45,8 @@ import java.util.List;
 public class LibraryFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = LibraryFragment.class.getSimpleName();
+
+    private SwipeRefreshLayout swipeContainer;
 
     private EmptyRecyclerView recyclerView;
     private EmptyRecyclerView.LayoutManager layoutManager;
@@ -75,12 +80,58 @@ public class LibraryFragment extends Fragment implements View.OnClickListener{
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        TimerMethod();
+                    }
+                };
+
+                new Timer().schedule(timerTask, 10000);
+            }
+        });
+
+
         list = new ArrayList<>();
 
         loadRecyclerViewItem();
 
         return view;
     }
+
+    private void TimerMethod()
+    {
+        //This method is called directly by the timer
+        //and runs in the same thread as the timer.
+
+        //We call the method that will work with the UI
+        //through the runOnUiThread method.
+        if(getActivity() == null)
+            return;
+        getActivity().runOnUiThread(Timer_Tick);
+    }
+
+
+    private Runnable Timer_Tick = new Runnable() {
+        public void run() {
+
+            swipeContainer.setRefreshing(false);
+
+            //This method runs in the same thread as the UI.
+
+            //Do something to the UI thread here
+
+        }
+    };
+
 
 
     @Override

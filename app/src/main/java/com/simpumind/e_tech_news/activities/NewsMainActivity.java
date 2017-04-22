@@ -34,6 +34,9 @@ public class NewsMainActivity extends AppCompatActivity {
         DatabaseReference newsRef = FirebaseDatabase.getInstance().getReference("news");
         newsRef.keepSynced(true);
 
+        DatabaseReference commentRef = FirebaseDatabase.getInstance().getReference("comments");
+        commentRef.keepSynced(true);
+
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
 
 

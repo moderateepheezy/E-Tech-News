@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipeContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.simpumind.e_tech_news.utils.EmptyRecyclerView
@@ -21,7 +28,8 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textStyle="bold"
-            android:text="Ops! Bear with us"/>
+            android:textSize="26sp"
+            android:text="@string/no_news"/>
 
 
     </LinearLayout>
@@ -35,3 +43,5 @@
         android:layout_centerInParent="true"/>
 
 </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

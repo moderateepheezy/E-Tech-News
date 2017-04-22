@@ -1,11 +1,22 @@
 package com.simpumind.e_tech_news;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
+import com.simpumind.e_tech_news.utils.TypefaceUtil;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
+
+import java.util.Locale;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by simpumind on 3/28/17.
@@ -16,6 +27,27 @@ public class ENewsApp extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
+
+//        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+//                .setDefaultFontPath("fonts/Montserrat-Regular.ttf")
+//                .setFontAttrId(R.attr.fontPath)
+//                .build()
+//        );
+        Typeface tf = Typeface.createFromAsset(getAssets(),
+                "fonts/Montserrat-Regular.ttf");
+        TypefaceUtil.replaceFont("", tf);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String lang = preferences.getString("lang", "en");
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+
+
         FirebaseApp.initializeApp(getApplicationContext());
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
@@ -25,5 +57,10 @@ public class ENewsApp extends Application{
         built.setIndicatorsEnabled(true);
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/pp"
+            android:layout_gravity="center"
+            android:id="@+id/user_image"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="14sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/username"
+                fontPath="fonts/BodoniFLF-Bold.ttf"
+                android:textStyle="bold"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:id="@+id/comment"
+                android:layout_gravity="center_vertical"
+                android:textSize="12sp"
+                fontPath="fonts/BodoniFLF-Roman.ttf"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/date"
+                android:textSize="10sp"
+                android:layout_gravity="right"
+                fontPath="fonts/BodoniFLF-Roman.ttf"
+                tools:ignore="MissingPrefix"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

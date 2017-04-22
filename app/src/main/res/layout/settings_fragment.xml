@@ -52,7 +52,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Complete Registration with:"
+                        android:text="@string/complete_registration_with"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         android:textSize="20sp"/>
@@ -122,8 +122,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#434343"
-                        android:id="@+id/profileName"
-                        android:text="Hafeez Lawal, Olabisi"/>
+                        android:id="@+id/profileName"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -132,8 +131,7 @@
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="#696868"
-                        android:id="@+id/profileEmail"
-                        android:text="Hafeez Lawal, Olabisi"/>
+                        android:id="@+id/profileEmail"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -142,8 +140,7 @@
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:textColor="#434343"
-                        android:id="@+id/mssisdn"
-                        android:text="Hafeez Lawal, Olabisi"/>
+                        android:id="@+id/mssisdn"/>
 
                 </LinearLayout>
 
@@ -174,7 +171,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Read News"
+                android:text="@string/read_news"
                 android:padding="15dp"
                 android:textSize="16sp"
                 android:textStyle="bold"

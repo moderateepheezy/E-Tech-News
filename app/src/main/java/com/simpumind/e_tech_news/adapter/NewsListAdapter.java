@@ -33,6 +33,8 @@ import com.simpumind.e_tech_news.activities.NewsDetailActivity;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.NewsPaper;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -217,6 +219,54 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
 
     }
 
+    private void loadImage(final ImageView imageView, String imagePath, final Context context){
+        mStorage = FirebaseStorage.getInstance().getReference();
+        mStorage.child(imagePath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.with(context).load(uri.toString())
+                        .fit()
+                        .error(R.drawable.denews)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .placeholder(R.drawable.denews)
+                        .into(imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Picasso.with(context)
+                                        .load(uri.toString())
+                                        .fit()
+                                        .error(R.drawable.denews)
+                                        .placeholder(R.drawable.denews)
+                                        .into(imageView, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+
+                                            }
+
+                                            @Override
+                                            public void onError() {
+                                                Log.v("Picasso","Could not fetch image");
+                                            }
+                                        });
+                            }
+                        });
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Failed", e.getMessage());
+
+
+            }
+        });
+    }
+
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
@@ -247,21 +297,8 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
             //Picasso.with(context).load(model.getThumbnail()).into(((NewsListHolder) viewHolder).newsImage);
             ((NewsListHolder) viewHolder).vendorName.setText(vendorName);
 
-            mStorage = FirebaseStorage.getInstance().getReference();
-            mStorage.child(model.getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.with(context).load(uri.toString())
-                            .error(R.drawable.denews)
-                            .placeholder(R.drawable.denews)
-                            .into(((NewsListHolder) viewHolder).newsImage);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("Failed", e.getMessage());
-                }
-            });
+
+            loadImage(((NewsListHolder) viewHolder).newsImage, model.getThumbnail(), context);
 
             ((NewsListHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

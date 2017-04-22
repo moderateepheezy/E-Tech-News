@@ -27,7 +27,7 @@
         android:textSize="14sp"
         android:id="@+id/spot"
         android:textColor="#6c6c6c"
-        android:text="Enter the spot"
+        android:text="@string/intro_title"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_below="@+id/logo"/>
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_marginTop="5dp"
             android:id="@+id/phoneNumber"
-            android:hint="Phone Number"
+            android:hint="@string/phone_number"
             android:inputType="phone"
             android:layout_height="wrap_content" />
 
@@ -79,7 +79,7 @@
         android:layout_width="200dp"
         android:layout_below="@+id/textLayout"
         android:layout_centerHorizontal="true"
-        android:text="Go"
+        android:text="@string/go"
         android:id="@+id/go"
         android:textColor="@color/white"
         android:layout_marginTop="20dp"
@@ -92,10 +92,11 @@
         android:layout_width="200dp"
         android:layout_below="@+id/go"
         android:layout_centerHorizontal="true"
-        android:text="Don't have an account? Register"
+        android:text="@string/have_account"
         android:textColor="#616161"
         android:layout_marginTop="15dp"
         android:gravity="center"
+        android:visibility="gone"
         android:textSize="14sp"
         android:layout_height="wrap_content" />
 

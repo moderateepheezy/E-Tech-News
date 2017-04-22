@@ -1,8 +1,8 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="120dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     android:id="@+id/transitions_container"
     android:background="#f2f0f0"
@@ -44,15 +44,18 @@
                 android:text="Latest:"
                 android:visibility="gone"
                 android:textSize="14sp"
+                fontPath="fonts/Montserrat-Regular.ttf"
+                tools:ignore="MissingPrefix"
                 android:textStyle="bold"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textColor="#2d2c2c"
                 android:layout_marginTop="5dp"
                 android:id="@+id/firstNewsTitle"
+                android:textAppearance="@style/TextAppearance.FontPath"
                 android:maxLines="2"/>
 
 
@@ -72,10 +75,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
                         android:textSize="12dp"
                         android:id="@+id/vendorName"
                         android:layout_marginBottom="5dp"
+                        android:textAppearance="@style/TextAppearance.FontPath"
                         android:textColor="#f75a5a"/>
 
                 </LinearLayout>
@@ -87,7 +90,7 @@
                     android:layout_height="25dp"
                     android:backgroundTint="@color/colorAccent"
                     android:background="@drawable/round_corner"
-                    android:text="Subscribe"
+                    android:text="@string/subscribe"
                     android:id="@+id/subscribe"
                     android:textSize="8sp"
                     android:textColor="@color/white"

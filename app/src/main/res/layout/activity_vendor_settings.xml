@@ -22,13 +22,12 @@
             android:textSize="14dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
             android:layout_centerVertical="true"
-            android:text="Expiry Date"/>
+            android:text="@string/expiry_date"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="November 12, 10:00 PM"
             android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
@@ -45,7 +44,7 @@
             android:textSize="14dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
             android:layout_centerVertical="true"
-            android:text="Enable Notification"/>
+            android:text="@string/enable_notification"/>
 
         <Switch
             android:layout_width="wrap_content"
@@ -60,7 +59,7 @@
         android:padding="10dp"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
-        android:text="Extend Subsciption"
+        android:text="@string/extend_subsciption"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:background="@color/colorIcons"
@@ -73,7 +72,7 @@
         android:textColor="@color/white"
         android:background="#c6c4c4"
         android:layout_gravity="center"
-        android:text="UnSubscribe"
+        android:text="@string/unsubscribe"
         android:textStyle="bold"
         android:id="@+id/subscribe"
         android:layout_height="wrap_content" />

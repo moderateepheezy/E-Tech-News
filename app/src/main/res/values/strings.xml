@@ -30,6 +30,29 @@
     <string name="blue_name">share name</string>
     <string name="profile">My Profile</string>
     <string name="no_value">No Value!</string>
+    <string name="comments">Comments</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="read_more">Read More</string>
+    <string name="intro_title">Enter the spot</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="have_account">Don\'t have an account? Register</string>
+    <string name="enter_otp">Please enter OTP Code that has been sent to your phone through SMS</string>
+    <string name="submit">Submit</string>
+    <string name="account">ACCOUNT</string>
+    <string name="general">GENERAL</string>
+    <string name="general_notifications">General Notifications</string>
+    <string name="sign_out_from">Sign out from</string>
+    <string name="unsubscribe_from_all_vendors">Unsubscribe from all vendors</string>
+    <string name="language">Language</string>
+    <string name="expiry_date">Expiry Date</string>
+    <string name="enable_notification">Enable Notification</string>
+    <string name="extend_subsciption">Extend Subsciption</string>
+    <string name="unsubscribe">UnSubscribe</string>
+    <string name="write_a_comment">Write a Comment</string>
+    <string name="subcribe_to_vendors">Subcribe to Vendors</string>
+    <string name="read_news">Read News</string>
+    <string name="complete_registration_with">Complete Registration with:</string>
+    <string name="no_news">No News at the moment!</string>
 
     <string-array name="arr">
         <item>A</item>
