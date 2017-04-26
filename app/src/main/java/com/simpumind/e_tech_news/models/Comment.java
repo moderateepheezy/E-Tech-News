@@ -13,13 +13,13 @@ public class Comment {
 
     public String text;
     public String username;
-    public String timeSent;
+    public long timeSent;
     public String userImage;
 
     public Comment() {
     }
 
-    public Comment(String text, String username, String timeSent, String userImage) {
+    public Comment(String text, String username, long timeSent, String userImage) {
         this.text = text;
         this.username = username;
         this.timeSent = timeSent;
@@ -42,11 +42,11 @@ public class Comment {
         this.username = username;
     }
 
-    public String getTimeSent() {
+    public long getTimeSent() {
         return timeSent;
     }
 
-    public void setTimeSent(String timeSent) {
+    public void setTimeSent(long timeSent) {
         this.timeSent = timeSent;
     }
 

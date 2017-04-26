@@ -16,7 +16,7 @@ public class User {
     public String msisdn;
     public String physical_address;
     public String password;
-    public String userProfile;
+    public String profileImage;
     public String signinType;
 
 
@@ -30,16 +30,16 @@ public class User {
         this.msisdn = msisdn;
         this.physical_address = physical_address;
         this.password = password;
-        this.userProfile = userProfile;
+        this.profileImage = userProfile;
         this.signinType = signinType;
     }
 
     public String getUserProfile() {
-        return userProfile;
+        return profileImage;
     }
 
     public void setUserProfile(String userProfile) {
-        this.userProfile = userProfile;
+        this.profileImage = userProfile;
     }
 
     public String getUsername() {
@@ -100,7 +100,7 @@ public class User {
         result.put("email", email);
         result.put("physical_address", physical_address);
         result.put("password", password);
-        result.put("profileImage", userProfile);
+        result.put("profileImage", profileImage);
         result.put("signinType", signinType);
         return  result;
     }

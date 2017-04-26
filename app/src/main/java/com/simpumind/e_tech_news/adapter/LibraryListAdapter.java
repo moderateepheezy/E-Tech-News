@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -101,51 +103,14 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<Boolean, Library
 
 
     private void loadImage(final ImageView imageView, String imagePath, final Context context){
-        mStorage = FirebaseStorage.getInstance().getReference();
-        mStorage.child(imagePath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(final Uri uri) {
-                Picasso.with(context).load(uri.toString())
-                        .fit()
-                        .error(R.drawable.denews)
-                        .networkPolicy(NetworkPolicy.OFFLINE)
-                        .placeholder(R.drawable.denews)
-                        .into(imageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
+        mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
 
-                            }
-
-                            @Override
-                            public void onError() {
-                                Picasso.with(context)
-                                        .load(uri.toString())
-                                        .fit()
-                                        .error(R.drawable.denews)
-                                        .placeholder(R.drawable.denews)
-                                        .into(imageView, new Callback() {
-                                            @Override
-                                            public void onSuccess() {
-
-                                            }
-
-                                            @Override
-                                            public void onError() {
-                                                Log.v("Picasso","Could not fetch image");
-                                            }
-                                        });
-                            }
-                        });
-            }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("Failed", e.getMessage());
-
-
-            }
-        });
+        Glide.with(context)
+                .using(new FirebaseImageLoader())
+                .load(mStorage)
+                .fitCenter()
+                .placeholder(R.drawable.denews)
+                .into(imageView);
     }
 
 }

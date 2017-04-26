@@ -11,14 +11,14 @@ public class News {
     public String newspaper_id;
     public String thumbnail;
     public String user;
-    public Long created_on;
+    public long created_on;
 
 
     public News(){
 
     }
 
-    public News(String caption, String content, String newspaper_id, String thumbnail, String user, Long created_on) {
+    public News(String caption, String content, String newspaper_id, String thumbnail, String user, long created_on) {
         this.caption = caption;
         this.content = content;
         this.newspaper_id = newspaper_id;
@@ -59,6 +59,14 @@ public class News {
         this.thumbnail = thumbnail;
     }
 
+    public long getCreated_on() {
+        return created_on;
+    }
+
+    public void setCreated_on(long created_on) {
+        this.created_on = created_on;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,14 +74,14 @@ public class News {
 
         News news = (News) o;
 
+        if (created_on != news.created_on) return false;
         if (caption != null ? !caption.equals(news.caption) : news.caption != null) return false;
         if (content != null ? !content.equals(news.content) : news.content != null) return false;
         if (newspaper_id != null ? !newspaper_id.equals(news.newspaper_id) : news.newspaper_id != null)
             return false;
         if (thumbnail != null ? !thumbnail.equals(news.thumbnail) : news.thumbnail != null)
             return false;
-        if (user != null ? !user.equals(news.user) : news.user != null) return false;
-        return created_on != null ? created_on.equals(news.created_on) : news.created_on == null;
+        return user != null ? user.equals(news.user) : news.user == null;
 
     }
 
@@ -84,7 +92,7 @@ public class News {
         result = 31 * result + (newspaper_id != null ? newspaper_id.hashCode() : 0);
         result = 31 * result + (thumbnail != null ? thumbnail.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (created_on != null ? created_on.hashCode() : 0);
+        result = 31 * result + (int) (created_on ^ (created_on >>> 32));
         return result;
     }
 }

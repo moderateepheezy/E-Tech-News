@@ -2,11 +2,14 @@ package com.simpumind.e_tech_news.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -37,8 +40,13 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.github.marlonlom.utilities.timeago.TimeAgo;
+import com.github.marlonlom.utilities.timeago.TimeAgoMessages;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -60,21 +68,25 @@ import com.simpumind.e_tech_news.fragments.SubscribeChoiceFragment;
 import com.simpumind.e_tech_news.models.Comment;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.User;
+import com.simpumind.e_tech_news.utils.Const;
 import com.simpumind.e_tech_news.utils.EmptyRecyclerView;
 import com.simpumind.e_tech_news.utils.PrefManager;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import at.blogc.android.views.ExpandableTextView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class NewsDetailActivity extends AppCompatActivity implements SimpleAlertDialog.SingleChoiceArrayItemProvider{
+public class NewsDetailActivity extends AppCompatActivity{
 
     private DatabaseReference databaseReference;
 
@@ -104,7 +116,7 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
 
     FloatingActionButton fab;
 
-    public String vendor_id;
+    static String vendor_id;
     static String news_id;
 
     private static boolean isUserSubscribed = false;
@@ -113,6 +125,7 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
     private DatabaseReference mDatabase;
     private DatabaseReference innerChildRef;
     private StorageReference mStorage;
+    private TextView time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,12 +167,19 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
 
         badgeCount = (TextView) findViewById(R.id.badgeCount);
 
+         time = (TextView) findViewById(R.id.time);
+
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onShowPopup(v);
+                
+                if(isUserSubscribed) {
+                    onShowPopup(v);
+                }else{
+                    Toast.makeText(NewsDetailActivity.this, "You cannot comment as you are not subscribed.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -203,15 +223,15 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
 
 
         // toggle the ExpandableTextView
-        buttonToggle.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View v)
-            {
-                expandableTextView.toggle();
-                buttonToggle.setText(expandableTextView.isExpanded() ? "Collapse" : "Expand");
-            }
-        });
+//        buttonToggle.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(final View v)
+//            {
+//                expandableTextView.toggle();
+//                buttonToggle.setText(expandableTextView.isExpanded() ? "Collapse" : "Expand");
+//            }
+//        });
 
 // but, you can also do the checks yourself
         buttonToggle.setOnClickListener(new View.OnClickListener()
@@ -269,17 +289,53 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
                     subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
                     subscribe.setText("Subscribe");
 
-                    unSubscribeVednor(vendor_id);
+                    unSubscribeVendor(vendor_id);
 
                 }else {
 
-                    new SimpleAlertDialogFragment.Builder()
-                            .setTitle("Choose one")
-                            .setSingleChoiceCheckedItem(0) // This enables a single choice list
-                            .setRequestCode(REQUEST_CODE_SINGLE_CHOICE_LIST)
-                            .setNegativeButton("Cancel")
-                            .setCancelable(true)
-                            .create().show(getFragmentManager(), "dialog");
+                    CharSequence[] x =  {"Daily","Weekly","Monthly"};
+                    final CharSequence[] y = {"Direct Billing","Mobile Money"};
+
+
+
+                    new MaterialDialog.Builder(NewsDetailActivity.this)
+                            .theme(Theme.LIGHT)
+                            .title("Choose one")
+                            .items(x)
+                            .itemsCallbackSingleChoice(0, new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence                   text) {
+
+                                    new MaterialDialog.Builder(NewsDetailActivity.this)
+                                            .theme(Theme.LIGHT)
+                                            .title("Choose one")
+                                            .items(y)
+                                            .itemsCallbackSingleChoice(0, new MaterialDialog.ListCallbackSingleChoice() {
+                                                @Override
+                                                public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence                   text) {
+                                                    isUserSubscribed = true;
+                                                    expandableTextView.expand();
+                                                    buttonToggle.setVisibility(View.GONE);
+
+                                                    readByUser(news_id);
+
+                                                    subscribeVendor(vendor_id);
+                                                    subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
+                                                    subscribe.setText(getResources().getString(R.string.unsubscribe));
+                                                    subscribeVendor(vendor_id);
+                                                    return true; // allow selection
+                                                }
+                                            })
+                                            .positiveText("Ok")
+                                            .show();
+
+
+                                    return true; // allow selection
+                                }
+                            })
+                            .positiveText("Ok")
+                            .show();
+
                 }
             }
         });
@@ -311,50 +367,21 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
 
         titleNews.setText(news.caption);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String lang = preferences.getString("lang", "en");
+        Locale LocaleBylanguageTag = Locale.forLanguageTag(lang);
+        TimeAgoMessages messages = new TimeAgoMessages.Builder().withLocale(LocaleBylanguageTag).build();
+
+        String text = TimeAgo.using(news.getCreated_on(), messages);
+        time.setText(text);
+
+
         loadImage(newsImage, news.getThumbnail(), getApplicationContext());
 
     }
 
-    public void unSubscribeVednor(final String vendorId){
-
-
-        childRef = mDataRef.child("users_subscription");
-        childRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                String subscribedId = dataSnapshot.getValue().toString();
-                if(subscribedId.equals(vendorId)){
-                    FirebaseDatabase.getInstance().getReference()
-                            .child("users_subscription").child(dataSnapshot.getKey()).removeValue();
-                }
-
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     public void subscribeVendor(final String vendorId){
+
 
         Query query = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).orderByChild("susbscriptions").equalTo(vendorId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -366,6 +393,25 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
                     mDatabase = FirebaseDatabase.getInstance().getReference().child("subscriber").child(PrefManager
                             .readUserKey(getApplicationContext())).child("susbscriptions");
                     mDatabase.child(vendorId).setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void unSubscribeVendor(final String vendorId){
+        DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference();
+        Query query = mDataRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendorId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().equals(vendorId)){
+                    FirebaseDatabase.getInstance().getReference().child("subscriber")
+                            .child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendorId).removeValue();
                 }
             }
 
@@ -401,92 +447,16 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
     }
 
     private void loadImage(final ImageView imageView, String imagePath, final Context context){
-        mStorage = FirebaseStorage.getInstance().getReference();
-        mStorage.child(imagePath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(final Uri uri) {
-                Picasso.with(context).load(uri.toString())
-                        .fit()
-                        .error(R.drawable.denews)
-                        .networkPolicy(NetworkPolicy.OFFLINE)
-                        .placeholder(R.drawable.denews)
-                        .into(imageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
+        mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
 
-                            }
-
-                            @Override
-                            public void onError() {
-                                Picasso.with(context)
-                                        .load(uri.toString())
-                                        .fit()
-                                        .error(R.drawable.denews)
-                                        .placeholder(R.drawable.denews)
-                                        .into(imageView, new Callback() {
-                                            @Override
-                                            public void onSuccess() {
-
-                                            }
-
-                                            @Override
-                                            public void onError() {
-                                                Log.v("Picasso","Could not fetch image");
-                                            }
-                                        });
-                            }
-                        });
-            }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("Failed", e.getMessage());
-
-
-            }
-        });
+        Glide.with(context)
+                .using(new FirebaseImageLoader())
+                .load(mStorage)
+                .fitCenter()
+                .placeholder(R.drawable.denews)
+                .into(imageView);
     }
 
-    @Override
-    public CharSequence[] onCreateSingleChoiceArray(SimpleAlertDialog dialog, int requestCode) {
-
-        if (requestCode == REQUEST_CODE_SINGLE_CHOICE_LIST) {
-            final CharSequence  items [] = {"Daily","Weekly","Monthly"};
-            return  items;
-        }else if(requestCode == REQUEST_CODE_SINGLE_Any_CHOICE_LIST){
-            final CharSequence  items [] = {"Direct Billing","Mobile Money"};
-            return  items;
-        }
-        return null;
-    }
-
-    @Override
-    public void onSingleChoiceArrayItemClick(SimpleAlertDialog dialog, int requestCode, int position) {
-        if (requestCode == REQUEST_CODE_SINGLE_CHOICE_LIST) {
-            // Do something
-            new SimpleAlertDialogFragment.Builder()
-                    .setTitle("Choose one")
-                    .setSingleChoiceCheckedItem(0) // This enables a single choice list
-                    .setRequestCode(REQUEST_CODE_SINGLE_Any_CHOICE_LIST)
-                    .setCancelable(true)
-                    .setNegativeButton("Cancel")
-                    .create().show(getFragmentManager(), "dialog2");
-        }else if (requestCode == REQUEST_CODE_SINGLE_Any_CHOICE_LIST){
-            isUserSubscribed = true;
-            expandableTextView.expand();
-            buttonToggle.setVisibility(View.GONE);
-
-            readByUser(news_id);
-
-            subscribeVendor(vendor_id);
-
-            TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
-            subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
-            subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
-            subscribe.setText("Unsubscribe");
-        }
-    }
 
 
     public void onShowPopup(View v){
@@ -524,7 +494,10 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
                     String text = writeComment.getText().toString();
                     String name = user.getUsername().equals("") ? "Anonymous" : user.getUsername();
                     String userImage = user.getUserProfile().equals("") ? "" : user.getUserProfile();
-                    Comment comment = new Comment(text, name, "", userImage);
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                    long timeSent = timestamp.getTime();
+                    Comment comment = new Comment(text, name, timeSent, userImage);
 
                     Map<String, Object> userValues = comment.toMap();
                     databaseReference.child("comments").child(news_id).push().setValue(userValues).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -586,9 +559,15 @@ public class NewsDetailActivity extends AppCompatActivity implements SimpleAlert
                 CommentHolder.class, query) {
             @Override
             protected void populateViewHolder(CommentHolder viewHolder, Comment model, int position) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String lang = preferences.getString("lang", "en");
+                Locale LocaleBylanguageTag = Locale.forLanguageTag(lang);
+                TimeAgoMessages messages = new TimeAgoMessages.Builder().withLocale(LocaleBylanguageTag).build();
+
+                String text = TimeAgo.using(model.getTimeSent(), messages);
 
                 viewHolder.text.setText(model.getText());
-                viewHolder.dateTime.setText(model.getTimeSent());
+                viewHolder.dateTime.setText(text);
                 viewHolder.username.setText(model.getUsername());
 
                 Glide.with(getApplicationContext()).

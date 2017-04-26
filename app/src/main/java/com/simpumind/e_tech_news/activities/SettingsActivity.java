@@ -71,6 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
         }
+       // unsubscribeAll.onCl
 
     }
 

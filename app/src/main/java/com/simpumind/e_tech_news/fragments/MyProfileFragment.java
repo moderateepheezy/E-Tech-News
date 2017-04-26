@@ -186,10 +186,42 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
             main.setVisibility(View.GONE);
             main1.setVisibility(View.VISIBLE);
         }else{
-            coll.setTitle("Sign in");
-            main.setVisibility(View.VISIBLE);
-            main1.setVisibility(View.GONE);
+            Query query = FirebaseDatabase.getInstance().getReference().child("subscriber")
+                    .child(PrefManager.readUserKey(getActivity())).child("users");
+
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue() != null) {
+                        User user = dataSnapshot.getValue(User.class);
+                        PrefManager.storeUser(getActivity(), user);
+                        profileName.setText(user.getUsername());
+                        profileEmail.setText(user.getEmail());
+                        phoneNumber.setText(user.getMsisdn());
+
+                        Glide.with(getActivity()).
+                                load(user.getUserProfile())
+                                .asBitmap()
+                                .into(profileImage);
+
+                        main1.setVisibility(View.VISIBLE);
+                        main.setVisibility(View.GONE);
+                    }else{
+
+                        coll.setTitle("Sign in");
+                        main.setVisibility(View.VISIBLE);
+                        main1.setVisibility(View.GONE);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
+
 
         coll.setExpandedTitleColor(Color.TRANSPARENT);
         coll.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);

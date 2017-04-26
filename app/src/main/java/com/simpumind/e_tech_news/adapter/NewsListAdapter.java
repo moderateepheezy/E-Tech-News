@@ -3,8 +3,10 @@ package com.simpumind.e_tech_news.adapter;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +19,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.github.marlonlom.utilities.timeago.TimeAgo;
+import com.github.marlonlom.utilities.timeago.TimeAgoMessages;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -25,7 +31,9 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.simpumind.e_tech_news.R;
@@ -39,6 +47,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by simpumind on 3/28/17.
@@ -220,51 +229,14 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
     }
 
     private void loadImage(final ImageView imageView, String imagePath, final Context context){
-        mStorage = FirebaseStorage.getInstance().getReference();
-        mStorage.child(imagePath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(final Uri uri) {
-                Picasso.with(context).load(uri.toString())
-                        .fit()
-                        .error(R.drawable.denews)
-                        .networkPolicy(NetworkPolicy.OFFLINE)
-                        .placeholder(R.drawable.denews)
-                        .into(imageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
+        mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
 
-                            }
-
-                            @Override
-                            public void onError() {
-                                Picasso.with(context)
-                                        .load(uri.toString())
-                                        .fit()
-                                        .error(R.drawable.denews)
-                                        .placeholder(R.drawable.denews)
-                                        .into(imageView, new Callback() {
-                                            @Override
-                                            public void onSuccess() {
-
-                                            }
-
-                                            @Override
-                                            public void onError() {
-                                                Log.v("Picasso","Could not fetch image");
-                                            }
-                                        });
-                            }
-                        });
-            }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("Failed", e.getMessage());
-
-
-            }
-        });
+        Glide.with(context)
+                .using(new FirebaseImageLoader())
+                .load(mStorage)
+                .fitCenter()
+                .placeholder(R.drawable.denews)
+                .into(imageView);
     }
 
 
@@ -296,6 +268,17 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
             ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption());
             //Picasso.with(context).load(model.getThumbnail()).into(((NewsListHolder) viewHolder).newsImage);
             ((NewsListHolder) viewHolder).vendorName.setText(vendorName);
+
+            commentCount((NewsListHolder) viewHolder, position);
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+            String lang = preferences.getString("lang", "en");
+            Locale LocaleBylanguageTag = Locale.forLanguageTag(lang);
+            TimeAgoMessages messages = new TimeAgoMessages.Builder().withLocale(LocaleBylanguageTag).build();
+
+            String text = TimeAgo.using(model.getCreated_on(), messages);
+
+            ((NewsListHolder) viewHolder).timeDate.setText(text);
 
 
             loadImage(((NewsListHolder) viewHolder).newsImage, model.getThumbnail(), context);
@@ -367,6 +350,32 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
     @Override
     protected void populateViewHolder(RecyclerView.ViewHolder viewHolder, final News model, final int position) {
 
+
+    }
+
+    private void commentCount(final NewsListHolder holder, int position){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference().child("comments").child(getRef(position).getKey());
+
+//You can use the single or the value.. depending if you want to keep track
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() > 0){
+                    holder.commentCount.setText(String.valueOf(dataSnapshot.getChildrenCount() + ""));
+                    Log.e(dataSnapshot.getKey(),dataSnapshot.getChildrenCount() + "");
+                }else{
+                    holder.commentCount.setText(String.valueOf(0));
+                    Log.e(dataSnapshot.getKey(),dataSnapshot.getChildrenCount() + "");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

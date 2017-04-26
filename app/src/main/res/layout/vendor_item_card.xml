@@ -9,28 +9,19 @@
     app:cardPreventCornerOverlap="false"
     >
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:id="@+id/newImageBackground">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="200dp"
             android:src="@drawable/empty_street"
             android:id="@+id/firstNewsImage"
             android:scaleType="centerCrop"/>
 
-        <Button
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/pressedColor"
-            android:text="@string/subscribe"
-            android:id="@+id/subscribe"
-            android:textSize="10sp"
-            android:textColor="@color/white"/>
 
 
         <LinearLayout
@@ -43,40 +34,27 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="#fff"
+                android:textSize="16sp"
+                android:textColor="#0a0909"
                 android:textStyle="bold"
+                android:padding="5dp"
                 android:id="@+id/firstNewsTitle"
                 android:maxLines="5"/>
 
-            <LinearLayout
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="vertical">
+                android:textStyle="bold"
+                android:textSize="8dp"
+                android:id="@+id/vendorName"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"
+                android:textColor="#202020"/>
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/vendorIcon"
-                    android:src="@drawable/news_lo"
-                    android:layout_gravity="bottom"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="8dp"
-                    android:id="@+id/vendorName"
-                    android:layout_marginBottom="5dp"
-                    android:textColor="#fff"/>
-
-
-
-            </LinearLayout>
 
 
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>
