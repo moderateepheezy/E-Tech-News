@@ -32,9 +32,10 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
     <style name="TextLabel" parent="Theme.AppCompat.Light.NoActionBar">
-    <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
-         <item name="colorControlActivated">#FFCC00</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorControlActivated">#FFCC00</item>
     </style>
 
     <style name="AppTime" parent="Theme.AppCompat.Light.NoActionBar">
@@ -61,6 +62,7 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/black</item>
         <item name="android:icon">@drawable/ic_close_white_24dp</item>
     </style>
 
@@ -69,8 +71,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
+        <item name="contentInsetStart">0dp</item>
     </style>
+
+    <style name="ActionBarThemeNoBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="contentInsetStart">0dp</item>
+    </style>
+
     <style name="SimpleAlertDialogTitleTextStyle">
         <item name="android:textColor">#0e1301</item>
         <item name="android:fontFamily">sans-serif-light</item>
@@ -80,5 +90,9 @@
         <item name="android:windowEnterAnimation">@anim/bottom_up</item>
         <item name="android:windowExitAnimation">@anim/bottom_down</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

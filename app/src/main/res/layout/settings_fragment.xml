@@ -66,14 +66,14 @@
                         <Button
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:layout_margin="15dp"
+                            android:layout_margin="10dp"
                             android:id="@+id/facebookLogin"
                             android:background="@drawable/face_icon"/>
                         
                         <Button
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:layout_margin="15dp"
+                            android:layout_margin="10dp"
                             android:background="@drawable/google_icon"
                             android:id="@+id/googleLogin"/>
 

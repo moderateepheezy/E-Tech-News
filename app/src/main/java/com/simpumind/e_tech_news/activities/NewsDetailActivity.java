@@ -3,25 +3,17 @@ package com.simpumind.e_tech_news.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Point;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
-import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -30,12 +22,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,11 +38,7 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.github.marlonlom.utilities.timeago.TimeAgo;
 import com.github.marlonlom.utilities.timeago.TimeAgoMessages;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,27 +47,16 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.simplealertdialog.SimpleAlertDialog;
-import com.simplealertdialog.SimpleAlertDialogFragment;
 import com.simpumind.e_tech_news.R;
-import com.simpumind.e_tech_news.fragments.SubscribeChoiceFragment;
 import com.simpumind.e_tech_news.models.Comment;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.User;
-import com.simpumind.e_tech_news.utils.Const;
 import com.simpumind.e_tech_news.utils.EmptyRecyclerView;
 import com.simpumind.e_tech_news.utils.PrefManager;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import at.blogc.android.views.ExpandableTextView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -95,14 +70,8 @@ public class NewsDetailActivity extends AppCompatActivity{
     public static final String VENDOR_NAME = "vendor_name";
     public static final String VENDOR_ICON = "vendor_icon";
     public static final String VENDOR_ID = "vendor_id";
-    private static final String CHOICE_DIALOG =  "choice_dialog";
-    private static final int REQUEST_CODE_SINGLE_CHOICE_LIST = 34005;
-    private static final int REQUEST_CODE_SINGLE_Any_CHOICE_LIST = 340005;
 
     private DatabaseReference mDatabaseRef;
-    private DatabaseReference childRef;
-    private DatabaseReference mDataRef;
-    private Query query;
     ExpandableTextView expandableTextView;
     ImageView newsImage;
     TextView titleNews;
@@ -123,8 +92,6 @@ public class NewsDetailActivity extends AppCompatActivity{
 
 
     private DatabaseReference mDatabase;
-    private DatabaseReference innerChildRef;
-    private StorageReference mStorage;
     private TextView time;
 
     @Override
@@ -139,14 +106,11 @@ public class NewsDetailActivity extends AppCompatActivity{
         news_id  = intent.getStringExtra(SINGLE_NEWS);
         vendor_id = intent.getStringExtra(VENDOR_ID);
 
-        Log.d("fdmfmdmdfdc", news_id);
-
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
         mDatabaseRef.child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 News n = dataSnapshot.getValue(News.class);
-                Log.d("dmfmdmdmf", n.getThumbnail());
                 updateViews(n);
             }
 
@@ -194,7 +158,7 @@ public class NewsDetailActivity extends AppCompatActivity{
         vendor_id  = intent.getStringExtra(VENDOR_ID);
 
         String userId = PrefManager.readUserKey(getApplicationContext());
-        mDataRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference();
         Query query = mDataRef.child("subscriber").child(userId).child("susbscriptions").child(vendor_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -206,7 +170,7 @@ public class NewsDetailActivity extends AppCompatActivity{
                     TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
                     subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
                     subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
-                    subscribe.setText("Unsubscribe");
+                    subscribe.setText(getResources().getString(R.string.unsubscribe));
 
                     readByUser(news_id);
                 }
@@ -222,18 +186,6 @@ public class NewsDetailActivity extends AppCompatActivity{
         expandableTextView.setAnimationDuration(1000L);
 
 
-        // toggle the ExpandableTextView
-//        buttonToggle.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(final View v)
-//            {
-//                expandableTextView.toggle();
-//                buttonToggle.setText(expandableTextView.isExpanded() ? "Collapse" : "Expand");
-//            }
-//        });
-
-// but, you can also do the checks yourself
         buttonToggle.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -241,35 +193,14 @@ public class NewsDetailActivity extends AppCompatActivity{
             {
                 if (!isUserSubscribed)
                 {
-                    //expandableTextView.collapse();
-                   // buttonToggle.setText("UnSubscribe");
 
                     Toast.makeText(NewsDetailActivity.this, "You are not subscribed to this vendor", Toast.LENGTH_LONG).show();
                 }
                 else
                 {
                     expandableTextView.expand();
-//                    buttonToggle.setText("Subscribe");
-//                    mDatabase = FirebaseDatabase.getInstance().getReference().child("read_by_user").push();
-//                    mDatabase.setValue(news_id);
                     buttonToggle.setVisibility(View.GONE);
                 }
-            }
-        });
-
-// listen for expand / collapse events
-        expandableTextView.setOnExpandListener(new ExpandableTextView.OnExpandListener()
-        {
-            @Override
-            public void onExpand(final ExpandableTextView view)
-            {
-                Log.d(TAG, "ExpandableTextView expanded");
-            }
-
-            @Override
-            public void onCollapse(final ExpandableTextView view)
-            {
-                Log.d(TAG, "ExpandableTextView collapsed");
             }
         });
 
@@ -287,7 +218,7 @@ public class NewsDetailActivity extends AppCompatActivity{
                     TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
                     subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
                     subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
-                    subscribe.setText("Subscribe");
+                    subscribe.setText(getResources().getString(R.string.subscribe));
 
                     unSubscribeVendor(vendor_id);
 
@@ -343,7 +274,6 @@ public class NewsDetailActivity extends AppCompatActivity{
 
     @Override
     public boolean onSupportNavigateUp() {
-        //This method is called when the up button is pressed. Just the pop back stack.
         Log.d(TAG,"--onSupportNavigateUp()--");
         getSupportFragmentManager().popBackStack();
         super.onBackPressed();
@@ -447,7 +377,7 @@ public class NewsDetailActivity extends AppCompatActivity{
     }
 
     private void loadImage(final ImageView imageView, String imagePath, final Context context){
-        mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
+        StorageReference mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
 
         Glide.with(context)
                 .using(new FirebaseImageLoader())
@@ -551,7 +481,7 @@ public class NewsDetailActivity extends AppCompatActivity{
 
     void setComment(EmptyRecyclerView recyclerView){
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-      query = mDatabaseRef.child("comments").child(news_id);
+        Query query = mDatabaseRef.child("comments").child(news_id);
 
         FirebaseRecyclerAdapter<Comment, CommentHolder> adapter = new FirebaseRecyclerAdapter<Comment, CommentHolder>(
                 Comment.class,
@@ -623,6 +553,39 @@ public class NewsDetailActivity extends AppCompatActivity{
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkButton();
+    }
+
+    private void checkButton(){
+        String userId = PrefManager.readUserKey(getApplicationContext());
+        DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference();
+        Query query = mDataRef.child("subscriber").child(userId).child("susbscriptions").child(vendor_id);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().equals(vendor_id) && dataSnapshot.getValue() != null){
+                    isUserSubscribed = true;
+                    expandableTextView.expand();
+                    buttonToggle.setVisibility(View.INVISIBLE);
+                    TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());
+                    subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
+                    subscribe.setBackground(getResources().getDrawable(R.drawable.round_corner));
+                    subscribe.setText(getResources().getString(R.string.unsubscribe));
+
+                    readByUser(news_id);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

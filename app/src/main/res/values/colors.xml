@@ -8,4 +8,7 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorIcons">#01b822</color>
     <color name="pressedColor">#5e6266</color>
+
+    <color name="facebookColor">#3a579d</color>
+    <color name="googleColor">#dd4b39</color>
 </resources>

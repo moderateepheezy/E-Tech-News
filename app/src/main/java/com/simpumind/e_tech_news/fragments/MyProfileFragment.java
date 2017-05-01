@@ -67,6 +67,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -288,6 +290,8 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
             Log.d(TAG, "Got cached sign-in");
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
+
+
         } else {
             // If the user has not previously signed in on this device or the sign-in has expired,
             // this asynchronous branch will attempt to sign in the user silently.  Cross-device
@@ -316,29 +320,8 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
             PrefManager.storeUser(getActivity(), user);
 
 
-            progressDialog = ProgressDialog.show(getActivity(), "", "");
 
-            new Thread() {
 
-                public void run() {
-
-                    try{
-
-                        sleep(500);
-
-                        updateUI();
-
-                    } catch (Exception e) {
-
-                        Log.e("tag", e.getMessage());
-
-                    }
-
-                    progressDialog.dismiss();
-
-                }
-
-            }.start();
 
 
         } else {
@@ -346,6 +329,32 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
             //updateUI(false);
         }
     }
+
+    private void TimerMethod()
+    {
+        //This method is called directly by the timer
+        //and runs in the same thread as the timer.
+
+        //We call the method that will work with the UI
+        //through the runOnUiThread method.
+        if(getActivity() == null)
+            return;
+        getActivity().runOnUiThread(Timer_Tick);
+        progressDialog.dismiss();
+    }
+
+
+    private Runnable Timer_Tick = new Runnable() {
+        public void run() {
+
+            onGoogleLogin();
+
+            //This method runs in the same thread as the UI.
+
+            //Do something to the UI thread here
+
+        }
+    };
 
 
     protected void getUserInfo(final LoginResult login_result){
@@ -424,6 +433,9 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
         User u = PrefManager.getStoredUser(getActivity());
         if (!u.getUsername().isEmpty()){
             updateUI();
+        }else {
+            main1.setVisibility(View.GONE);
+            main.setVisibility(View.VISIBLE);
         }
     }
 
@@ -471,4 +483,5 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener,
                 .readUserKey(getActivity()));
         innerChildRef.child("users").setValue(userValues);
     }
+
 }

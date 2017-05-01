@@ -56,6 +56,9 @@ dependencies {
     compile 'com.github.ksoichiro:simplealertdialog:1.2.1@aar'
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
     compile 'com.github.marlonlom:timeago:3.0.1'
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile ('com.afollestad.material-dialogs:core:0.9.4.3'){ exclude group: 'com.android.support' }
     testCompile 'junit:junit:4.12'
 }

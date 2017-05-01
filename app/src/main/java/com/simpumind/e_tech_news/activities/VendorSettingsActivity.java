@@ -33,13 +33,8 @@ public class VendorSettingsActivity extends AppCompatActivity {
     public static final String VENDOR_ICON = "vendor_icon";
     public static final String VENDOR_ID = "vendor_id";
 
-
-    private DatabaseReference mDatabaseRef;
-    private DatabaseReference childRef;
-    private DatabaseReference mDataRef;
-    private DatabaseReference mDatabase;
-
     Button subscribe;
+    Button extendSubscription;
 
     static String vendor_id;
     static String news_id;
@@ -63,9 +58,11 @@ public class VendorSettingsActivity extends AppCompatActivity {
 
         subscribe = (Button) findViewById(R.id.subscribe);
 
+        extendSubscription = (Button) findViewById(R.id.extend_sub);
+
         String userId = PrefManager.readUserKey(getApplicationContext());
 
-        mDataRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference();
         Query query = mDataRef.child("subscriber").child(userId).child("susbscriptions").child(vendor_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -74,6 +71,10 @@ public class VendorSettingsActivity extends AppCompatActivity {
                     isUserSubscribed = true;
                     subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
                     subscribe.setText("Unsubscribe");
+                    extendSubscription.setVisibility(View.VISIBLE);
+                }else{
+
+                    extendSubscription.setVisibility(View.GONE);
                 }
             }
 
@@ -93,9 +94,10 @@ public class VendorSettingsActivity extends AppCompatActivity {
                     isUserSubscribed = false;
 
                     subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
-                    subscribe.setText("Subscribe");
+                    subscribe.setText(getResources().getString(R.string.subscribe));
 
-                    unSubscribeVednor(vendor_id);
+                    extendSubscription.setVisibility(View.GONE);
+                    unSubscribeVendor(vendor_id);
 
                 }else {
 
@@ -121,7 +123,8 @@ public class VendorSettingsActivity extends AppCompatActivity {
                                                 public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence                   text) {
                                                     isUserSubscribed = true;
                                                     subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
-                                                    subscribe.setText("Unsubscribe");
+                                                    subscribe.setText(getResources().getString(R.string.unsubscribe));
+                                                    extendSubscription.setVisibility(View.VISIBLE);
                                                     subscribeVendor(vendor_id);
                                                     return true; // allow selection
                                                 }
@@ -161,8 +164,30 @@ public class VendorSettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void unSubscribeVednor(final String vendorId){
+    public void subscribeVendor(final String vendorId){
 
+        DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        Query query = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).orderByChild("susbscriptions").equalTo(vendorId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() > 0){
+
+                }else {
+                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("subscriber").child(PrefManager
+                            .readUserKey(getApplicationContext())).child("susbscriptions");
+                    mDatabase.child(vendorId).setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void unSubscribeVendor(final String vendorId){
         DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference();
         Query query = mDataRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendorId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -179,31 +204,5 @@ public class VendorSettingsActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void subscribeVendor(final String vendorId){
-
-        final DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference();
-
-        Query query = mDataRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).orderByChild("susbscriptions").equalTo(vendorId);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getChildrenCount() > 0){
-
-                }else {
-                     FirebaseDatabase.getInstance().getReference()
-                             .child("subscriber").child(PrefManager
-                            .readUserKey(getApplicationContext()))
-                             .child("susbscriptions").child(vendorId).setValue(true);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
     }
 }

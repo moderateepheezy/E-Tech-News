@@ -14,7 +14,7 @@ public class PrefManager {
     public static final String USER_KEY = "user_key";
     private static final String PREFERENCES_FILE = "quiz_settings";
 
-    private static final String PREF_NAME = "quiz_key";
+    public static final String PREF_NAME = "quiz_key";
 
     private static final String USER_ID = "user_id";
 

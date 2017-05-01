@@ -38,7 +38,6 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<Boolean, Library
 
     private Context context;
     private DatabaseReference mDatabaseRef;
-    private DatabaseReference mDatabase;
     private String vendotName;
     private String vendorIcon;
     private String vendorId;

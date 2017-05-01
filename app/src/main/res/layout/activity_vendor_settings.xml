@@ -28,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:text="11/05/2017 9:34 pm"
             android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
@@ -54,26 +55,41 @@
 
     </RelativeLayout>
 
-    <Button
-        android:layout_width="200dp"
-        android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:text="@string/extend_subsciption"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:background="@color/colorIcons"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.6"
+        android:orientation="horizontal">
 
-    <Button
-        android:layout_width="200dp"
-        android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/white"
-        android:background="#c6c4c4"
-        android:layout_gravity="center"
-        android:text="@string/unsubscribe"
-        android:textStyle="bold"
-        android:id="@+id/subscribe"
-        android:layout_height="wrap_content" />
+        <Button
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:text="@string/extend_subsciption"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_margin="5dp"
+            android:layout_weight="0.3"
+            android:visibility="gone"
+            android:id="@+id/extend_sub"
+            android:background="@color/colorIcons"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:background="#c6c4c4"
+            android:layout_gravity="center"
+            android:text="@string/unsubscribe"
+            android:textStyle="bold"
+            android:id="@+id/subscribe"
+            android:layout_weight="0.3"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 </LinearLayout>

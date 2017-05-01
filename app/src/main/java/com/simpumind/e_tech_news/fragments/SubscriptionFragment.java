@@ -68,6 +68,8 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
     boolean isViewWithList = true;
 
+    public ProgressBar progressBar;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -77,7 +79,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((NewsMainActivity) getActivity()).getSupportActionBar().show();
-        getActivity().setTitle("Vendors");
+        ((NewsMainActivity)getActivity()).getSupportActionBar().setTitle("Vendors");
 
     }
 
@@ -89,7 +91,7 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
         setHasOptionsMenu(true);
 
 
-        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
 
@@ -235,5 +237,38 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkButton();
+    }
+
+    private void checkButton(){
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        childRef = mDatabaseRef.child("newspapers");
+        childRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        Log.d("chilref", childRef.getKey());
+
+        //isViewWithList ? R.layout.vendor_grid_item_card : R.l
+
+        vendorNewAdapter = new VendorNewAdapter(NewsPaper.class,  R.layout.vendor_grid_item_card,
+                NewsPaperHolder.class, childRef, (AppCompatActivity) getActivity(), false, getActivity());
+
+        recyclerView.setAdapter(vendorNewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(vendorNewAdapter);
     }
 }

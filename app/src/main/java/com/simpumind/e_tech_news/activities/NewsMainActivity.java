@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +26,10 @@ public class NewsMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_main);
+        setContentView(R.layout.activity_main);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
         DatabaseReference newsPaperRef = FirebaseDatabase.getInstance().getReference("newspapers");
@@ -36,6 +40,9 @@ public class NewsMainActivity extends AppCompatActivity {
 
         DatabaseReference commentRef = FirebaseDatabase.getInstance().getReference("comments");
         commentRef.keepSynced(true);
+
+        DatabaseReference subscriberRef = FirebaseDatabase.getInstance().getReference("subscriber");
+        subscriberRef.keepSynced(true);
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
 
@@ -48,15 +55,15 @@ public class NewsMainActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.home:
                                 selectedFragment = new SubscriptionFragment();
-                                setTitle("Vendors");
+                                toolbar.setTitle("Vendors");
                                 break;
                             case R.id.library:
                                 selectedFragment = new LibraryFragment();
-                                setTitle("Library");
+                                toolbar.setTitle("Library");
                                 break;
                             case R.id.profile:
                                 selectedFragment = new MyProfileFragment();
-                                setTitle("My Profile");
+                                toolbar.setTitle("My Profile");
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

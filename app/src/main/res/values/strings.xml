@@ -51,7 +51,7 @@
     <string name="write_a_comment">Write a Comment</string>
     <string name="subcribe_to_vendors">Subcribe to Vendors</string>
     <string name="read_news">Read News</string>
-    <string name="complete_registration_with">Complete Registration with:</string>
+    <string name="complete_registration_with">Connect:</string>
     <string name="no_news">No News at the moment!</string>
 
     <string-array name="arr">
@@ -59,4 +59,5 @@
         <item>B</item>
         <item>C</item>
     </string-array>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
