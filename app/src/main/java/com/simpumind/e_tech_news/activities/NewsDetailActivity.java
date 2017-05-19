@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
@@ -19,6 +20,9 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -97,21 +101,33 @@ public class NewsDetailActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_detail);
+        setContentView(R.layout.activity_news_details_main);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("");
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         Intent intent = getIntent();
         news_id  = intent.getStringExtra(SINGLE_NEWS);
         vendor_id = intent.getStringExtra(VENDOR_ID);
 
+
+
+        toolbar.setTitleMarginStart(0);
+
+        final ImageView logo = (ImageView) toolbar.findViewById(R.id.logo);
+
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
         mDatabaseRef.child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 News n = dataSnapshot.getValue(News.class);
-                updateViews(n);
+                updateViews(n, logo);
             }
 
             @Override
@@ -270,6 +286,7 @@ public class NewsDetailActivity extends AppCompatActivity{
                 }
             }
         });
+
     }
 
     @Override
@@ -280,7 +297,7 @@ public class NewsDetailActivity extends AppCompatActivity{
         return true;
     }
 
-    private void updateViews(News news){
+    private void updateViews(News news, ImageView imageView){
 
         Intent intent = getIntent();
 
@@ -289,6 +306,8 @@ public class NewsDetailActivity extends AppCompatActivity{
             String vendIcon = intent.getStringExtra(VENDOR_ICON);
 
             vendorName.setText(vendName);
+
+            loadImage(imageView, vendIcon, getApplicationContext());
 
              loadImage(vendorIcon, vendIcon, getApplicationContext());
         }
@@ -588,4 +607,22 @@ public class NewsDetailActivity extends AppCompatActivity{
         });
     }
 
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.read_news_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == R.id.settings){
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

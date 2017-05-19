@@ -31,19 +31,6 @@ public class NewsMainActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        DatabaseReference newsPaperRef = FirebaseDatabase.getInstance().getReference("newspapers");
-        newsPaperRef.keepSynced(true);
-
-        DatabaseReference newsRef = FirebaseDatabase.getInstance().getReference("news");
-        newsRef.keepSynced(true);
-
-        DatabaseReference commentRef = FirebaseDatabase.getInstance().getReference("comments");
-        commentRef.keepSynced(true);
-
-        DatabaseReference subscriberRef = FirebaseDatabase.getInstance().getReference("subscriber");
-        subscriberRef.keepSynced(true);
-
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
 
 

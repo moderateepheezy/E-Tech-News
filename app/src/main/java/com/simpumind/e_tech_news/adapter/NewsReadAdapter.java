@@ -30,6 +30,7 @@ import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsDetailActivity;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.NewsPaper;
+import com.simpumind.e_tech_news.utils.PrefManager;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -48,7 +49,6 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
     private String newsId;
     private String vendorId;
     private AppCompatActivity activity;
-    private StorageReference mStorage;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -77,9 +77,17 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.getValue() == null) {
+
+                    FirebaseDatabase.getInstance().getReference().child("subscriber")
+                            .child(PrefManager.readUserKey(context)).child("read_news").child(getRef(position).getKey()).removeValue();
+
+                }else{
+
                 News news = dataSnapshot.getValue(News.class);
 
-                if(news != null){
+                if(news != null) {
                     newsId = dataSnapshot.getKey();
                     vendorId = news.getNewspaper_id();
 
@@ -105,6 +113,7 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
                         }
                     });
                 }
+                }
             }
 
             @Override
@@ -116,6 +125,7 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
 
                 Intent intent = new Intent(context, NewsDetailActivity.class);
@@ -133,7 +143,7 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
     }
 
     private void loadImage(final ImageView imageView, String imagePath, final Context context){
-        mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
+        StorageReference mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
 
         Glide.with(context)
                 .using(new FirebaseImageLoader())
@@ -141,5 +151,7 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
                 .fitCenter()
                 .placeholder(R.drawable.denews)
                 .into(imageView);
+
+
     }
 }

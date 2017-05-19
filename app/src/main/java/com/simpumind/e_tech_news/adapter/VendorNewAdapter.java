@@ -39,6 +39,7 @@ import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.NewsPaper;
+import com.simpumind.e_tech_news.utils.Const;
 import com.simpumind.e_tech_news.utils.PrefManager;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -213,6 +214,7 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
         viewHolder.vendorName.setText(changeFont(model.getPaper_name()), TextView.BufferType.SPANNABLE);
 
+        //Const.loadImage(model.getLogo(), true, context, viewHolder.vendorIcon, model.getPaper_name());
         loadImage(viewHolder.vendorIcon, model.getLogo(), context);
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");

@@ -26,6 +26,7 @@ import com.google.firebase.storage.StorageReference;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
 import com.simpumind.e_tech_news.models.NewsPaper;
+import com.simpumind.e_tech_news.utils.PrefManager;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -37,11 +38,9 @@ import com.squareup.picasso.Picasso;
 public class LibraryListAdapter extends FirebaseRecyclerAdapter<Boolean, LibraryListHolder>{
 
     private Context context;
-    private DatabaseReference mDatabaseRef;
     private String vendotName;
     private String vendorIcon;
     private String vendorId;
-    private StorageReference mStorage;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -64,19 +63,24 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<Boolean, Library
     protected void populateViewHolder(final LibraryListHolder viewHolder, final Boolean model, final int position) {
 
 
-
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("newspapers");
+        DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("newspapers");
         mDatabaseRef.child(getRef(position).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                NewsPaper newsPaper = dataSnapshot.getValue(NewsPaper.class);
-                viewHolder.libraryName.setText(newsPaper.getPaper_name());
 
-                loadImage(viewHolder.libraryImage, newsPaper.getLogo(), context);
+                if (dataSnapshot.getValue() == null) {
+                    FirebaseDatabase.getInstance().getReference().child("subscriber")
+                            .child(PrefManager.readUserKey(context)).child("susbscriptions").child(getRef(position).getKey()).removeValue();
+                }else{
+                    NewsPaper newsPaper = dataSnapshot.getValue(NewsPaper.class);
+                    viewHolder.libraryName.setText(newsPaper.getPaper_name());
 
-                vendotName = newsPaper.getPaper_name();
-                vendorIcon = newsPaper.getLogo();
-                vendorId = dataSnapshot.getKey();
+                    loadImage(viewHolder.libraryImage, newsPaper.getLogo(), context);
+
+                    vendotName = newsPaper.getPaper_name();
+                    vendorIcon = newsPaper.getLogo();
+                    vendorId = dataSnapshot.getKey();
+                }
             }
 
             @Override
@@ -102,7 +106,7 @@ public class LibraryListAdapter extends FirebaseRecyclerAdapter<Boolean, Library
 
 
     private void loadImage(final ImageView imageView, String imagePath, final Context context){
-        mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
+        StorageReference mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
 
         Glide.with(context)
                 .using(new FirebaseImageLoader())

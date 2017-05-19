@@ -41,6 +41,7 @@ import com.simpumind.e_tech_news.activities.NewsDetailActivity;
 import com.simpumind.e_tech_news.activities.VendorNewsListActivity;
 import com.simpumind.e_tech_news.models.News;
 import com.simpumind.e_tech_news.models.NewsPaper;
+import com.simpumind.e_tech_news.utils.Const;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -281,7 +282,9 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
             ((NewsListHolder) viewHolder).timeDate.setText(text);
 
 
-            loadImage(((NewsListHolder) viewHolder).newsImage, model.getThumbnail(), context);
+            //loadImage(((NewsListHolder) viewHolder).newsImage, model.getThumbnail(), context);
+            Const.loadImage(model.getThumbnail(), true, context, ((NewsListHolder) viewHolder).newsImage, model.getCaption());
+            Log.d("craxtshit " + model.getCaption(), model.getThumbnail());
 
             ((NewsListHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
