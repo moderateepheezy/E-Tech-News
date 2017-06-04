@@ -19,7 +19,9 @@
             android:value="@string/facebook_app_id"
             tools:replace="android:value" />
 
-        <activity android:name=".activities.IntroActivity">
+        <activity
+            android:theme="@style/AppThemeFullScreen"
+            android:name=".activities.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

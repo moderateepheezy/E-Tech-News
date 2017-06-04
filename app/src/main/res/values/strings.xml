@@ -16,6 +16,8 @@
 
     <string name="facebook_app_id">710404902495153</string>
 
+    <string name="label_button_cta_canteen_intro">GET STARTED</string>
+
 
     <string name="login_success">login success</string>
     <string name="login">LOGIN</string>

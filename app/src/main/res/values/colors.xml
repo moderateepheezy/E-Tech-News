@@ -11,4 +11,11 @@
 
     <color name="facebookColor">#3a579d</color>
     <color name="googleColor">#dd4b39</color>
+
+    <color name="a_color">#5d3b66</color>
+    <color name="b_color">#2d8cb4</color>
+    <color name="c_color">#878787</color>
+    <color name="a1_color">#9762A4</color>
+    <color name="b1_color">#37B9EF</color>
+    <color name="c1_color">#B8BBBA</color>
 </resources>

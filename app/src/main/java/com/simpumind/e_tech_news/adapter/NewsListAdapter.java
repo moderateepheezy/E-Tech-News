@@ -282,9 +282,7 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
             ((NewsListHolder) viewHolder).timeDate.setText(text);
 
 
-            //loadImage(((NewsListHolder) viewHolder).newsImage, model.getThumbnail(), context);
-            Const.loadImage(model.getThumbnail(), true, context, ((NewsListHolder) viewHolder).newsImage, model.getCaption());
-            Log.d("craxtshit " + model.getCaption(), model.getThumbnail());
+            loadImage(((NewsListHolder) viewHolder).newsImage, model.getThumbnail(), context);
 
             ((NewsListHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
