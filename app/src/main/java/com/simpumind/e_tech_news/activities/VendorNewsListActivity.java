@@ -109,8 +109,6 @@ public class VendorNewsListActivity extends AppCompatActivity implements SearchV
 
         String id = intent.getStringExtra(NEWS_PAPER_ID);
 
-        //loadImage(vendorIcon);
-
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -147,7 +145,8 @@ public class VendorNewsListActivity extends AppCompatActivity implements SearchV
 
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        childRef = mDatabaseRef.child("news").orderByChild("newspaper_id").equalTo(id);
+        childRef = mDatabaseRef.child("newspapers").child(id).child("news").orderByChild("status").equalTo(true);
+//         Log.d("Snpshot-value", childRef.g)
 
         newsListAdapter = new NewsListAdapter(News.class, R.layout.vendor_news_item_list,
                 RecyclerView.ViewHolder.class, childRef, getApplicationContext(), this, vendorName, vendorIcon, vendorId);
@@ -180,6 +179,10 @@ public class VendorNewsListActivity extends AppCompatActivity implements SearchV
                                                 isUserSubscribed = true;
                                                 subscribeVendor(vendorId);
                                                 subscribe.setVisibility(View.GONE);
+
+                                                DatabaseReference subRef = FirebaseDatabase.getInstance().getReference()
+                                                        .child("newspapers").child(vendorId).child("users_subscribed");
+                                                subRef.child(PrefManager.readUserKey(getApplicationContext())).setValue(true);
                                                 return true; // allow selection
                                             }
                                         })

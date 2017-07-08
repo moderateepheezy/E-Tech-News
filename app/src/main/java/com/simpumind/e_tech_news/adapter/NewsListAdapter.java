@@ -246,41 +246,34 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
 
         final News model = getItem(position);
 
-        if(viewHolder instanceof HeaderViewHolder){
-            ((HeaderViewHolder) viewHolder).title.setText(model.getCaption());
+        if(model.isStatus()) {
+            ((NewsListHolder) viewHolder).itemView.setVisibility(View.VISIBLE);
 
-            mStorage = FirebaseStorage.getInstance().getReference();
-            mStorage.child(model.getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.with(context).load(uri.toString())
-                            .error(R.drawable.denews)
-                            .placeholder(R.drawable.denews)
-                            .into(((NewsListHolder) viewHolder).newsImage);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("Failed", e.getMessage());
-                }
-            });
-        }else {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String lang = preferences.getString("lang", "fr");
 
-            ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption());
-            //Picasso.with(context).load(model.getThumbnail()).into(((NewsListHolder) viewHolder).newsImage);
+            if (lang.equals("fr")){
+                if(!model.getCaption().getFrench().equals("")) {
+                    ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption().getFrench());
+                }else{
+                    ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption().getEnglish());
+                }
+            }else{
+                if (!model.getCaption().getEnglish().equals("")) {
+                    ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption().getEnglish());
+                }else {
+                    ((NewsListHolder) viewHolder).newsTitle.setText(model.getCaption().getFrench());
+                }
+            }
             ((NewsListHolder) viewHolder).vendorName.setText(vendorName);
 
             commentCount((NewsListHolder) viewHolder, position);
-
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-            String lang = preferences.getString("lang", "en");
             Locale LocaleBylanguageTag = Locale.forLanguageTag(lang);
             TimeAgoMessages messages = new TimeAgoMessages.Builder().withLocale(LocaleBylanguageTag).build();
 
             String text = TimeAgo.using(model.getCreated_on(), messages);
 
             ((NewsListHolder) viewHolder).timeDate.setText(text);
-
 
             loadImage(((NewsListHolder) viewHolder).newsImage, model.getThumbnail(), context);
 
@@ -291,15 +284,17 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
                     View sharedView = ((NewsListHolder) viewHolder).newsImage;
                     String transitionName = activity.getString(R.string.blue_name);
                     ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(activity, sharedView, transitionName);
-                    intent.putExtra(NewsDetailActivity.SINGLE_NEWS, getRef(position).getKey());
+                    intent.putExtra(NewsDetailActivity.SINGLE_NEWS, model.getMain_news_id());
                     intent.putExtra(NewsDetailActivity.VENDOR_NAME, vendorName);
                     intent.putExtra(NewsDetailActivity.VENDOR_ICON, vendorIcon);
                     intent.putExtra(NewsDetailActivity.VENDOR_ID, vendorId);
                     ActivityCompat.startActivity(activity, intent, transitionActivityOptions.toBundle());
                 }
             });
-
+        }else{
+            ((NewsListHolder) viewHolder).itemView.setVisibility(View.GONE);
         }
+
     }
 
 
@@ -339,7 +334,7 @@ public class NewsListAdapter extends FirebaseRecyclerAdapter<News, RecyclerView.
         } else{
             text = text.toLowerCase();
             for(News post : postsCopy){
-                if(post.getCaption().toLowerCase().contains(text)){
+                if(post.getCaption().getEnglish().toLowerCase().contains(text)){
                     posts.add(post);
                 }
             }

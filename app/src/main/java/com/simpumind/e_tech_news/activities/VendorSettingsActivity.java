@@ -20,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.simplealertdialog.SimpleAlertDialogFragment;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.utils.PrefManager;
 
@@ -99,6 +98,10 @@ public class VendorSettingsActivity extends AppCompatActivity {
                     extendSubscription.setVisibility(View.GONE);
                     unSubscribeVendor(vendor_id);
 
+                    DatabaseReference subRef = FirebaseDatabase.getInstance().getReference()
+                            .child("newspapers").child(vendor_id).child("users_subscribed");
+                    subRef.child(PrefManager.readUserKey(getApplicationContext())).removeValue();
+
                 }else {
 
                     CharSequence[] x =  {"Daily","Weekly","Monthly"};
@@ -126,6 +129,8 @@ public class VendorSettingsActivity extends AppCompatActivity {
                                                     subscribe.setText(getResources().getString(R.string.unsubscribe));
                                                     extendSubscription.setVisibility(View.VISIBLE);
                                                     subscribeVendor(vendor_id);
+
+
                                                     return true; // allow selection
                                                 }
                                             })

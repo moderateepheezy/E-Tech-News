@@ -43,10 +43,10 @@
         app:pinBackground="@drawable/shadow"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_margin="25dp"
+        android:layout_margin="5dp"
         app:pinWidth="40dp"
         app:pinHeight="40dp"
-        app:pinLength="4"
+        app:pinLength="6"
         android:layout_below="@id/desc"
         app:cursorVisible="false"
         app:forceKeyboard="true"
@@ -66,5 +66,15 @@
         android:id="@+id/submit"
         android:background="@drawable/border_round_corner"/>
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/submit"
+        android:background="@color/white"
+        android:textColor="#c73e3b"
+        android:text="@string/resend_code"
+        android:id="@+id/resend_code"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

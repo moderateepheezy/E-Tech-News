@@ -1,35 +1,32 @@
 package com.simpumind.e_tech_news.models;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by simpumind on 3/27/17.
  */
 
-public class NewsPaper {
+public class NewsPaper implements Serializable{
 
-    public String cost;
     public String  logo;
     public String method;
     public String paper_name;
-    public String validity;
+    public Boolean display;
+    public HashMap<String, News> news;
+    public String status;
 
-    public NewsPaper(){
-
+    public NewsPaper() {
     }
 
-    public NewsPaper(String cost, String logo, String method, String paper_name, String validity) {
-        this.cost = cost;
+    public NewsPaper(String logo, String method, String paper_name, Boolean display, HashMap<String, News> news, String status) {
         this.logo = logo;
         this.method = method;
         this.paper_name = paper_name;
-        this.validity = validity;
-    }
-
-    public String getCost() {
-        return cost;
-    }
-
-    public void setCost(String cost) {
-        this.cost = cost;
+        this.display = display;
+        this.news = news;
+        this.status = status;
     }
 
     public String getLogo() {
@@ -56,14 +53,29 @@ public class NewsPaper {
         this.paper_name = paper_name;
     }
 
-    public String getValidity() {
-        return validity;
+    public Boolean getDisplay() {
+        return display;
     }
 
-    public void setValidity(String validity) {
-        this.validity = validity;
+    public void setDisplay(Boolean display) {
+        this.display = display;
     }
 
+    public HashMap<String, News> getNews() {
+        return news;
+    }
+
+    public void setNews(HashMap<String, News> news) {
+        this.news = news;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -72,25 +84,26 @@ public class NewsPaper {
 
         NewsPaper newsPaper = (NewsPaper) o;
 
-        if (cost != null ? !cost.equals(newsPaper.cost) : newsPaper.cost != null) return false;
         if (logo != null ? !logo.equals(newsPaper.logo) : newsPaper.logo != null) return false;
         if (method != null ? !method.equals(newsPaper.method) : newsPaper.method != null)
             return false;
         if (paper_name != null ? !paper_name.equals(newsPaper.paper_name) : newsPaper.paper_name != null)
             return false;
-        return validity != null ? validity.equals(newsPaper.validity) : newsPaper.validity == null;
+        if (display != null ? !display.equals(newsPaper.display) : newsPaper.display != null)
+            return false;
+        if (news != null ? !news.equals(newsPaper.news) : newsPaper.news != null) return false;
+        return status != null ? status.equals(newsPaper.status) : newsPaper.status == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = cost != null ? cost.hashCode() : 0;
-        result = 31 * result + (logo != null ? logo.hashCode() : 0);
+        int result = logo != null ? logo.hashCode() : 0;
         result = 31 * result + (method != null ? method.hashCode() : 0);
         result = 31 * result + (paper_name != null ? paper_name.hashCode() : 0);
-        result = 31 * result + (validity != null ? validity.hashCode() : 0);
+        result = 31 * result + (display != null ? display.hashCode() : 0);
+        result = 31 * result + (news != null ? news.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
-
-
 }

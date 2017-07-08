@@ -1,11 +1,16 @@
 package com.simpumind.e_tech_news.fragments;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +36,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.activities.NewsMainActivity;
@@ -126,12 +132,13 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
         recyclerView.setEmptyView(emptyView);
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        childRef = mDatabaseRef.child("newspapers");
+       Query childRef = mDatabaseRef.child("newspapers");
         childRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 progressBar.setVisibility(View.GONE);
+                Log.d("someValue", dataSnapshot.getValue().toString());
             }
 
             @Override
@@ -139,7 +146,6 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
 
             }
         });
-        Log.d("chilref", childRef.getKey());
 
         //isViewWithList ? R.layout.vendor_grid_item_card : R.l
 
@@ -182,6 +188,23 @@ public class SubscriptionFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
 
+    }
+
+    private void addNotification() {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getActivity())
+                        .setSmallIcon(R.drawable.email_icon)
+                        .setContentTitle("Notifications Example")
+                        .setContentText("This is a test notification");
+
+        Intent notificationIntent = new Intent(getActivity(), NewsMainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(getActivity(), 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
     }
 
     @Override

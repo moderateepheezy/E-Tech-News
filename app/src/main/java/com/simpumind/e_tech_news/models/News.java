@@ -1,16 +1,19 @@
 package com.simpumind.e_tech_news.models;
 
+import java.io.Serializable;
+
 /**
  * Created by simpumind on 3/27/17.
  */
 
-public class News {
+public class News{
 
-    public String caption;
-    public String content;
+    public Caption caption;
+    public Content content;
     public String newspaper_id;
     public String thumbnail;
-    public String user;
+    public String main_news_id;
+    public Boolean status;
     public long created_on;
 
 
@@ -18,28 +21,29 @@ public class News {
 
     }
 
-    public News(String caption, String content, String newspaper_id, String thumbnail, String user, long created_on) {
+    public News(Caption caption, Content content, String newspaper_id, String thumbnail, String main_news_id, Boolean status, long created_on) {
         this.caption = caption;
         this.content = content;
         this.newspaper_id = newspaper_id;
         this.thumbnail = thumbnail;
-        this.user = user;
+        this.main_news_id = main_news_id;
+        this.status = status;
         this.created_on = created_on;
     }
 
-    public String getCaption() {
+    public Caption getCaption() {
         return caption;
     }
 
-    public void setCaption(String caption) {
+    public void setCaption(Caption caption) {
         this.caption = caption;
     }
 
-    public String getContent() {
+    public Content getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Content content) {
         this.content = content;
     }
 
@@ -59,6 +63,22 @@ public class News {
         this.thumbnail = thumbnail;
     }
 
+    public String getMain_news_id() {
+        return main_news_id;
+    }
+
+    public void setMain_news_id(String main_news_id) {
+        this.main_news_id = main_news_id;
+    }
+
+    public Boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
     public long getCreated_on() {
         return created_on;
     }
@@ -74,6 +94,7 @@ public class News {
 
         News news = (News) o;
 
+        if (status != news.status) return false;
         if (created_on != news.created_on) return false;
         if (caption != null ? !caption.equals(news.caption) : news.caption != null) return false;
         if (content != null ? !content.equals(news.content) : news.content != null) return false;
@@ -81,7 +102,7 @@ public class News {
             return false;
         if (thumbnail != null ? !thumbnail.equals(news.thumbnail) : news.thumbnail != null)
             return false;
-        return user != null ? user.equals(news.user) : news.user == null;
+        return main_news_id != null ? main_news_id.equals(news.main_news_id) : news.main_news_id == null;
 
     }
 
@@ -91,7 +112,8 @@ public class News {
         result = 31 * result + (content != null ? content.hashCode() : 0);
         result = 31 * result + (newspaper_id != null ? newspaper_id.hashCode() : 0);
         result = 31 * result + (thumbnail != null ? thumbnail.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (main_news_id != null ? main_news_id.hashCode() : 0);
+        result = 31 * result + (status ? 1 : 0);
         result = 31 * result + (int) (created_on ^ (created_on >>> 32));
         return result;
     }

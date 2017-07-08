@@ -91,7 +91,7 @@ public class NewsReadAdapter extends FirebaseRecyclerAdapter<Boolean, ReadListHo
                     newsId = dataSnapshot.getKey();
                     vendorId = news.getNewspaper_id();
 
-                    viewHolder.newsTitle.setText(news.caption);
+                    viewHolder.newsTitle.setText(news.getCaption().getEnglish());
 
                     loadImage(viewHolder.newsImage, news.getThumbnail(), context);
 

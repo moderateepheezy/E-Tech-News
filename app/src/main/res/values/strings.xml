@@ -62,4 +62,6 @@
         <item>C</item>
     </string-array>
     <string name="title_activity_main">MainActivity</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="no_content">No Content yet!</string>
 </resources>

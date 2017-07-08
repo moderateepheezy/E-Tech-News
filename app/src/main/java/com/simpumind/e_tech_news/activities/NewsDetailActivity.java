@@ -81,6 +81,7 @@ public class NewsDetailActivity extends AppCompatActivity{
     TextView titleNews;
     TextView vendorName;
     ImageView vendorIcon;
+    ImageView logo;
     Button subscribe;
     ViewGroup transitionsContainer;
     TextView badgeCount;
@@ -111,32 +112,6 @@ public class NewsDetailActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        Intent intent = getIntent();
-        news_id  = intent.getStringExtra(SINGLE_NEWS);
-        vendor_id = intent.getStringExtra(VENDOR_ID);
-
-
-
-        toolbar.setTitleMarginStart(0);
-
-        final ImageView logo = (ImageView) toolbar.findViewById(R.id.logo);
-
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
-        mDatabaseRef.child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                News n = dataSnapshot.getValue(News.class);
-                updateViews(n, logo);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
         newsImage = (ImageView) findViewById(R.id.toolbarImage);
 
         vendorIcon = (ImageView) findViewById(R.id.vendorIcon);
@@ -147,6 +122,33 @@ public class NewsDetailActivity extends AppCompatActivity{
 
         badgeCount = (TextView) findViewById(R.id.badgeCount);
 
+        logo = (ImageView) toolbar.findViewById(R.id.logo);
+
+
+        Intent intent = getIntent();
+        news_id  = intent.getStringExtra(SINGLE_NEWS);
+        vendor_id = intent.getStringExtra(VENDOR_ID);
+
+
+
+        toolbar.setTitleMarginStart(0);
+
+        FirebaseDatabase.getInstance()
+                .getReference().child("news")
+                .child(news_id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                News n = dataSnapshot.getValue(News.class);
+                updateViews(n, newsImage);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
          time = (TextView) findViewById(R.id.time);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -155,7 +157,7 @@ public class NewsDetailActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 
-                if(isUserSubscribed) {
+                if(isUserSubscribed && PrefManager.getStoredUser(getApplicationContext()) != null) {
                     onShowPopup(v);
                 }else{
                     Toast.makeText(NewsDetailActivity.this, "You cannot comment as you are not subscribed.", Toast.LENGTH_SHORT).show();
@@ -216,6 +218,8 @@ public class NewsDetailActivity extends AppCompatActivity{
                 {
                     expandableTextView.expand();
                     buttonToggle.setVisibility(View.GONE);
+
+                    readByUser(news_id);
                 }
             }
         });
@@ -237,6 +241,12 @@ public class NewsDetailActivity extends AppCompatActivity{
                     subscribe.setText(getResources().getString(R.string.subscribe));
 
                     unSubscribeVendor(vendor_id);
+
+                    DatabaseReference subRef = FirebaseDatabase.getInstance().getReference()
+                            .child("newspapers").child(vendor_id).child("users_subscribed");
+                    subRef.child(PrefManager.readUserKey(getApplicationContext())).removeValue();
+
+                    unReadNews(news_id);
 
                 }else {
 
@@ -267,9 +277,13 @@ public class NewsDetailActivity extends AppCompatActivity{
                                                     readByUser(news_id);
 
                                                     subscribeVendor(vendor_id);
+
+                                                    DatabaseReference subRef = FirebaseDatabase.getInstance().getReference()
+                                                            .child("newspapers").child(vendor_id).child("users_subscribed");
+                                                    subRef.child(PrefManager.readUserKey(getApplicationContext())).setValue(true);
+
                                                     subscribe.setBackgroundTintList(getResources().getColorStateList(R.color.button_back_color));
                                                     subscribe.setText(getResources().getString(R.string.unsubscribe));
-                                                    subscribeVendor(vendor_id);
                                                     return true; // allow selection
                                                 }
                                             })
@@ -297,6 +311,33 @@ public class NewsDetailActivity extends AppCompatActivity{
         return true;
     }
 
+    private void unReadNews(final String newsId){
+
+        Query query = FirebaseDatabase.getInstance()
+                .getReference().child("subscriber").child("read_news")
+                .child(PrefManager.readUserKey(getApplicationContext()));
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().equals(newsId)){
+                    FirebaseDatabase.getInstance().getReference().child("subscriber")
+                            .child(PrefManager.readUserKey(getApplicationContext()))
+                            .child("read_news").child(newsId).removeValue();
+
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("news").child(newsId).child("users_read")
+                            .child(PrefManager.readUserKey(getApplicationContext())).removeValue();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void updateViews(News news, ImageView imageView){
 
         Intent intent = getIntent();
@@ -307,17 +348,37 @@ public class NewsDetailActivity extends AppCompatActivity{
 
             vendorName.setText(vendName);
 
-            loadImage(imageView, vendIcon, getApplicationContext());
+            loadImage(imageView, news.getThumbnail(), getApplicationContext());
 
              loadImage(vendorIcon, vendIcon, getApplicationContext());
+            loadImage(logo, vendIcon, getApplicationContext());
         }
 
-        expandableTextView.setText(Html.fromHtml(news.content));
 
-        titleNews.setText(news.caption);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String lang = preferences.getString("lang", "en");
+        String lang = preferences.getString("lang", "fr");
+
+
+        if(lang.equals("fr")){
+            if(!news.caption.getFrench().equals("")){
+                expandableTextView.setText(Html.fromHtml(news.content.french));
+                titleNews.setText(news.getCaption().getFrench());
+            }else{
+                expandableTextView.setText(Html.fromHtml(news.content.english));
+                titleNews.setText(news.getCaption().getEnglish());
+            }
+        }else{
+            if(!news.caption.getEnglish().equals("")){
+                expandableTextView.setText(Html.fromHtml(news.content.english));
+                titleNews.setText(news.getCaption().getEnglish());
+            }else{
+                expandableTextView.setText(Html.fromHtml(news.content.french));
+                titleNews.setText(news.getCaption().getFrench());
+            }
+        }
+
+
         Locale LocaleBylanguageTag = Locale.forLanguageTag(lang);
         TimeAgoMessages messages = new TimeAgoMessages.Builder().withLocale(LocaleBylanguageTag).build();
 
@@ -332,7 +393,7 @@ public class NewsDetailActivity extends AppCompatActivity{
     public void subscribeVendor(final String vendorId){
 
 
-        Query query = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).orderByChild("susbscriptions").equalTo(vendorId);
+        Query query = FirebaseDatabase.getInstance().getReference().child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).orderByChild("susbscriptions").equalTo(vendorId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -361,6 +422,9 @@ public class NewsDetailActivity extends AppCompatActivity{
                 if(dataSnapshot.getKey().equals(vendorId)){
                     FirebaseDatabase.getInstance().getReference().child("subscriber")
                             .child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendorId).removeValue();
+                   // FirebaseDatabase.getInstance().getReference().child("newspapers")
+                    //        .child(PrefManager.readUserKey(getApplicationContext())).child("susbscriptions").child(vendorId).removeValue();
+
                 }
             }
 
@@ -373,9 +437,8 @@ public class NewsDetailActivity extends AppCompatActivity{
 
     public void readByUser(final String newsId){
 
-
-
-        Query query = mDatabaseRef.child("subscriber").child(PrefManager.readUserKey(getApplicationContext())).orderByChild("read_news").equalTo(newsId);
+        Query query = FirebaseDatabase.getInstance().getReference().child("subscriber")
+                .child(PrefManager.readUserKey(getApplicationContext())).orderByChild("read_news").equalTo(newsId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -385,6 +448,10 @@ public class NewsDetailActivity extends AppCompatActivity{
                     mDatabase = FirebaseDatabase.getInstance().getReference().child("subscriber").child(PrefManager
                             .readUserKey(getApplicationContext())).child("read_news");
                     mDatabase.child(newsId).setValue(true);
+
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("news").child(newsId).child("users_read")
+                            .child(PrefManager.readUserKey(getApplicationContext())).setValue(true);
                 }
             }
 

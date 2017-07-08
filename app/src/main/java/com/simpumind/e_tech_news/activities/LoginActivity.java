@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,9 +23,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,29 +43,30 @@ import com.simpumind.e_tech_news.utils.PrefManager;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.concurrent.TimeUnit;
 
 import appzonegroup.com.phonenumberverifier.PhoneFormatException;
 import appzonegroup.com.phonenumberverifier.PhoneModel;
 import appzonegroup.com.phonenumberverifier.PhoneNumberVerifier;
 
 import static android.R.attr.country;
+import static android.R.attr.start;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-    private DatabaseReference mDatabaseRef;
-    private DatabaseReference childRef;
-    private DatabaseReference innerMDatabaseRef;
-    private DatabaseReference innerChildRef;
+    private FirebaseAuth.AuthStateListener authListener;
 
     private FirebaseAuth mAuth;
 
+    private static String phoneText;
 
     PhoneNumberVerifier.Countries country;
     EditText phoneNumber;
 
     private ProgressDialog progress;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,24 +75,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mAuth = FirebaseAuth.getInstance();
 
-        //mDatabase = FirebaseDatabase.getInstance().getReference().child("users").push();
+        mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
+
+            @Override
+            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                Log.d(TAG, "onVerificationCompleted:" + phoneAuthCredential);
 
 
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-//                    startActivity(intent);
-//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-//                } else {
-//                    // User is signed out
-//                    Log.d(TAG, "onAuthStateChanged:signed_out");
-//                }
-//                // ...
-//            }
-//        };
+            }
+
+            @Override
+            public void onVerificationFailed(FirebaseException e) {
+                if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    phoneNumber.setError("Invalid phone number.");
+                } else if (e instanceof FirebaseTooManyRequestsException) {
+                    Snackbar.make(findViewById(android.R.id.content), "Quota exceeded.",
+                            Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                // super.onCodeSent(s, forceResendingToken);
+                progress.dismiss();
+                Intent intent = new Intent(LoginActivity.this, OTPActivity.class);
+                intent.putExtra(OTPActivity.VERFICATION_ID, s);
+                intent.putExtra(OTPActivity.PHONE_NUMBER, phoneText);
+                startActivity(intent);
+                finish();
+            }
+        };
 
         Button go = (Button) findViewById(R.id.go);
         Spinner spinner = (Spinner) findViewById(R.id.countrySpinner);
@@ -149,63 +168,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     progress.setMessage("Signing in...");
                     progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     progress.setIndeterminate(true);
+                    progress.setCancelable(false);
                     progress.show();
 
                     number = country.ToCountryCode(country,phoneModel.getPhoneNumber());
                     //outputTextView.setText(number);
                     Toast.makeText(LoginActivity.this, number, Toast.LENGTH_SHORT).show();
 
-                    mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+                    phoneText = number;
 
-                    Query query = mDatabaseRef.child("subscriber").orderByChild("msisdn").equalTo(number);
-
-                    final String finalNumber = number;
-                    final String finalNumber1 = number;
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            if(dataSnapshot.getChildrenCount() > 0){
-                                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                                    String subscriberKey = childSnapshot.getKey();
-
-                                    PrefManager.saveUserKey(getApplicationContext(), subscriberKey);
-                                }
-
-                                progress.dismiss();
-                                Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-                                startActivity(intent);
-                                finish();
-
-                            } else {
-                                innerMDatabaseRef = FirebaseDatabase.getInstance().getReference();
-//
-                                innerChildRef = innerMDatabaseRef.child("subscriber").push();
-                                innerChildRef.child("msisdn").setValue(finalNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        progress.dismiss();
-
-                                        PrefManager.saveUserKey(getApplicationContext(), innerChildRef.getKey());
-
-                                        Intent intent = new Intent(LoginActivity.this, NewsMainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                });
-
-                            }
-
-                            PrefManager.saveMSSIDN(getApplicationContext(), "identify", finalNumber1);
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                    PhoneAuthProvider.getInstance().verifyPhoneNumber(number, 60, TimeUnit.SECONDS, this, mCallbacks);
 
 
                 } else {
@@ -273,5 +245,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
 }

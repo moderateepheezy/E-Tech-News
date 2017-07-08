@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
+import android.support.multidex.MultiDex;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
@@ -35,11 +36,11 @@ public class ENewsApp extends Application{
 //                .build()
 //        );
         Typeface tf = Typeface.createFromAsset(getAssets(),
-                "fonts/Montserrat-Regular.ttf");
+                "fonts/Orkney-Regular.ttf");
         TypefaceUtil.replaceFont("", tf);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String lang = preferences.getString("lang", "en");
+        String lang = preferences.getString("lang", "fr");
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
 
@@ -81,5 +82,6 @@ public class ENewsApp extends Application{
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        MultiDex.install(this);
     }
 }

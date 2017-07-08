@@ -2,7 +2,9 @@ package com.simpumind.e_tech_news.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -46,7 +48,9 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan;
 import uk.co.chrisjenx.calligraphy.TypefaceUtils;
@@ -64,9 +68,6 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
     private DatabaseReference mDatabaseRef;
     private DatabaseReference mDatabase;
-    private DatabaseReference childRef;
-    private DatabaseReference mDataRef;
-    private StorageReference mStorage;
 
     private Query mRef;
     private Class<NewsPaper> mModelClass;
@@ -82,8 +83,6 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
     private static boolean isUserSubscribed = false;
     FirebaseAuth mAuth;
-
-    static ViewGroup view;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into
@@ -205,24 +204,34 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
     @Override
     public NewsPaperHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        view = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+
         return super.onCreateViewHolder(parent, viewType);
     }
 
     @Override
+    public int getItemViewType(int position) {
+        NewsPaper model = getItem(position);
+        if (model != null && model.getNews() != null && !"deleted".equals(model.getStatus())) {
+            return super.getItemViewType(position);
+        }
+        return R.layout.vendor_grid_item_empty;
+    }
+
+    @Override
     protected void populateViewHolder(final NewsPaperHolder viewHolder, final NewsPaper model, final int position) {
+
+
 
         viewHolder.vendorName.setText(changeFont(model.getPaper_name()), TextView.BufferType.SPANNABLE);
 
         //Const.loadImage(model.getLogo(), true, context, viewHolder.vendorIcon, model.getPaper_name());
         loadImage(viewHolder.vendorIcon, model.getLogo(), context);
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("news");
-
         final String oneChildRef = getRef(position).getKey();
 
-        mDataRef = FirebaseDatabase.getInstance().getReference();
-        childRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference();
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         Query query = mDataRef.child("subscriber").child(PrefManager.readUserKey(context)).child("susbscriptions").child(oneChildRef);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -242,24 +251,30 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
             }
         });
 
-        mDatabaseRef.orderByChild("newspaper_id")
-                .equalTo(oneChildRef).limitToLast(1)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+        if(model.getNews() != null && !"deleted".equals(model.getStatus())){
+            viewHolder.itemView.setVisibility(View.VISIBLE);
+            Map.Entry<String,News> entry=model.getNews().entrySet().iterator().next();
+            String key= entry.getKey();
+            News newsDetails=entry.getValue();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String lang = preferences.getString("lang", "fr");
 
-                        for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                            News n = childSnapshot.getValue(News.class);
-
-                            updateUI(viewHolder, n);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+            if (lang.equals("fr")){
+                if(!newsDetails.getCaption().getFrench().equals("")) {
+                    viewHolder.firstNewsTitle.setText(newsDetails.getCaption().getFrench());
+                }else{
+                    viewHolder.firstNewsTitle.setText(newsDetails.getCaption().getEnglish());
+                }
+            }else{
+                if (!newsDetails.getCaption().getEnglish().equals("")) {
+                    viewHolder.firstNewsTitle.setText(newsDetails.getCaption().getEnglish());
+                }else {
+                    viewHolder.firstNewsTitle.setText(newsDetails.getCaption().getFrench());
+                }
+            }
+        }else{
+            viewHolder.itemView.setVisibility(View.GONE);
+        }
 
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -285,6 +300,9 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                     viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.colorAccent));
                     viewHolder.subscribe.setText(context.getResources().getString(R.string.subscribe));
                     unSubscribeVendor(getRef(position).getKey());
+                    DatabaseReference subRef = FirebaseDatabase.getInstance().getReference()
+                            .child("newspapers").child(getRef(position).getKey()).child("users_subscribed");
+                    subRef.child(PrefManager.readUserKey(context)).removeValue();
                 }else {
 
                     CharSequence[] x =  {"Daily","Weekly","Monthly"};
@@ -312,6 +330,10 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
                                                     viewHolder.subscribe.setBackgroundTintList(context.getResources().getColorStateList(R.color.button_back_color));
                                                     viewHolder.subscribe.setText(context.getResources().getString(R.string.unsubscribe));
                                                     subscribeVendor(getRef(position).getKey());
+                                                    DatabaseReference subRef = FirebaseDatabase.getInstance().getReference()
+                                                            .child("newspapers").child(getRef(position).getKey()).child("users_subscribed");
+                                                    subRef.child(PrefManager.readUserKey(context)).setValue(true);
+
                                                     return true; // allow selection
                                                 }
                                             })
@@ -377,24 +399,6 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
 
 
 
-    public void updateUI(NewsPaperHolder holder, News news){
-
-        SpannableStringBuilder sBuilder = new SpannableStringBuilder();
-        sBuilder.append("Latest: ") // Bold this
-                .append(news.getCaption()); // Default TextView font.
-// Create the Typeface you want to apply to certain text
-        //CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(context.getAssets(), "fonts/Montserrat-Bold.ttf"));
-// Apply typeface to the Spannable 0 - 6 "Hello!" This can of course by dynamic.
-        CalligraphyTypefaceSpan typefaceSpan2 = new CalligraphyTypefaceSpan(TypefaceUtils.load(context.getAssets(), "fonts/Montserrat-Regular.ttf"));
-        //sBuilder.setSpan(typefaceSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        sBuilder.setSpan(typefaceSpan2, 7, news.getCaption().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-
-        holder.firstNewsTitle.setText(sBuilder, TextView.BufferType.SPANNABLE);
-
-    }
-
-
     public SpannableStringBuilder changeFont(String text){
         SpannableStringBuilder sBuilder = new SpannableStringBuilder() // Bold this
                 .append(text); // Default TextView font.
@@ -451,7 +455,7 @@ public class VendorNewAdapter extends FirebaseRecyclerAdapter<NewsPaper, NewsPap
     }
 
     private void loadImage(final ImageView imageView, String imagePath, final Context context){
-        mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
+        StorageReference mStorage = FirebaseStorage.getInstance().getReference().child(imagePath);
 
         Glide.with(context)
                 .using(new FirebaseImageLoader())
