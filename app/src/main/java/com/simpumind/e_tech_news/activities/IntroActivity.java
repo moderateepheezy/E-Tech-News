@@ -64,6 +64,7 @@ public class IntroActivity extends OnboarderActivity {
                 if (user != null) {
                     Intent intent = new Intent(IntroActivity.this, NewsMainActivity.class);
                     startActivity(intent);
+                    finish();
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out

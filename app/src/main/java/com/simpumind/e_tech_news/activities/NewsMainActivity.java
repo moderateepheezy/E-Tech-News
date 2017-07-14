@@ -1,5 +1,10 @@
 package com.simpumind.e_tech_news.activities;
 
+import android.app.NotificationManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -15,6 +20,7 @@ import com.simpumind.e_tech_news.R;
 import com.simpumind.e_tech_news.fragments.LibraryFragment;
 import com.simpumind.e_tech_news.fragments.MyProfileFragment;
 import com.simpumind.e_tech_news.fragments.SubscriptionFragment;
+import com.simpumind.e_tech_news.utils.NewsService;
 
 public class NewsMainActivity extends AppCompatActivity {
 
@@ -64,7 +70,8 @@ public class NewsMainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.framelayout, new SubscriptionFragment());
         transaction.commit();
-    }
 
+        startService(new Intent(getBaseContext(), NewsService.class));
+    }
 
 }
